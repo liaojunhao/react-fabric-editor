@@ -1,14 +1,19 @@
-import { Layout } from 'antd';
+import { Layout, Divider, Tooltip, Switch, Space } from 'antd';
 import './index.less';
 import { Canvas } from '../canvas';
+import { GithubOutlined } from '@ant-design/icons';
+
+import ImportJSON from '../components/importJSON';
+import History from '../components/history';
+import PreviewCurrent from '../components/previewCurrent';
+import Save from '../components/save';
+
 const { Header, Content } = Layout;
 
 const ImageMapEditor = () => {
   // 布局样式
   const headerStyle: React.CSSProperties = {
-    textAlign: 'center',
     height: 45,
-    paddingInline: 45,
     lineHeight: '45px',
     background: '#fff',
     padding: '0 10px',
@@ -43,7 +48,38 @@ const ImageMapEditor = () => {
   return (
     <div className="editor">
       <Layout>
-        <Header style={headerStyle}></Header>
+        <Header style={headerStyle}>
+          <span className="logo">
+            <a
+              href="https://github.com/liaojunhao/react-fabric-editor"
+              target="_blank"
+            ></a>
+            <GithubOutlined style={{ fontSize: 28 }} />
+          </span>
+          {/* 导入 */}
+          <ImportJSON></ImportJSON>
+          <Divider type="vertical" />
+          {/* 标尺开关 */}
+          <Tooltip placement="bottom" title={'标尺'}>
+            <Switch
+              onChange={(checked: boolean) => {
+                console.log(`switch to ${checked}`);
+              }}
+            />
+          </Tooltip>
+          <Divider type="vertical" />
+          {/* 历史记录 */}
+          <History></History>
+
+          <div style={{ float: 'right' }}>
+            <Space>
+              {/* 预览 */}
+              <PreviewCurrent></PreviewCurrent>
+              {/* 下载 */}
+              <Save></Save>
+            </Space>
+          </div>
+        </Header>
         <Content style={contentStyle}>
           {/* 左侧操作拦 */}
           <div style={siderStyle}></div>
