@@ -3,13 +3,14 @@ import { fabric } from 'fabric';
 import { throttle } from 'lodash-es';
 import { WorkareaObject } from '../utils';
 
+// 模板的宽高
 declare type EditorWorkspaceOption = { width: number; height: number };
 
 class WorkareaHandler {
   canvas: fabric.Canvas;
   handler: Handler;
   workspaceEl: HTMLElement; // 画布区域
-  workspace: fabric.Rect | null; // 模板区域
+  workspace: fabric.Rect | fabric.Image | null; // 模板区域
   dragMode: boolean;
 
   option: EditorWorkspaceOption;
@@ -17,7 +18,6 @@ class WorkareaHandler {
   constructor(handler: Handler) {
     this.handler = handler;
     const { workareaOption, canvas } = this.handler;
-
     this.canvas = canvas;
     this.option = {
       width: workareaOption.width,
@@ -39,18 +39,21 @@ class WorkareaHandler {
 
   // 初始化模板
   _initWorkspace() {
-    const { workareaOption } = this.handler;
-    const image = new Image(workareaOption.width, workareaOption.height);
-    image.width = workareaOption.width;
-    image.height = workareaOption.height;
-    this.handler.workarea = new fabric.Image(
-      image,
-      workareaOption
-    ) as WorkareaObject;
-    this.handler.canvas.add(this.handler.workarea);
-    // this.handler.objects = this.handler.getObjects();
-    this.handler.canvas.centerObject(this.handler.workarea);
-    this.handler.canvas.renderAll();
+    const { width, height } = this.option;
+    const workspace = new fabric.Rect({
+      fill: '#ffffff',
+      width,
+      height,
+      id: 'workspace'
+    });
+    workspace.set('selectable', false);
+    workspace.set('hasControls', false);
+    workspace.hoverCursor = 'default';
+    this.canvas.add(workspace);
+    this.canvas.renderAll();
+
+    this.workspace = workspace;
+    this.auto();
   }
   // 初始化画布
   _initBackground() {
@@ -82,7 +85,6 @@ class WorkareaHandler {
   _getScale() {
     const viewPortWidth = this.workspaceEl.offsetWidth;
     const viewPortHeight = this.workspaceEl.offsetHeight;
-
     // 按照宽度
     if (
       viewPortWidth / viewPortHeight <
@@ -102,7 +104,6 @@ class WorkareaHandler {
     const center = this.canvas.getCenter();
     this.canvas.setViewportTransform(fabric.iMatrix.concat());
     this.canvas.zoomToPoint(new fabric.Point(center.left, center.top), scale);
-
     if (!this.workspace) return;
     this.setCenterFromObject(this.workspace);
 
@@ -118,7 +119,7 @@ class WorkareaHandler {
    * 设置画布中心到指定对象中心点上
    * @param {Object} obj 指定的对象
    */
-  setCenterFromObject(obj: fabric.Rect) {
+  setCenterFromObject(obj: fabric.Rect | fabric.Image) {
     const { canvas } = this;
     const objCenter = obj.getCenterPoint();
     const viewportTransform = canvas.viewportTransform;

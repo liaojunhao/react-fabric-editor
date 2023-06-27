@@ -15,7 +15,7 @@ const Canvas = () => {
     });
 
     // 初始化控制器
-    const handler = new Handler({
+    new Handler({
       canvas: canvas.current
     });
   }, []);
