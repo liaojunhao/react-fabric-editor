@@ -18,7 +18,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // 严格空查询
+    "strictNullChecks": false,
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

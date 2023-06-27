@@ -1,31 +1,24 @@
-import { useState, useEffect } from 'react';
 import { Layout } from 'antd';
-import styles from './index.module.less';
-
+import './index.less';
+import { Canvas } from '../canvas';
 const { Header, Content } = Layout;
 
 const ImageMapEditor = () => {
-  const [count, setCount] = useState(0);
-  console.log('ImageMapEditor');
-
-  useEffect(() => {
-    console.log('11111');
-
-    setCount(count + 1);
-  }, []);
-
+  // 布局样式
   const headerStyle: React.CSSProperties = {
     textAlign: 'center',
-    height: 64,
-    paddingInline: 50,
-    lineHeight: '64px',
-    background: '#fff'
+    height: 45,
+    paddingInline: 45,
+    lineHeight: '45px',
+    background: '#fff',
+    padding: '0 10px',
+    borderBottom: '1px solid #eef2f8'
   };
   const contentStyle: React.CSSProperties = {
     textAlign: 'center',
     backgroundColor: '#108ee9',
     display: 'flex',
-    height: 'calc(100vh - 64px)'
+    height: 'calc(100vh - 45px)'
   };
 
   const siderStyle: React.CSSProperties = {
@@ -41,23 +34,22 @@ const ImageMapEditor = () => {
     overflowY: 'auto',
     background: '#fff'
   };
+  const worksStyle: React.CSSProperties = {
+    width: '100%',
+    position: 'relative',
+    background: '#f1f1f1'
+  };
 
   return (
-    <div className={styles.edtior}>
+    <div className="editor">
       <Layout>
-        <Header style={headerStyle}>Header</Header>
+        <Header style={headerStyle}></Header>
         <Content style={contentStyle}>
+          {/* 左侧操作拦 */}
           <div style={siderStyle}></div>
           {/* 画布区域 */}
-          <div
-            id="workspace"
-            style={{
-              width: '100%',
-              position: 'relative',
-              background: '#f1f1f1'
-            }}
-          >
-            画布中心
+          <div id="workspace" style={worksStyle}>
+            <Canvas></Canvas>
           </div>
           {/* 属性区域 380 */}
           <div style={rightStyle}></div>
