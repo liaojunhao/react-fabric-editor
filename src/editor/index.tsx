@@ -7,10 +7,17 @@ import ImportJSON from '../components/importJSON';
 import History from '../components/history';
 import PreviewCurrent from '../components/previewCurrent';
 import Save from '../components/save';
+import { MutableRefObject, useRef, useEffect } from 'react';
 
 const { Header, Content } = Layout;
 
 const ImageMapEditor = () => {
+  const canvasRef: MutableRefObject<any> = useRef(null);
+
+  useEffect(() => {
+    console.log('canvasRef', canvasRef.current);
+  }, []);
+
   // 布局样式
   const headerStyle: React.CSSProperties = {
     height: 45,
@@ -85,7 +92,7 @@ const ImageMapEditor = () => {
           <div style={siderStyle}></div>
           {/* 画布区域 */}
           <div id="workspace" style={worksStyle}>
-            <Canvas></Canvas>
+            <Canvas ref={canvasRef}></Canvas>
           </div>
           {/* 属性区域 380 */}
           <div style={rightStyle}></div>
