@@ -14,6 +14,7 @@
     "antd": "^5.6.1",
     "fabric": "^5.3.0",
     "lodash-es": "^4.17.21",
+    "polotno": "^1.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "web-vitals": "^3.3.2"
