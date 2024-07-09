@@ -1,3 +1,7 @@
-export function name(params: string) {
-  return `${params} + 110`;
+export function sayHello(name: string) {
+  return `${name} + hello`;
 }
+
+let say: string = '123';
+
+console.log(say);

@@ -1,0 +1,10 @@
+{
+  // 编译选项
+  "compilerOptions": {
+    "target": "esnext", // 配置编译目标代码的版本标准esnext为最新标准
+    "module": "esnext", // 编译目标使用的模块化标准
+    "outDir": "lib"
+  },
+  // 编译文件
+  "include": ["./src", "./globals.d.ts"]
+}
