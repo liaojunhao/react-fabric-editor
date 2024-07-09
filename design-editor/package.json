@@ -1,0 +1,40 @@
+{
+  "name": "design-editor",
+  "version": "1.0.0",
+  "description": "",
+  "title": "design-editor",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "unpkg": "dist/design-editor.min.js",
+  "jsdelivr": "dist/design-editor.min.js",
+  "scripts": {
+    "build": "rollup --config"
+  },
+  "files": [
+    "esm",
+    "es",
+    "lib",
+    "cjs",
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "design-editor",
+    "react",
+    "fabric",
+    "editor"
+  ],
+  "author": "冰河末日",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">=16.13.1",
+    "react-dom": ">=16.13.1"
+  },
+  "devDependencies": {
+    "rollup": "^4.18.1",
+    "typescript": "^5.2.2"
+  }
+}
