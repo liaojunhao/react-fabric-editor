@@ -1,6 +1,6 @@
 packages:
-  # 主项目
-  - 'editor'
+  # 编辑器
+  - 'design-editor'
   # 文档
   - 'docs'
   # 示例
