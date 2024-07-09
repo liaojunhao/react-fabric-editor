@@ -1,10 +1,51 @@
 {
   // 编译选项
   "compilerOptions": {
+    "jsx": "react",
+    "experimentalDecorators": true, // 启用实验性的装饰器特性。装饰器是一种特殊的声明
+    "moduleResolution": "node", // 模块解析策略
     "target": "esnext", // 配置编译目标代码的版本标准esnext为最新标准
     "module": "esnext", // 编译目标使用的模块化标准
-    "outDir": "lib"
+    "outDir": "lib",
+    "lib": ["esnext", "dom"], // 编译时需要引入的库
+    "declaration": true, // 生成声明文件
+    "sourceMap": true, // 生成source map文件
+    "importHelpers": true, // 启用导入帮助器
+    "allowSyntheticDefaultImports": true, // 允许从没有设置默认导出的模块中默认导入
+    // "suppressImplicitAnyIndexErrors": true // 禁止隐式的any类型的索引签名错误
+    "ignoreDeprecations": "5.0", // 忽略弃用的API
+    "baseUrl": "./", // 编译时的根目录
+    // 路径映射表
+    "paths": {
+      "design-editor": ["src"],
+      "design-editor/*": ["src/*"]
+    },
+    "allowJs": true, // 允许编译js文件
+    "checkJs": true, // 检查js文件是否有语法错误
+    "downlevelIteration": true, // 启用降级的迭代器
+    "esModuleInterop": true // 启用对 ES 模块与 CommonJS 模块之间的互操作性支持。这对于与 CommonJS 模块（如 Node.js 模块）一起使用非常有用
   },
   // 编译文件
-  "include": ["./src", "./globals.d.ts"]
+  "include": ["./src", "./globals.d.ts"],
+  "exclude": [
+    "**/*.jsx",
+    "**/**/_usage/*",
+    "**/**/__tests__/*",
+    "node_modules",
+    "src/_common",
+    "dist",
+    "lib",
+    "esm",
+    "cjs",
+    "es"
+  ],
+  "types": [
+    "node",
+    "jest",
+    "vitest/globals",
+    "@testing-library/jest-dom",
+    "@testing-library/react-hooks",
+    "@testing-library/react"
+  ],
+  "compileOnSave": false // 保存时不编译
 }

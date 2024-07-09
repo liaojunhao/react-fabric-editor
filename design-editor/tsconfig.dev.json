@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig",
+  "include": ["./src", "./globals.d.ts"],
+  "exclude": [
+    "**/**/__tests__/*",
+    "**/**/_example-js/*",
+    "**/config-provider/_example/*",
+    "**/**/_usage/*",
+    "node_modules",
+    "src/_common",
+    "dist",
+    "lib",
+    "esm",
+    "cjs",
+    "es"
+  ],
+  "compilerOptions": {
+    "declaration": false, // 不生成声明文件
+    "paths": {
+      "design-editor": ["src"]
+    }
+  }
+}
