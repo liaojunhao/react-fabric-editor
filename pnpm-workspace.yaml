@@ -1,0 +1,7 @@
+packages:
+  # 主项目
+  - 'editor'
+  # 文档
+  - 'docs'
+  # 示例
+  - 'demo'
