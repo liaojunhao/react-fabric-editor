@@ -10,8 +10,9 @@
   "jsdelivr": "dist/design-editor.min.js",
   "scripts": {
     "prebuild": "rimraf es/* lib/* dist/* esm/*",
-    "build": "rollup --config",
-    "build:tsc": "tsc -p ./tsconfig.json --outDir lib/"
+    "build": "rollup -c script/rollup.config.mjs",
+    "dev": "rollup -c script/rollup.config.mjs -w",
+    "build:tsc": "tsc --emitDeclarationOnly -d -p ./tsconfig.build.json --outDir lib/"
   },
   "files": [
     "esm",
@@ -31,13 +32,30 @@
   ],
   "author": "冰河末日",
   "license": "ISC",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
   "peerDependencies": {
     "react": ">=16.13.1",
     "react-dom": ">=16.13.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-multi-entry": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "rimraf": "^6.0.0",
     "rollup": "^4.18.1",
+    "rollup-plugin-multi-input": "^1.4.2",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.24.7"
   }
 }
