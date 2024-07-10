@@ -4,6 +4,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import multiInput from 'rollup-plugin-multi-input';
 import { babel } from '@rollup/plugin-babel';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
+import replace from '@rollup/plugin-replace';
+import { terser } from 'rollup-plugin-terser';
 
 import pkg from '../package.json' assert { type: 'json' };
 
@@ -17,20 +19,56 @@ const banner = `/**
  */
 `;
 const input = 'src/index-lib.ts';
+console.log(input);
 const inputList = ['src/**/*.ts', 'src/**/*.jsx', 'src/**/*.tsx', '!src/**/*.d.ts'];
 
 const getPlugins = ({
-  env,
-  isProd = false,
-  ignoreLess = true,
-  extractOneCss = false,
-  extractMultiCss = false,
+  env, // 环境
+  isProd = false, // 是否是生产环境的大包
+  ignoreLess = true, // 是否忽略less的导入
+  extractOneCss = false, // 是否提取一份CSS
+  extractMultiCss = false, // 是否提取多CSS
 } = {}) => {
   const plugins = [
     nodeResolve(),
     commonjs(),
     babel({ babelHelpers: 'runtime', extensions: [...DEFAULT_EXTENSIONS, '.ts', '.tsx'] }),
   ];
+
+  // css
+  if (extractOneCss) {
+    console.log('extractOneCss');
+  } else if (extractMultiCss) {
+    console.log('extractMultiCss');
+  } else if (ignoreLess) {
+    console.log('ignoreLess');
+  } else {
+    console.log('default');
+  }
+
+  if (env) {
+    plugins.push(
+      replace({
+        preventAssignment: true,
+        values: {
+          'process.env.NODE_ENV': JSON.stringify(env),
+        },
+      }),
+    );
+  }
+
+  // 是否是生产环境（生产环境就压缩）
+  if (isProd) {
+    plugins.push(
+      terser({
+        output: {
+          /* eslint-disable */
+          ascii_only: true,
+          /* eslint-enable */
+        },
+      }),
+    );
+  }
 
   return plugins;
 };
