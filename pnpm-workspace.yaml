@@ -1,6 +1,6 @@
 packages:
   # 编辑器
-  - 'design-editor'
+  - 'tdesign-editor'
   # 文档
   - 'docs'
   # 示例

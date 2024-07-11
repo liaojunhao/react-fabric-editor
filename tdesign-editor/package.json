@@ -1,16 +1,16 @@
 {
-  "name": "design-editor",
+  "name": "tdesign-editor",
   "version": "1.0.0",
   "description": "",
-  "title": "design-editor",
+  "title": "tdesign-editor",
   "main": "lib/index.js",
   "module": "es/index.js",
   "typings": "es/index.d.ts",
-  "unpkg": "dist/design-editor.min.js",
-  "jsdelivr": "dist/design-editor.min.js",
+  "unpkg": "dist/tdesign-editor.min.js",
+  "jsdelivr": "dist/tdesign-editor.min.js",
   "scripts": {
     "prebuild": "rimraf es/* lib/* dist/* esm/*",
-    "build": "rollup -c script/rollup.config.mjs",
+    "build": "rollup -c script/rollup.config.mjs && npm run build:tsc",
     "dev": "rollup -c script/rollup.config.mjs -w",
     "build:tsc": "tsc --emitDeclarationOnly -d -p ./tsconfig.build.json --outDir lib/"
   },
@@ -25,10 +25,11 @@
     "CHANGELOG.md"
   ],
   "keywords": [
-    "design-editor",
-    "react",
+    "tdesign editor",
     "fabric",
-    "editor"
+    "canvas",
+    "photo editor",
+    "design editor"
   ],
   "author": "冰河末日",
   "license": "ISC",
