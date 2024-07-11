@@ -33,6 +33,12 @@ const getPlugins = ({
     nodeResolve(),
     commonjs(),
     babel({ babelHelpers: 'runtime', extensions: [...DEFAULT_EXTENSIONS, '.ts', '.tsx'] }),
+    replace({
+      preventAssignment: true,
+      values: {
+        __VERSION__: JSON.stringify(pkg.version),
+      },
+    }),
   ];
 
   // css
