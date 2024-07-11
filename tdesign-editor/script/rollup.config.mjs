@@ -30,9 +30,11 @@ const getPlugins = ({
   extractMultiCss = false, // 是否提取多CSS
 } = {}) => {
   const plugins = [
-    nodeResolve(),
+    nodeResolve({
+      extensions: ['.tsx', '.ts', ...DEFAULT_EXTENSIONS], // 指定扩展名的解析顺序
+    }),
     commonjs(),
-    babel({ babelHelpers: 'runtime', extensions: [...DEFAULT_EXTENSIONS, '.ts', '.tsx'] }),
+    babel({ babelHelpers: 'runtime', extensions: ['.tsx', '.ts', ...DEFAULT_EXTENSIONS] }),
     replace({
       preventAssignment: true,
       values: {
