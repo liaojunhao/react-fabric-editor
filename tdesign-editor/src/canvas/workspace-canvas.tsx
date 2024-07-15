@@ -5,9 +5,10 @@ export type WorkspaceProps = {
   store: StoreType;
   components?: any;
 };
-const WorkspaceCanvas: React.FC<WorkspaceProps> = () => {
+const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store }) => {
   const containerRef = useRef(null);
   const innerRef = useRef(null);
+  //   console.log('store.pages', store.toJSON());
   return (
     <div
       ref={containerRef}
@@ -24,7 +25,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = () => {
     >
       <div
         ref={innerRef}
-        className="tdesign-workspace-inner"
+        onScroll={(e) => {}}
         style={{
           position: 'absolute',
           top: 0,
@@ -34,9 +35,12 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = () => {
           overflow: 'auto',
           overflowX: 'hidden',
         }}
-        onScroll={(e) => {}}
+        className="tdesign-workspace-inner"
       >
-        123
+        {store.pages.map((item) => {
+          console.log('item', item);
+          return <div>{item.id + '123'}</div>;
+        })}
       </div>
     </div>
   );
