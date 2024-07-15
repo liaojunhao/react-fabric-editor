@@ -5,6 +5,9 @@ import { createStore } from 'tdesign-editor/lib/model/store';
 
 function App() {
   const store = createStore();
+  store.addPage();
+  store.addPage();
+  store.addPage();
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>

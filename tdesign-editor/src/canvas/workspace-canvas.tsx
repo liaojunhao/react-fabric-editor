@@ -8,7 +8,8 @@ export type WorkspaceProps = {
 const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store }) => {
   const containerRef = useRef(null);
   const innerRef = useRef(null);
-  //   console.log('store.pages', store.toJSON());
+  const O = store.pages.indexOf(store.activePage);
+  console.log('O ---》 ', O);
   return (
     <div
       ref={containerRef}
@@ -37,9 +38,10 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store }) => {
         }}
         className="tdesign-workspace-inner"
       >
-        {store.pages.map((item) => {
-          console.log('item', item);
-          return <div>{item.id + '123'}</div>;
+        {store.pages.map((r, c) => {
+          console.log(Math.abs(c - O));
+
+          return <div key={r.id}>{r.id + '123'}</div>;
         })}
       </div>
     </div>

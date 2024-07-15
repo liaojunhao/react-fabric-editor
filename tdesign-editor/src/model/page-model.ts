@@ -5,17 +5,22 @@ import { Store } from './store';
 export const Page = types
   .model('Page', {
     id: types.identifier,
-    children: types.array(types.late(() => ElementTypes)),
+    objects: types.array(types.late(() => ElementTypes)),
     width: types.optional(types.union(types.number, types.literal('auto')), 'auto'),
     height: types.optional(types.union(types.number, types.literal('auto')), 'auto'),
     background: '#fff',
     bleed: 0,
     custom: types.frozen(),
     duration: 5e3,
+    _exporting: !1,
+    _rendering: !1,
   })
   .views((self) => ({
     get store() {
       return getParentOfType(self, Store);
+    },
+    get _exportingOrRendering() {
+      return self._exporting || self._rendering;
     },
   }))
   .views((self) => ({
