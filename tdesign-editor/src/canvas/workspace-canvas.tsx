@@ -1,7 +1,28 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import { StoreType } from '../model/store';
 
 import Page from './page';
+const ZERO_SIZE_WARNING =
+  'Polotno 警告：<Workspace /> 组件无法自动检测其大小。父元素的宽度或高度等于 0。请确保其大小不为零。您可能需要使用样式进行调整。<Workspace /> 将自动适应父容器。为了便于调试，这里是父元素的日志：';
+
+const PagePlaceholder = ({ width, height, xPadding, yPadding, backgroundColor: n }) => {
+  return (
+    <div
+      style={{
+        width: width,
+        height: height,
+        backgroundColor: n,
+        paddingLeft: xPadding,
+        paddingRight: xPadding,
+        paddingTop: yPadding,
+        paddingBottom: yPadding,
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ width: ' 100%', height: '100%', backgroundColor: 'white' }}></div>
+    </div>
+  );
+};
 
 export type WorkspaceProps = {
   store: StoreType;
@@ -11,20 +32,37 @@ export type WorkspaceProps = {
   backgroundColor?: string;
 };
 const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, backgroundColor }) => {
+  const h = null != paddingX ? paddingX : 20;
+  const g = null != paddingY ? paddingY : 55;
   const [size, setSize] = useState({ width: 100, height: 100 });
+  const m = useRef(size);
   const containerRef = useRef(null);
   const innerRef = useRef(null);
   const w = store.bleedVisible ? Math.max(0, ...store.pages.map((e) => e.bleed)) : 0;
   const computedWidth = Math.max(...store.pages.map((e) => e.computedWidth));
   const computedHeight = Math.max(...store.pages.map((e) => e.computedHeight));
-  const x = computedWidth + 2 * w; // 1080 + 2 * 0
+  const x = computedWidth + 2 * w;
   const k = computedHeight + 2 * w;
 
-  const h = null != paddingX ? paddingX : 20;
-  const C = k * store.scale * store.pages.length;
-  const g = null != paddingY ? paddingY : 55;
+  const y = async ({ skipTimeout } = { skipTimeout: false }) => {
+    if ((skipTimeout || (await new Promise((e) => setTimeout(e, 50))), null === containerRef.current)) return;
+    const r = containerRef.current.getBoundingClientRect();
+    (0 !== r.width && 0 !== r.height) || (console.warn(ZERO_SIZE_WARNING), console.log(containerRef.current));
+    const a = innerRef.current.clientWidth || r.width,
+      n = { width: a, height: r.height };
+    (m.current.width !== n.width || m.current.height !== n.height) && (setSize(n), (m.current = n));
+    const l = (a - 2 * h) / x,
+      o = (r.height - 2 * g) / k,
+      c = Math.max(Math.min(l, o), 0.01);
+    store.scaleToFit !== c && (store.setScale(c), store._setScaleToFit(c));
+  };
 
-  const P = Math.max(h, (size.width - x * store.scale) / 2); // 100 - 1080 * 1
+  useLayoutEffect(() => {
+    y({ skipTimeout: true });
+  }, []);
+
+  const P = Math.max(h, (size.width - x * store.scale) / 2);
+  const C = k * store.scale * store.pages.length;
   const M = Math.max(g, (size.height - C) / store.pages.length / 2);
 
   // 当前页
@@ -75,7 +113,14 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
               backColor={bgColor}
             ></Page>
           ) : (
-            <div key={r.id}>{r.id + '123'}</div>
+            <PagePlaceholder
+              key={r.id}
+              width={x * store.scale + 2 * P}
+              height={k * store.scale + 2 * M}
+              backgroundColor={bgColor}
+              xPadding={P}
+              yPadding={M}
+            ></PagePlaceholder>
           );
         })}
       </div>

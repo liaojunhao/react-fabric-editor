@@ -38,6 +38,12 @@ export const Store = types
 
       return newPage;
     },
+    setScale(t) {
+      self.scale = t;
+    },
+    _setScaleToFit(t) {
+      self.scaleToFit = t;
+    },
   }));
 
 export type StoreType = Instance<typeof Store>;

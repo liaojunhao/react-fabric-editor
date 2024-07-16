@@ -20,18 +20,26 @@ const Page: React.FC<PageProps> = ({ store, page, width, height, xPadding, yPadd
 
   const L = store.activePage === page;
   useEffect(() => {
-    handlerRef.current = new Handler({
-      canvasElParent: container.current,
-      canvasEl: canvasEl.current,
-      width: Math.min(width, 4 * window.innerWidth),
-      height: Math.min(height, 4 * window.innerHeight),
-      backColor: backColor,
-    });
+    if (!handlerRef.current) {
+      handlerRef.current = new Handler({
+        canvasElParent: container.current,
+        canvasEl: canvasEl.current,
+        width: Math.min(width, 4 * window.innerWidth),
+        height: Math.min(height, 4 * window.innerHeight),
+        backColor: backColor,
+      });
 
-    page.set({
-      custom: handlerRef.current,
-    });
-  }, []);
+      page.set({
+        custom: handlerRef.current,
+      });
+    } else {
+      // handlerRef.current
+      // handlerRef.current.canvas.setWidth(width);
+      // handlerRef.current.canvas.setHeight(height);
+      // handlerRef.current.canvas.renderAll();
+      handlerRef.current.workareaHandler.resize(width, height);
+    }
+  }, [width, height]);
 
   return (
     <div

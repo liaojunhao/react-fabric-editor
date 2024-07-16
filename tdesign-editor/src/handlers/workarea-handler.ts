@@ -6,9 +6,21 @@ import { fabric } from 'fabric';
 
 class WorkareaHandler {
   handler: Handler;
+  workarea: fabric.Rect;
   constructor(handler: Handler) {
     this.handler = handler;
+    // this.rect:fabric.Rect;
     this.addDefaultWorkarea();
+  }
+
+  public resize(width: number, height: number) {
+    console.log(width, height);
+    // this.handler.width = width;
+    // this.handler.height = height;
+    this.handler.canvas.setWidth(width);
+    this.handler.canvas.setHeight(height);
+    this.handler.canvas.centerObject(this.workarea);
+    this.handler.canvas.renderAll();
   }
 
   // 添加标准工作区
@@ -30,9 +42,9 @@ class WorkareaHandler {
       originX: 'left',
       originY: 'top',
     };
-    const rect = new fabric.Rect(workarea);
-    this.handler.canvas.add(rect);
-    this.handler.canvas.centerObject(rect);
+    this.workarea = new fabric.Rect(workarea);
+    this.handler.canvas.add(this.workarea);
+    this.handler.canvas.centerObject(this.workarea);
     this.handler.canvas.renderAll();
   }
 }
