@@ -1,4 +1,4 @@
-import { types, getParentOfType } from 'mobx-state-tree';
+import { types, getParentOfType, Instance } from 'mobx-state-tree';
 import { ElementTypes } from './group-model';
 import { Store } from './store';
 
@@ -31,3 +31,5 @@ export const Page = types
       return 'auto' === self.height ? self.store.height : self.height;
     },
   }));
+
+export type PageType = Instance<typeof Page>;
