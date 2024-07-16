@@ -1,4 +1,4 @@
-import { types, getParentOfType, Instance } from 'mobx-state-tree';
+import { types, getParentOfType, Instance, getSnapshot } from 'mobx-state-tree';
 import { ElementTypes } from './group-model';
 import { Store } from './store';
 
@@ -29,6 +29,14 @@ export const Page = types
     },
     get computedHeight() {
       return 'auto' === self.height ? self.store.height : self.height;
+    },
+  }))
+  .actions((self) => ({
+    toJSON: () => JSON.parse(JSON.stringify(getSnapshot(self))),
+  }))
+  .actions((self) => ({
+    set(t) {
+      Object.assign(self, t);
     },
   }));
 

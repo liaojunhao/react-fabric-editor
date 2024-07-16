@@ -8,28 +8,31 @@ export type WorkspaceProps = {
   components?: any;
   paddingX?: number;
   paddingY?: number;
+  backgroundColor?: string;
 };
-const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY }) => {
+const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, backgroundColor }) => {
   const [size, setSize] = useState({ width: 100, height: 100 });
   const containerRef = useRef(null);
   const innerRef = useRef(null);
   const w = store.bleedVisible ? Math.max(0, ...store.pages.map((e) => e.bleed)) : 0;
   const computedWidth = Math.max(...store.pages.map((e) => e.computedWidth));
   const computedHeight = Math.max(...store.pages.map((e) => e.computedHeight));
-  console.log(computedWidth);
-  const x = computedWidth + 2 * w;
+  const x = computedWidth + 2 * w; // 1080 + 2 * 0
   const k = computedHeight + 2 * w;
 
   const h = null != paddingX ? paddingX : 20;
   const C = k * store.scale * store.pages.length;
   const g = null != paddingY ? paddingY : 55;
 
-  const P = Math.max(h, (size.width - x * store.scale) / 2);
+  const P = Math.max(h, (size.width - x * store.scale) / 2); // 100 - 1080 * 1
   const M = Math.max(g, (size.height - C) / store.pages.length / 2);
 
   // 当前页
   const O = store.pages.indexOf(store.activePage);
   const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
+
+  // 确定
+  const bgColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
 
   return (
     <div
@@ -40,7 +43,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY }
         position: 'relative',
         outline: 'none',
         flex: 1,
-        backgroundColor: 'rgba(232, 232, 232, 0.9)',
+        backgroundColor: bgColor,
       }}
       tabIndex={0}
       className="tdesign-workspace-container"
@@ -69,6 +72,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY }
               yPadding={M}
               width={x * store.scale + 2 * P}
               height={k * store.scale + 2 * M}
+              backColor={bgColor}
             ></Page>
           ) : (
             <div key={r.id}>{r.id + '123'}</div>

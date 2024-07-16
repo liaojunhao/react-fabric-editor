@@ -1,6 +1,7 @@
 {
   // 编译选项
   "compilerOptions": {
+    "skipLibCheck": true,
     "jsx": "react",
     "experimentalDecorators": true, // 启用实验性的装饰器特性。装饰器是一种特殊的声明
     "moduleResolution": "node", // 模块解析策略
