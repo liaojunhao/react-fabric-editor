@@ -1,9 +1,85 @@
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { StoreType } from '../model/store';
+import { observer } from 'mobx-react-lite';
 
 import Page from './page';
 const ZERO_SIZE_WARNING =
   'Polotno 警告：<Workspace /> 组件无法自动检测其大小。父元素的宽度或高度等于 0。请确保其大小不为零。您可能需要使用样式进行调整。<Workspace /> 将自动适应父容器。为了便于调试，这里是父元素的日志：';
+
+const useSaveScrollOnScaleChange = (e, t, r, a, n, l) => {
+  const o = useRef({ width: t, height: r });
+  const c = useRef({ top: 0, left: 0 });
+  const s = useRef(!1);
+  const i = useRef(n.pages.length);
+  s.current = i.current !== n.pages.length;
+  i.current = n.pages.length;
+  useEffect(() => {
+    const t = e.current;
+    const r = (e) => {
+      c.current = { top: t.scrollTop, left: t.scrollLeft };
+    };
+    t.addEventListener('scroll', r);
+    return () => {
+      t.removeEventListener('scroll', r);
+    };
+  }, []);
+  useLayoutEffect(() => {
+    if (!e.current) return;
+    if (s.current) return;
+    const a = e.current;
+    const n = (c.current.left + a.offsetWidth / 2) / o.current.width;
+    const i = (c.current.top + a.offsetHeight / 2) / o.current.height;
+    l.current = !0;
+    a.scrollLeft = n * t - a.offsetWidth / 2;
+    a.scrollTop = i * r - a.offsetHeight / 2;
+    o.current = { width: t, height: r };
+  }, [a, t, r]);
+};
+
+const useScrollOnActiveChange = (e, t, r, a, n) => {
+  const l = useRef(!1);
+  const o = useRef(null);
+  useEffect(() => {
+    const t = e.current;
+    const r = () => {
+      n.current;
+    };
+    t.addEventListener('scroll', r);
+    return () => {
+      t.removeEventListener('scroll', r);
+    };
+  }, []);
+  const c = r.pages.indexOf(r.activePage);
+  useLayoutEffect(() => {
+    if (!r.activePage) return;
+    if (!e.current) return;
+    if (l.current) return;
+    const a = e.current;
+    const o = r.pages.indexOf(r.activePage) * t;
+    Math.abs(o - a.scrollTop) > 0.5 * t && ((n.current = !0), (a.scrollTop = o));
+  }, [r.activePage, c]);
+  return {
+    handleScroll: (e) => {
+      if (n.current) {
+        n.current = !1;
+        return;
+      }
+      n.current = !1;
+      l.current = !0;
+      clearTimeout(o.current);
+      o.current = setTimeout(() => {
+        l.current = !1;
+      }, 300);
+      const t = e.currentTarget.childNodes[0].offsetHeight;
+      const c = e.currentTarget.scrollTop;
+      const s = Math.floor((c + a.height / 3) / t);
+      const i = r.pages[s];
+      i && i.select();
+    },
+  };
+};
+
+const NoPages = () => {};
 
 const PagePlaceholder = ({ width, height, xPadding, yPadding, backgroundColor: n }) => {
   return (
@@ -60,17 +136,38 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
   useLayoutEffect(() => {
     y({ skipTimeout: true });
   }, []);
+  useEffect(() => {
+    y();
+  }, [x, k]);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (window.ResizeObserver) {
+      const t = new ResizeObserver(() => {
+        y({ skipTimeout: !0 });
+      });
+      t.observe(container);
+      return () => t.unobserve(container);
+    } else {
+      const e = setInterval(() => {
+        y({ skipTimeout: !0 });
+      }, 100);
+      return () => clearInterval(e);
+    }
+  }, [x, k]);
 
   const P = Math.max(h, (size.width - x * store.scale) / 2);
   const C = k * store.scale * store.pages.length;
   const M = Math.max(g, (size.height - C) / store.pages.length / 2);
-
-  // 当前页
-  const O = store.pages.indexOf(store.activePage);
-  const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
-
-  // 确定
+  // useEffect keydown 键盘事件
+  // useEffect wheel 滚动事件
+  const T = useRef(!1);
+  useSaveScrollOnScaleChange(innerRef, x * store.scale + 2 * P, k * store.scale + 2 * M, store.scale, store, T);
+  const { handleScroll } = useScrollOnActiveChange(innerRef, k * store.scale + 2 * M, store, size, T);
+  const S = size.width >= x * store.scale + 2 * P;
   const bgColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
+  const O = store.pages.indexOf(store.activePage);
+  // W = (null == o ? void 0 : o.NoPages) || NoPages,
+  const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
 
   return (
     <div
@@ -88,7 +185,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
     >
       <div
         ref={innerRef}
-        onScroll={(e) => {}}
+        onScroll={handleScroll}
         style={{
           position: 'absolute',
           top: 0,
@@ -96,7 +193,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
           width: '100%',
           height: '100%',
           overflow: 'auto',
-          overflowX: 'hidden',
+          overflowX: S ? 'hidden' : 'auto',
         }}
         className="tdesign-workspace-inner"
       >
@@ -128,4 +225,4 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
   );
 };
 
-export default WorkspaceCanvas;
+export default observer(WorkspaceCanvas);

@@ -11,7 +11,6 @@ export const Page = types
     background: '#fff',
     bleed: 0,
     custom: types.frozen(),
-    duration: 5e3,
     _exporting: !1,
     _rendering: !1,
   })
@@ -37,6 +36,9 @@ export const Page = types
   .actions((self) => ({
     set(t) {
       Object.assign(self, t);
+    },
+    select() {
+      self.store.selectPage(self.id);
     },
   }));
 

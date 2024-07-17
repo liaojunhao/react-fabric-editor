@@ -4,6 +4,7 @@ import WorkareaHandler from './workarea-handler';
 class Handler {
   public canvas: fabric.Canvas;
   public workareaHandler: WorkareaHandler;
+  public canvasElParent: HTMLDivElement;
 
   public width: number = 500;
   public height: number = 500;
@@ -22,6 +23,7 @@ class Handler {
     // 初始化工作区域大小
     this.workerWidth = options.workerWidth;
     this.workerHeight = options.workerHeight;
+    this.canvasElParent = options.canvasElParent;
 
     this.canvas = new fabric.Canvas(options.canvasEl, {
       width: this.width,
@@ -35,6 +37,12 @@ class Handler {
   // 初始化各种处理
   private initHandler() {
     this.workareaHandler = new WorkareaHandler(this);
+  }
+
+  public resize(width: number, height: number) {
+    this.canvas.setWidth(width);
+    this.canvas.setHeight(height);
+    this.canvas.renderAll();
   }
 }
 

@@ -34,9 +34,10 @@ export const Store = types
       self.pages.push(newPage);
       self._activePageId = newPage.id;
 
-      // 初始化一个画布
-
       return newPage;
+    },
+    selectPage(t) {
+      self._activePageId = t;
     },
     setScale(t) {
       self.scale = t;

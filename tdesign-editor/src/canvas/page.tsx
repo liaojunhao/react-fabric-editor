@@ -3,6 +3,7 @@ import { StoreType } from '../model/store';
 import { PageType } from '../model/page-model';
 // import { fabric } from 'fabric';
 import Handler from '../handlers/handler';
+import { observer } from 'mobx-react-lite';
 
 type PageProps = {
   store: StoreType;
@@ -16,7 +17,7 @@ type PageProps = {
 const Page: React.FC<PageProps> = ({ store, page, width, height, xPadding, yPadding, backColor }) => {
   const canvasEl = useRef(null);
   const container = useRef(null);
-  const handlerRef = useRef(null);
+  const handlerRef = useRef<Handler>(null);
   const L = store.activePage === page;
 
   useEffect(() => {
@@ -33,11 +34,14 @@ const Page: React.FC<PageProps> = ({ store, page, width, height, xPadding, yPadd
       page.set({
         custom: handlerRef.current,
       });
-    } else {
-      // 改画布大小，还改工作区域大小
-      handlerRef.current.workareaHandler.resize(width, height, store.scale, store.scale);
     }
-  }, [width, height]);
+  }, []);
+  useEffect(() => {
+    // 适配画布
+    handlerRef.current.workareaHandler.auto(width, height, store.scale, (left, top) => {
+      console.log(left, top);
+    });
+  }, [width, height, store.activePage, store.scale]);
 
   return (
     <div
@@ -50,4 +54,4 @@ const Page: React.FC<PageProps> = ({ store, page, width, height, xPadding, yPadd
   );
 };
 
-export default Page;
+export default observer(Page);
