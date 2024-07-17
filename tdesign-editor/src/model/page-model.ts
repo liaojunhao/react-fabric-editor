@@ -9,6 +9,7 @@ export const Page = types
     width: types.optional(types.union(types.number, types.literal('auto')), 'auto'),
     height: types.optional(types.union(types.number, types.literal('auto')), 'auto'),
     background: '#fff',
+    stroke: 'lightgrey',
     bleed: 0,
     custom: types.frozen(),
     _exporting: !1,
@@ -35,6 +36,12 @@ export const Page = types
   }))
   .actions((self) => ({
     set(t) {
+      if (t.stroke) {
+        // console.log(t, self.custom);
+        self.custom?.workareaHandler?.set({
+          stroke: t.stroke,
+        });
+      }
       Object.assign(self, t);
     },
     select() {

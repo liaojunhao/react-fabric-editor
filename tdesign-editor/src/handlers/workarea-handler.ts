@@ -8,20 +8,26 @@ class WorkareaHandler {
   handler: Handler;
   workarea: fabric.Rect;
   zoomRatio: number = 1;
-  constructor(handler: Handler) {
+  public canvasElParent: HTMLDivElement;
+  public workerWidth: number = 1080;
+  public workerHeight: number = 1080;
+
+  constructor(handler: Handler, options) {
     this.handler = handler;
-    this.addDefaultWorkarea();
+    this.canvasElParent = options.canvasElParent;
+    this.addDefaultWorkarea(options);
   }
 
   // 添加标准工作区
-  public addDefaultWorkarea() {
+  public addDefaultWorkarea(options) {
+    const { page } = options;
     const workarea = {
       id: 'workarea',
       left: 0,
       top: 0,
-      width: this.handler.workerWidth,
-      height: this.handler.workerHeight,
-      fill: '#fff',
+      width: page.width || this.workerWidth,
+      height: page.height || this.workerHeight,
+      fill: page.background,
       type: 'rect',
       hasBorders: false,
       hasControls: false,
@@ -31,6 +37,8 @@ class WorkareaHandler {
       hoverCursor: 'default',
       originX: 'left',
       originY: 'top',
+      stroke: page.stroke,
+      strokeWidth: 4,
     };
     this.workarea = new fabric.Rect(workarea);
     this.handler.canvas.add(this.workarea);
@@ -53,7 +61,7 @@ class WorkareaHandler {
     canvas.renderAll();
   }
 
-  auto(width: number, height: number, scale, cb?: (left?: number, top?: number) => void) {
+  auto(width: number, height: number, scale) {
     this.handler.canvas.setWidth(width);
     this.handler.canvas.setHeight(height);
     const center = this.handler.canvas.getCenter();
@@ -67,8 +75,15 @@ class WorkareaHandler {
       this.handler.canvas.clipPath = cloned;
       this.handler.canvas.requestRenderAll();
     });
-
-    if (cb) cb(this.workarea.left, this.workarea.top);
+  }
+  set(option) {
+    console.log('option', option);
+    // this.workarea.stroke = option.stroke;
+    this.workarea.set({
+      stroke: option.stroke,
+    });
+    console.log(this.workarea);
+    this.handler.canvas.renderAll();
   }
 }
 

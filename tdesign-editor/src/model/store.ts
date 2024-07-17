@@ -1,4 +1,4 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, getSnapshot } from 'mobx-state-tree';
 import { Page } from './page-model';
 import { nanoid } from 'nanoid';
 
@@ -44,6 +44,16 @@ export const Store = types
     },
     _setScaleToFit(t) {
       self.scaleToFit = t;
+    },
+    toJSON() {
+      return {
+        width: self.width,
+        height: self.height,
+        pages: getSnapshot(self.pages),
+        unit: self.unit,
+        dpi: self.dpi,
+        custom: self.custom,
+      };
     },
   }));
 

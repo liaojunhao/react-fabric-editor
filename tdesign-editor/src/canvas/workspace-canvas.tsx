@@ -106,8 +106,17 @@ export type WorkspaceProps = {
   paddingX?: number;
   paddingY?: number;
   backgroundColor?: string;
+  pageBorderColor?: string;
+  activePageBorderColor?: string;
 };
-const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, backgroundColor }) => {
+const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
+  store,
+  paddingX,
+  paddingY,
+  backgroundColor,
+  pageBorderColor,
+  activePageBorderColor,
+}) => {
   const h = null != paddingX ? paddingX : 20;
   const g = null != paddingY ? paddingY : 55;
   const [size, setSize] = useState({ width: 100, height: 100 });
@@ -208,6 +217,8 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({ store, paddingX, paddingY, 
               width={x * store.scale + 2 * P}
               height={k * store.scale + 2 * M}
               backColor={bgColor}
+              pageBorderColor={pageBorderColor || 'lightgrey'}
+              activePageBorderColor={activePageBorderColor || 'rgb(0, 161, 255)'}
             ></Page>
           ) : (
             <PagePlaceholder

@@ -6,7 +6,7 @@ import { createStore } from 'tdesign-editor/lib/model/store';
 const store = createStore();
 store.addPage();
 store.addPage();
-store.addPage();
+store.addPage({ background: '#ffc' });
 
 function App() {
   return (
