@@ -17,27 +17,25 @@ const Page: React.FC<PageProps> = ({ store, page, width, height, xPadding, yPadd
   const canvasEl = useRef(null);
   const container = useRef(null);
   const handlerRef = useRef(null);
-
   const L = store.activePage === page;
+
   useEffect(() => {
     if (!handlerRef.current) {
       handlerRef.current = new Handler({
         canvasElParent: container.current,
         canvasEl: canvasEl.current,
-        width: Math.min(width, 4 * window.innerWidth),
-        height: Math.min(height, 4 * window.innerHeight),
+        width: Math.min(width, 4 * window.innerWidth), // 这是个画布的大小
+        height: Math.min(height, 4 * window.innerHeight), // 这是个画布的大小
         backColor: backColor,
+        workerWidth: store.width,
+        workerHeight: store.height,
       });
-
       page.set({
         custom: handlerRef.current,
       });
     } else {
-      // handlerRef.current
-      // handlerRef.current.canvas.setWidth(width);
-      // handlerRef.current.canvas.setHeight(height);
-      // handlerRef.current.canvas.renderAll();
-      handlerRef.current.workareaHandler.resize(width, height);
+      // 改画布大小，还改工作区域大小
+      handlerRef.current.workareaHandler.resize(width, height, store.scale, store.scale);
     }
   }, [width, height]);
 

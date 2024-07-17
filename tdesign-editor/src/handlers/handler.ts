@@ -7,6 +7,8 @@ class Handler {
 
   public width: number = 500;
   public height: number = 500;
+  public workerWidth: number = 1080;
+  public workerHeight: number = 1080;
 
   constructor(options) {
     this.initOptions(options);
@@ -14,12 +16,16 @@ class Handler {
   }
   // 初始化一些基础参数
   private initOptions(options) {
-    const defaultSize = 500;
     this.width = options.width;
     this.height = options.height;
+
+    // 初始化工作区域大小
+    this.workerWidth = options.workerWidth;
+    this.workerHeight = options.workerHeight;
+
     this.canvas = new fabric.Canvas(options.canvasEl, {
-      width: options.width || defaultSize,
-      height: options.height || defaultSize,
+      width: this.width,
+      height: this.height,
       backgroundColor: options.backColor,
       preserveObjectStacking: true,
       perPixelTargetFind: true,

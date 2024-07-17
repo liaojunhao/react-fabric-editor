@@ -13,12 +13,13 @@ class WorkareaHandler {
     this.addDefaultWorkarea();
   }
 
-  public resize(width: number, height: number) {
-    console.log(width, height);
-    // this.handler.width = width;
-    // this.handler.height = height;
+  public resize(width: number, height: number, scaleX?: number, scaleY?: number) {
     this.handler.canvas.setWidth(width);
     this.handler.canvas.setHeight(height);
+
+    this.workarea.scaleX = scaleX;
+    this.workarea.scaleY = scaleY;
+
     this.handler.canvas.centerObject(this.workarea);
     this.handler.canvas.renderAll();
   }
@@ -29,8 +30,8 @@ class WorkareaHandler {
       id: 'workarea',
       left: 0,
       top: 0,
-      width: 500,
-      height: 500,
+      width: this.handler.workerWidth,
+      height: this.handler.workerHeight,
       fill: '#fff',
       type: 'rect',
       hasBorders: false,
