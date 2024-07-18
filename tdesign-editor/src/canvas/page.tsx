@@ -100,7 +100,6 @@ const Page: React.FC<PageProps> = ({
       setCenterFromObject();
     }
   }, [store.activePage, store.scale]);
-  console.log(store.scale);
 
   return (
     <div

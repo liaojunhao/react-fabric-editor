@@ -4,9 +4,9 @@ import { Workspace } from 'tdesign-editor/lib/canvas/workspace';
 import { createStore } from 'tdesign-editor/lib/model/store';
 
 const store = createStore();
-store.addPage();
-store.addPage();
-store.addPage({ background: '#ffc' });
+// store.addPage();
+// store.addPage();
+// store.addPage({ background: '#ffc' });
 
 function App() {
   return (

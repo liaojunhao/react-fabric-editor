@@ -79,7 +79,28 @@ const useScrollOnActiveChange = (e, t, r, a, n) => {
   };
 };
 
-const NoPages = () => {};
+const NoPages = ({ store }: { store: StoreType }) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        textAlign: 'center',
+      }}
+    >
+      <p>There are no pages yet...</p>
+      <button
+        onClick={() => {
+          store.addPage({});
+        }}
+      >
+        Add page
+      </button>
+    </div>
+  );
+};
 
 const PagePlaceholder = ({ width, height, xPadding, yPadding, backgroundColor: n }) => {
   return (
@@ -116,6 +137,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   backgroundColor,
   pageBorderColor,
   activePageBorderColor,
+  components,
 }) => {
   const h = null != paddingX ? paddingX : 20;
   const g = null != paddingY ? paddingY : 55;
@@ -175,7 +197,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   const S = size.width >= x * store.scale + 2 * P;
   const bgColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
   const O = store.pages.indexOf(store.activePage);
-  // W = (null == o ? void 0 : o.NoPages) || NoPages,
+  const W = (null == components ? null : components.NoPages) || NoPages;
   const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
 
   return (
@@ -231,6 +253,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
             ></PagePlaceholder>
           );
         })}
+        {0 === store.pages.length && <W store={store}></W>}
       </div>
     </div>
   );
