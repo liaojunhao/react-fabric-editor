@@ -58,14 +58,17 @@ const Page: React.FC<PageProps> = ({
     });
   }, []);
 
+  // useEffect(() => {
+  //   handlerRef.current.setWidth(width);
+  //   handlerRef.current.setHeight(height);
+  //   handlerRef.current.renderAll();
+  // }, [width, height]);
+
+  // 处理工作区域
   useEffect(() => {
     handlerRef.current.setWidth(width);
     handlerRef.current.setHeight(height);
     handlerRef.current.renderAll();
-  }, [width, height]);
-
-  // 处理工作区域
-  useEffect(() => {
     if (!workarea.current) {
       const workareaObj = {
         id: 'workarea',
@@ -99,7 +102,7 @@ const Page: React.FC<PageProps> = ({
       });
       setCenterFromObject();
     }
-  }, [store.activePage, store.scale]);
+  }, [store.activePage, width, height, store.scale]);
 
   return (
     <div

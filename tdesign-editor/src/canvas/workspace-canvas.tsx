@@ -139,10 +139,10 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   activePageBorderColor,
   components,
 }) => {
-  const h = null != paddingX ? paddingX : 20;
+  const h = null != paddingX ? paddingX : 55;
   const g = null != paddingY ? paddingY : 55;
-  const [size, setSize] = useState({ width: 100, height: 100 });
-  const m = useRef(size);
+  const [size, setSize] = useState({ width: 100, height: 100 }); // 画布尺寸
+  const m = useRef(size); // 画布尺寸ref
   const containerRef = useRef(null);
   const innerRef = useRef(null);
   const w = store.bleedVisible ? Math.max(0, ...store.pages.map((e) => e.bleed)) : 0;
@@ -157,10 +157,12 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
     (0 !== r.width && 0 !== r.height) || (console.warn(ZERO_SIZE_WARNING), console.log(containerRef.current));
     const a = innerRef.current.clientWidth || r.width,
       n = { width: a, height: r.height };
+    console.log(n);
     (m.current.width !== n.width || m.current.height !== n.height) && (setSize(n), (m.current = n));
-    const l = (a - 2 * h) / x,
-      o = (r.height - 2 * g) / k,
+    const l = (a - 2 * h) / x, // (888 - 2 * 55) / 1080
+      o = (r.height - 2 * g) / k, // (614 - 2 * 55) / 1080
       c = Math.max(Math.min(l, o), 0.01);
+    console.log('Scale ---> ', c);
     store.scaleToFit !== c && (store.setScale(c), store._setScaleToFit(c));
   };
 
