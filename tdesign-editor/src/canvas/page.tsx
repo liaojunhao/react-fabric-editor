@@ -17,6 +17,8 @@ type PageProps = {
   backColor: string;
   pageBorderColor: string;
   activePageBorderColor: string;
+  pageControlsEnabled?: boolean;
+  components: any;
 };
 const Page: React.FC<PageProps> = ({
   store,
@@ -28,12 +30,22 @@ const Page: React.FC<PageProps> = ({
   backColor,
   pageBorderColor,
   activePageBorderColor,
+  pageControlsEnabled,
+  components,
 }) => {
+  const u = store.bleedVisible ? page.bleed : 0;
+  const m = page.computedWidth + 2 * u;
+  const g = page.computedHeight + 2 * u;
+  const h = (width - m * store.scale) / 2;
+  const _ = (height - g * store.scale) / 2;
+
+  const x = null == pageControlsEnabled || pageControlsEnabled;
   const canvasEl = useRef(null); // canvas
   const containerEl = useRef(null); // canvas父节点
   const handlerRef = useRef<fabric.Canvas>(null); // fabric的canvas实例
   const workarea = useRef<fabric.Rect>(null); // 每一页的画布对象
   const L = store.activePage === page;
+  const O = null == components ? void 0 : components.PageControls;
 
   // 居中设置
   const setCenterFromObject = () => {
@@ -106,6 +118,8 @@ const Page: React.FC<PageProps> = ({
       style={{ position: 'relative', width: width + 'px' }}
     >
       <canvas id={page.id} ref={canvasEl} />
+
+      {x && L && O && <O store={store} page={page} xPadding={h} yPadding={_} />}
     </div>
   );
 };

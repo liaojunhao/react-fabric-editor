@@ -74,6 +74,7 @@ const useScrollOnActiveChange = (e, t, r, a, n) => {
       const c = e.currentTarget.scrollTop;
       const s = Math.floor((c + a.height / 3) / t);
       const i = r.pages[s];
+      console.log(i);
       i && i.select();
     },
   };
@@ -129,6 +130,7 @@ export type WorkspaceProps = {
   backgroundColor?: string;
   pageBorderColor?: string;
   activePageBorderColor?: string;
+  pageControlsEnabled?: boolean;
 };
 const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   store,
@@ -138,8 +140,9 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   pageBorderColor,
   activePageBorderColor,
   components,
+  pageControlsEnabled,
 }) => {
-  const h = null != paddingX ? paddingX : 55;
+  const h = null != paddingX ? paddingX : 20;
   const g = null != paddingY ? paddingY : 55;
   const [size, setSize] = useState({ width: 100, height: 100 }); // 画布尺寸
   const m = useRef(size); // 画布尺寸ref
@@ -157,12 +160,10 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
     (0 !== r.width && 0 !== r.height) || (console.warn(ZERO_SIZE_WARNING), console.log(containerRef.current));
     const a = innerRef.current.clientWidth || r.width,
       n = { width: a, height: r.height };
-    console.log(n);
     (m.current.width !== n.width || m.current.height !== n.height) && (setSize(n), (m.current = n));
     const l = (a - 2 * h) / x, // (888 - 2 * 55) / 1080
       o = (r.height - 2 * g) / k, // (614 - 2 * 55) / 1080
       c = Math.max(Math.min(l, o), 0.01);
-    console.log('Scale ---> ', c);
     store.scaleToFit !== c && (store.setScale(c), store._setScaleToFit(c));
   };
 
@@ -243,6 +244,8 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
               backColor={bgColor}
               pageBorderColor={pageBorderColor || 'lightgrey'}
               activePageBorderColor={activePageBorderColor || 'rgb(0, 161, 255)'}
+              pageControlsEnabled={pageControlsEnabled}
+              components={components}
             ></Page>
           ) : (
             <PagePlaceholder

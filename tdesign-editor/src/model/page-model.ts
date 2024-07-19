@@ -35,6 +35,9 @@ export const Page = types
     toJSON: () => JSON.parse(JSON.stringify(getSnapshot(self))),
   }))
   .actions((self) => ({
+    setZIndex(t) {
+      self.store.setPageZIndex(self.id, t);
+    },
     set(t) {
       if (t.stroke) {
         // console.log(t, self.custom);

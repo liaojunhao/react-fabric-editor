@@ -1,4 +1,4 @@
-import { types, Instance, getSnapshot } from 'mobx-state-tree';
+import { types, Instance, getSnapshot, detach } from 'mobx-state-tree';
 import { Page } from './page-model';
 import { nanoid } from 'nanoid';
 
@@ -29,6 +29,13 @@ export const Store = types
     },
   }))
   .actions((self) => ({
+    setPageZIndex(t, i) {
+      const a = self.pages.find((e) => e.id === t);
+      console.log('a', a);
+      a && detach(a);
+      self.pages.remove(a);
+      self.pages.splice(i, 0, a);
+    },
     addPage(t) {
       const newPage = Page.create({ id: nanoid(10), ...t });
       self.pages.push(newPage);
