@@ -29,12 +29,13 @@ const Page: React.FC<PageProps> = ({
   pageBorderColor,
   activePageBorderColor,
 }) => {
-  const canvasEl = useRef(null);
-  const containerEl = useRef(null);
-  const handlerRef = useRef<fabric.Canvas>(null);
-  const workarea = useRef<fabric.Rect>(null);
+  const canvasEl = useRef(null); // canvas
+  const containerEl = useRef(null); // canvas父节点
+  const handlerRef = useRef<fabric.Canvas>(null); // fabric的canvas实例
+  const workarea = useRef<fabric.Rect>(null); // 每一页的画布对象
   const L = store.activePage === page;
 
+  // 居中设置
   const setCenterFromObject = () => {
     const center = handlerRef.current.getCenter();
     handlerRef.current.setViewportTransform(fabric.iMatrix.concat());
@@ -57,12 +58,6 @@ const Page: React.FC<PageProps> = ({
       perPixelTargetFind: true,
     });
   }, []);
-
-  // useEffect(() => {
-  //   handlerRef.current.setWidth(width);
-  //   handlerRef.current.setHeight(height);
-  //   handlerRef.current.renderAll();
-  // }, [width, height]);
 
   // 处理工作区域
   useEffect(() => {
