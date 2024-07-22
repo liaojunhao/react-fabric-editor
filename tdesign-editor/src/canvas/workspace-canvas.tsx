@@ -56,7 +56,13 @@ const useScrollOnActiveChange = (e, t, r, a, n) => {
     if (l.current) return;
     const a = e.current;
     const o = r.pages.indexOf(r.activePage) * t;
-    Math.abs(o - a.scrollTop) > 0.5 * t && ((n.current = !0), (a.scrollTop = o));
+    // Math.abs(o - a.scrollTop) > 0.5 * t && ((n.current = !0), (a.scrollTop = o));
+    if (Math.abs(o - a.scrollTop) > 0.5 * t) {
+      n.current = !0;
+      setTimeout(() => {
+        a.scrollTop = o;
+      }, 0);
+    }
   }, [r.activePage, c]);
   return {
     handleScroll: (e) => {
@@ -74,7 +80,6 @@ const useScrollOnActiveChange = (e, t, r, a, n) => {
       const c = e.currentTarget.scrollTop;
       const s = Math.floor((c + a.height / 3) / t);
       const i = r.pages[s];
-      console.log(i);
       i && i.select();
     },
   };
