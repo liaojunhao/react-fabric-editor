@@ -31,7 +31,6 @@ export const Store = types
   .actions((self) => ({
     setPageZIndex(t, i) {
       const a = self.pages.find((e) => e.id === t);
-      console.log('a', a);
       a && detach(a);
       self.pages.remove(a);
       self.pages.splice(i, 0, a);

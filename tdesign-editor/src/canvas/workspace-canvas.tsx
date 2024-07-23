@@ -1,8 +1,8 @@
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
+import Page, { PageHandle } from './page';
 
-import Page from './page';
 const ZERO_SIZE_WARNING =
   'Polotno 警告：<Workspace /> 组件无法自动检测其大小。父元素的宽度或高度等于 0。请确保其大小不为零。您可能需要使用样式进行调整。<Workspace /> 将自动适应父容器。为了便于调试，这里是父元素的日志：';
 
@@ -147,8 +147,8 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   components,
   pageControlsEnabled,
 }) => {
-  const h = null != paddingX ? paddingX : 20;
-  const g = null != paddingY ? paddingY : 55;
+  const h = null != paddingX ? paddingX : 50;
+  const g = null != paddingY ? paddingY : 105;
   const [size, setSize] = useState({ width: 100, height: 100 }); // 画布尺寸
   const m = useRef(size); // 画布尺寸ref
   const containerRef = useRef(null);
@@ -208,6 +208,8 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   const W = (null == components ? null : components.NoPages) || NoPages;
   const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
 
+  const pageRef = useRef<PageHandle>(null);
+
   return (
     <div
       ref={containerRef}
@@ -239,6 +241,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
         {store.pages.map((r, c) => {
           return Math.abs(c - O) <= N || r._exportingOrRendering ? (
             <Page
+              ref={pageRef}
               key={r.id}
               page={r}
               store={store}
