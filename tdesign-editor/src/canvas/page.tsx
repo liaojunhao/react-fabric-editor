@@ -134,7 +134,6 @@ const Page = forwardRef<PageHandle, PageProps>(
         style={{ position: 'relative', width: width + 'px' }}
       >
         <canvas id={page.id} ref={canvasEl} />
-
         {x && L && O && <O store={store} page={page} xPadding={h} yPadding={_} />}
       </div>
     );

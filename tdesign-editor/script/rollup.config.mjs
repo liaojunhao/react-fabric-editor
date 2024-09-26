@@ -6,6 +6,7 @@ import { babel } from '@rollup/plugin-babel';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
+import postcss from 'rollup-plugin-postcss';
 
 import pkg from '../package.json' assert { type: 'json' };
 
@@ -35,6 +36,14 @@ const getPlugins = ({
     }),
     commonjs(),
     babel({ babelHelpers: 'runtime', extensions: ['.tsx', '.ts', ...DEFAULT_EXTENSIONS] }),
+    postcss({
+      plugins: [],
+      autoModules: true,
+      extract: `${isProd ? `${name}.min` : name}.css`,
+      minimize: isProd,
+      sourceMap: true,
+      extensions: ['.sass', '.scss', '.css', '.less'],
+    }),
     replace({
       preventAssignment: true,
       values: {
@@ -42,17 +51,6 @@ const getPlugins = ({
       },
     }),
   ];
-
-  // css
-  if (extractOneCss) {
-    console.log('extractOneCss');
-  } else if (extractMultiCss) {
-    console.log('extractMultiCss');
-  } else if (ignoreLess) {
-    console.log('ignoreLess');
-  } else {
-    console.log('default');
-  }
 
   if (env) {
     plugins.push(

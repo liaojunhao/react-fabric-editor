@@ -2,9 +2,10 @@ import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
 import Page, { PageHandle } from './page';
+import { getName } from '../utils/l10n';
 
 const ZERO_SIZE_WARNING =
-  'Polotno 警告：<Workspace /> 组件无法自动检测其大小。父元素的宽度或高度等于 0。请确保其大小不为零。您可能需要使用样式进行调整。<Workspace /> 将自动适应父容器。为了便于调试，这里是父元素的日志：';
+  '警告：<Workspace /> 组件无法自动检测其大小。父元素的宽度或高度等于 0。请确保其大小不为零。您可能需要使用样式进行调整。<Workspace /> 将自动适应父容器。为了便于调试，这里是父元素的日志：';
 
 const useSaveScrollOnScaleChange = (e, t, r, a, n, l) => {
   const o = useRef({ width: t, height: r });
@@ -96,13 +97,13 @@ const NoPages = ({ store }: { store: StoreType }) => {
         textAlign: 'center',
       }}
     >
-      <p>There are no pages yet...</p>
+      <p>{getName('workspace.noPages')}</p>
       <button
         onClick={() => {
           store.addPage({});
         }}
       >
-        Add page
+        {getName('workspace.addPage')}
       </button>
     </div>
   );
@@ -149,15 +150,15 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
 }) => {
   const h = null != paddingX ? paddingX : 50;
   const g = null != paddingY ? paddingY : 105;
-  const [size, setSize] = useState({ width: 100, height: 100 }); // 画布尺寸
+  const [size, setSize] = useState({ width: 100, height: 100 }); // 视窗的宽高
   const m = useRef(size); // 画布尺寸ref
   const containerRef = useRef(null);
   const innerRef = useRef(null);
   const w = store.bleedVisible ? Math.max(0, ...store.pages.map((e) => e.bleed)) : 0;
-  const computedWidth = Math.max(...store.pages.map((e) => e.computedWidth));
-  const computedHeight = Math.max(...store.pages.map((e) => e.computedHeight));
-  const x = computedWidth + 2 * w;
-  const k = computedHeight + 2 * w;
+  const computedWidth = Math.max(...store.pages.map((e) => e.computedWidth)); // d
+  const computedHeight = Math.max(...store.pages.map((e) => e.computedHeight)); // E
+  const x = computedWidth + 2 * w; // 1080
+  const k = computedHeight + 2 * w; // 1080
 
   const y = async ({ skipTimeout } = { skipTimeout: false }) => {
     if ((skipTimeout || (await new Promise((e) => setTimeout(e, 50))), null === containerRef.current)) return;
@@ -204,7 +205,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   const { handleScroll } = useScrollOnActiveChange(innerRef, k * store.scale + 2 * M, store, size, T);
   const S = size.width >= x * store.scale + 2 * P;
   const bgColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
-  const O = store.pages.indexOf(store.activePage);
+  const O = store.pages.indexOf(store.activePage); // 当前页的索引
   const W = (null == components ? null : components.NoPages) || NoPages;
   const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
 

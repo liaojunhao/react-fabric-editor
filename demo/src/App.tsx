@@ -3,6 +3,8 @@ import { SidePanel } from 'tdesign-editor/lib/side-panel';
 import { Workspace } from 'tdesign-editor/lib/canvas/workspace';
 import { createStore } from 'tdesign-editor/lib/model/store';
 
+import 'tdesign-editor/lib/design-editor.css';
+
 // store.addPage();
 // store.addPage({ background: '#ffc' });
 

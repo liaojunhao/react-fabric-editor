@@ -11,7 +11,7 @@ export const TYPES_MAP = {
 export const ElementTypes = types.union(
   {
     dispatcher: (e) => {
-      const t = exports.TYPES_MAP[e.type];
+      const t = TYPES_MAP[e.type];
       if (!t) throw new Error(`Unknown element type: "${e.type}"`);
       return t;
     },
