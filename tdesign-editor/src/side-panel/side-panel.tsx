@@ -1,5 +1,26 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react-lite';
+import { SectionTab } from './tab-button';
+import { getName } from '../utils/l10n';
+import { Icon } from '@blueprintjs/core';
+
+import TextPanel from './text-panel';
+
+export const TextSection = {
+  name: 'text',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.text'), ...props }}>
+        <Icon icon="new-text-box"></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: () => {
+    return <TextPanel></TextPanel>;
+  },
+};
+export const DEFAULT_SECTIONS = [TextSection];
 
 const SidePanelContainer = styled.div`
   display: flex;
@@ -27,6 +48,10 @@ const PanelContainer = styled.div`
 
   &.bp5-navbar {
     width: 350px;
+  }
+
+  &.bp5-navbar.collapsed {
+    width: 0px;
   }
 `;
 

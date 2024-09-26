@@ -16,6 +16,9 @@ const PageControls: React.FC<PageControlsProps> = ({ store, page, xPadding, yPad
   const r = store.pages.indexOf(page); // 当前页面的索引
   return (
     <div style={{ position: 'absolute', top: yPadding - 40 + 'px', right: xPadding + 'px' }}>
+      <Tooltip content={getName('workspace.duplicatePage')}>
+        <Button icon="duplicate" minimal={true} onClick={() => {}} />
+      </Tooltip>
       <Tooltip content={getName('workspace.addPage')}>
         <Button
           icon="insert"

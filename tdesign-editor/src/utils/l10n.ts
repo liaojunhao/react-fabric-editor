@@ -9,6 +9,9 @@ const translation = observable({
     moveUp: '上移',
     moveDown: '下移',
   },
+  sidePanel: {
+    text: '文字',
+  },
 });
 
 const isObject = (value) => value && 'object' == typeof value;
