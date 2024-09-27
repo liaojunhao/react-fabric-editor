@@ -11,6 +11,7 @@ const translation = observable({
   },
   sidePanel: {
     text: '文字',
+    myFonts: '我的字体',
   },
 });
 

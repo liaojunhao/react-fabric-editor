@@ -349,3 +349,20 @@ template {
 [hidden] {
   display: none;
 }
+
+/*隐藏聚焦*/
+button:focus-visible {
+  outline-color: transparent;
+}
+button:focus {
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+}
+
+.bp5-tab:focus-visible {
+  outline-color: transparent;
+}
+.bp5-tab:focus {
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+}

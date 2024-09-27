@@ -1,6 +1,7 @@
-import { types, Instance, getSnapshot, detach } from 'mobx-state-tree';
+import { types, Instance, getSnapshot, detach, cast } from 'mobx-state-tree';
 import { Page } from './page-model';
 import { nanoid } from 'nanoid';
+import { forEveryChild } from '../model/group-model';
 
 export interface StoreProps {
   key: string;
@@ -21,12 +22,41 @@ export const Store = types
     rulesVisible: false,
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
+    _elementsPixelRatio: 2,
     _activePageId: '',
   })
   .views((self) => ({
+    get _bleedVisible() {
+      console.warn('store._bleedVisible is deprecated. Please use store.bleedVisible instead.');
+      return self.bleedVisible;
+    },
+    get selectedElements() {
+      return self.selectedElementsIds
+        .map((t) => {
+          for (const i of self.pages) for (const e of i.objects) if (e.id === t) return e;
+        })
+        .filter((e) => !!e);
+    },
+    get children() {
+      return self.pages;
+    },
     get activePage() {
       return self.pages.slice().find((t) => t.id === self._activePageId) || (self.pages.length ? self.pages[0] : null);
     },
+    find(t) {
+      let i;
+
+      forEveryChild({ objects: self.pages }, (e) => {
+        if (!i && t(e)) {
+          i = e;
+          return true;
+        }
+      });
+
+      return i;
+    },
+    //@ts-ignore
+    getElementById: (t) => self.find((e) => e.id === t),
   }))
   .actions((self) => ({
     setPageZIndex(t, i) {
@@ -62,10 +92,17 @@ export const Store = types
       };
     },
     openSidePanel(t) {
-      console.log(t);
       if (self.openedSidePanel !== t) {
         self.openedSidePanel = t;
       }
+    },
+    selectElements(t) {
+      const i = t
+        .map((t) => self.getElementById(t))
+        .sort((e, t) => e.page.objects.indexOf(e) - e.page.objects.indexOf(t))
+        .filter((e) => !!e)
+        .map((e) => e.id);
+      self.selectedElementsIds = cast(i);
     },
   }));
 

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
-import Page, { PageHandle } from './page';
+import Page from './page';
 import { getName } from '../utils/l10n';
 
 const ZERO_SIZE_WARNING =
@@ -209,7 +209,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
   const W = (null == components ? null : components.NoPages) || NoPages;
   const N = Math.min(3, Math.max(1, Math.ceil(size.height / 2 / (k * store.scale))));
 
-  const pageRef = useRef<PageHandle>(null);
+  // const pageRef = useRef<PageHandle>(null);
 
   return (
     <div
@@ -242,7 +242,7 @@ const WorkspaceCanvas: React.FC<WorkspaceProps> = ({
         {store.pages.map((r, c) => {
           return Math.abs(c - O) <= N || r._exportingOrRendering ? (
             <Page
-              ref={pageRef}
+              // ref={pageRef}
               key={r.id}
               page={r}
               store={store}

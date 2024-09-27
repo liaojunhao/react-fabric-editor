@@ -68,12 +68,23 @@ const PanelContainer = styled.div`
   }
 `;
 
+const useOnFirstRender = (callback) => {
+  const isFirst = useRef(true);
+  if (isFirst.current) {
+    isFirst.current = false;
+    callback();
+  }
+};
+
 interface SidePanelProps {
   store: StoreType;
   sections?: Section[];
   defaultSection?: string;
 }
 export const SidePanel = observer(({ sections, store }: SidePanelProps) => {
+  useOnFirstRender(() => {
+    store.openSidePanel('text');
+  });
   const tabsWrapRef = useRef(null);
 
   const renderSections = sections || DEFAULT_SECTIONS;

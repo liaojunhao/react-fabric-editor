@@ -1,6 +1,7 @@
 import { types, getParentOfType, Instance, getSnapshot } from 'mobx-state-tree';
-import { ElementTypes } from './group-model';
+import { ElementTypes, TYPES_MAP } from './group-model';
 import { Store } from './store';
+import { nanoid } from 'nanoid';
 
 export const Page = types
   .model('Page', {
@@ -49,6 +50,24 @@ export const Page = types
     },
     select() {
       self.store.selectPage(self.id);
+    },
+    addElement(element, { skipSelect = false } = {}) {
+      // 查找元素类型对应的模型
+      const modelType = TYPES_MAP[element.type];
+      if (!modelType) {
+        console.error('Can not find model with type ' + element.type);
+        return;
+      }
+
+      const obj = modelType.create(Object.assign({ id: nanoid(10) }, element));
+      self.objects.push(obj);
+
+      // 选择对象
+      if (!skipSelect) {
+        self.store.selectElements([obj.id]);
+      }
+
+      return obj;
     },
   }));
 
