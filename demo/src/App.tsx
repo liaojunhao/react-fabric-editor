@@ -15,7 +15,7 @@ function App() {
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
       <TdesignEditorContainer>
         <SidePanelWrap>
-          <SidePanel></SidePanel>
+          <SidePanel store={store}></SidePanel>
         </SidePanelWrap>
         <WorkspaceWrap>
           <Workspace store={store}></Workspace>

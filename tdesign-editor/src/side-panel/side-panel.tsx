@@ -1,13 +1,26 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
-import { SectionTab } from './tab-button';
 import { getName } from '../utils/l10n';
 import { Icon } from '@blueprintjs/core';
+import { StoreType } from '../model/store';
+import { SectionTab } from './tab-button';
 
 import TextPanel from './text-panel';
 
-export const TextSection = {
+interface SectionTabProps {
+  onClick: any;
+  active: boolean;
+}
+export type Section = {
+  name: string;
+  Tab: React.ComponentType<SectionTabProps>;
+  Panel: React.ComponentType<{
+    store: StoreType;
+  }>;
+};
+
+export const TextSection: Section = {
   name: 'text',
   Tab: observer((props) => {
     return (
@@ -16,8 +29,8 @@ export const TextSection = {
       </SectionTab>
     );
   }),
-  Panel: () => {
-    return <TextPanel></TextPanel>;
+  Panel: ({ store }) => {
+    return <TextPanel store={store}></TextPanel>;
   },
 };
 export const DEFAULT_SECTIONS = [TextSection];
@@ -55,20 +68,44 @@ const PanelContainer = styled.div`
   }
 `;
 
-export const SidePanel = (props) => {
-  const tabsRef = useRef(null);
+interface SidePanelProps {
+  store: StoreType;
+  sections?: Section[];
+  defaultSection?: string;
+}
+export const SidePanel = observer(({ sections, store }: SidePanelProps) => {
+  const tabsWrapRef = useRef(null);
+
+  const renderSections = sections || DEFAULT_SECTIONS;
+  const currentSection = renderSections.find((item) => {
+    return item.name === store.openedSidePanel;
+  });
+  const RenderPanel = currentSection?.Panel;
+
   return (
     <SidePanelContainer className="bp5-navbar tdesign-side-panel">
-      <TabsWrap ref={tabsRef} className="tdesign-side-tabs-container">
+      <TabsWrap ref={tabsWrapRef} className="tdesign-side-tabs-container">
         <TabsContainer className="tdesign-side-tabs-inner">
-          {[1, 2, 3, 4].map((item, index) => {
-            return <div key={index}>{index}</div>;
+          {renderSections.map(({ name, Tab }) => {
+            return (
+              <Tab
+                key={name}
+                onClick={() => {
+                  name === store.openedSidePanel ? store.openSidePanel('') : store.openSidePanel(name);
+                }}
+                active={name === store.openedSidePanel}
+              ></Tab>
+            );
           })}
         </TabsContainer>
       </TabsWrap>
-      <PanelContainer className="bp5-navbar tdesign-panel-container">内容</PanelContainer>
+      {RenderPanel && (
+        <PanelContainer className="bp5-navbar tdesign-panel-container">
+          <RenderPanel store={store}></RenderPanel>
+        </PanelContainer>
+      )}
     </SidePanelContainer>
   );
-};
+});
 
 export default SidePanel;

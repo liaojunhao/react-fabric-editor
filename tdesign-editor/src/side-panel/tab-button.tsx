@@ -25,13 +25,13 @@ const TabContainer = styled.div`
 interface SectionTabProps {
   children: any;
   name: string;
-  //   onClick: any;
-  //   active: boolean;
+  onClick: any;
+  active: boolean;
   iconSize?: number;
 }
-export const SectionTab = ({ children, name, iconSize }: SectionTabProps) => {
+export const SectionTab = ({ children, name, iconSize, onClick, active }: SectionTabProps) => {
   return (
-    <TabContainer className="polotno-side-panel-tab">
+    <TabContainer className={`tdesign-side-panel-tab ${active ? 'active' : ''}`} onClick={onClick}>
       <div style={{ fontSize: (iconSize || 14) + 'px' }}>{children}</div>
       <div style={{ paddingTop: 5 }}>{name}</div>
     </TabContainer>

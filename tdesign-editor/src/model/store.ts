@@ -61,6 +61,12 @@ export const Store = types
         custom: self.custom,
       };
     },
+    openSidePanel(t) {
+      console.log(t);
+      if (self.openedSidePanel !== t) {
+        self.openedSidePanel = t;
+      }
+    },
   }));
 
 export type StoreType = Instance<typeof Store>;
