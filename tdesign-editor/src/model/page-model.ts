@@ -60,13 +60,18 @@ export const Page = types
       }
 
       const obj = modelType.create(Object.assign({ id: nanoid(10) }, element));
+      // 往数据树添加一个元素
       self.objects.push(obj);
 
-      // 选择对象
+      // 看是否要聚焦新创建的对象
       if (!skipSelect) {
         self.store.selectElements([obj.id]);
       }
 
+      // 需要用fabric.canvas添加对象进去
+      console.log('obj', obj);
+
+      // 返回创建的新对象
       return obj;
     },
   }));

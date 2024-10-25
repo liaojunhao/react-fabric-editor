@@ -44,7 +44,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
     };
 
     const r = activePage?.addElement(newElement);
-    console.log('r ---> ', r);
+    // console.log('r ---> ', r);
   };
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

@@ -39,12 +39,9 @@ const Page = (
   const handlerRef = useRef<fabric.Canvas>(null); // fabric的canvas实例
   const workarea = useRef<fabric.Rect>(null); // 每一页的画布对象
 
-  console.log('page ---> ', page);
-  console.log('selectedElements ---> ', store.selectedElements);
   const f = useRef(null);
 
   const D = store.selectedElements.filter((e) => !e.visible).length > 0;
-  console.log('D -->', D);
 
   const u = store.bleedVisible ? page.bleed : 0;
   const m = page.computedWidth + 2 * u;
@@ -56,11 +53,10 @@ const Page = (
   const L = store.activePage === page;
   const O = null == components ? void 0 : components.PageControls;
 
-  useLayoutEffect(() => {
-    console.log('layout ---> ', store.selectedElements, D);
-  }, [store.selectedElements, D]);
-
-  // 居中设置
+  /**
+   * 居中设置
+   * @returns
+   */
   const setCenterFromObject = () => {
     const center = handlerRef.current.getCenter();
     handlerRef.current.setViewportTransform(fabric.iMatrix.concat());
@@ -74,6 +70,7 @@ const Page = (
     handlerRef.current.renderAll();
   };
 
+  // 初始化画布对象
   useEffect(() => {
     handlerRef.current = new fabric.Canvas(canvasEl.current, {
       width: Math.min(width, 4 * window.innerWidth),

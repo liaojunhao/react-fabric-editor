@@ -21,6 +21,7 @@ export const Store = types
     bleedVisible: false,
     rulesVisible: false,
     custom: types.frozen(),
+    // 选择的元素ids
     selectedElementsIds: types.array(types.string),
     _elementsPixelRatio: 2,
     _activePageId: '',
@@ -30,6 +31,7 @@ export const Store = types
       console.warn('store._bleedVisible is deprecated. Please use store.bleedVisible instead.');
       return self.bleedVisible;
     },
+    // 里面的元素
     get selectedElements() {
       return self.selectedElementsIds
         .map((t) => {
