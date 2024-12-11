@@ -1,3 +1,3 @@
-export { default as WorkareaHandler } from './workarea';
-import Handler from './handler';
-export default Handler;
+export { default as WorkareaHandlers } from './workareaHandlers';
+import Handlers from './handlers';
+export default Handlers;
