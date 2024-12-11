@@ -21,6 +21,7 @@ class Handlers {
   }
   public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
+  public backgroundColor: string;
   public objects: FabricObject[] = [];
 
   public workareaWidth = 600;
@@ -31,8 +32,9 @@ class Handlers {
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
+    this.backgroundColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
     const canvas = new Canvas(canvasEl, {
-      backgroundColor: backgroundColor || 'rgba(232, 232, 232, 0.9)',
+      backgroundColor: this.backgroundColor,
       height: canvasElParent.clientHeight,
       width: canvasElParent.clientWidth,
       fireRightClick: true, // 启用右键，button的数字为3
@@ -67,8 +69,10 @@ class Handlers {
     const element = CanvasObjects[type].render(textOptions);
     this.canvas.add(element);
     this.objects.push(element);
+
     if (centered) {
-      this.canvas.centerObject(element);
+      const center = this.workareaHandler.workarea.getCenterPoint();
+      this.canvas._centerObject(element, center);
     }
 
     if (!skipSelect) {

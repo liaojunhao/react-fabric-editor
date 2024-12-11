@@ -23,27 +23,19 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
       backgroundColor: backgroundColor,
     });
     store.setHandler(_handler);
-
-    // 监听画布的变化
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        const newHeight = entry.contentRect.height;
-        _handler.eventHandlers.resize(newWidth, newHeight);
-      }
-    });
-    // 开始监听
-    resizeObserver.observe(containerRef.current);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
   }, []);
 
   return (
     <EditorCanvas
       ref={containerRef}
-      style={{ width: '100%', height: '100%', position: 'relative', outline: 'none', flex: 1 }}
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        outline: 'none',
+        flex: 1,
+        backgroundColor: backgroundColor || '#f1f1f1',
+      }}
       tabIndex={0}
     >
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
