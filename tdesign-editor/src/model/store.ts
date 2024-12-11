@@ -25,6 +25,8 @@ export const Store = types
     selectedElementsIds: types.array(types.string),
     _elementsPixelRatio: 2,
     _activePageId: '',
+    // 画布的总控制器
+    handler: types.frozen(),
   })
   .views((self) => ({
     get _bleedVisible() {
@@ -105,6 +107,9 @@ export const Store = types
         .filter((e) => !!e)
         .map((e) => e.id);
       self.selectedElementsIds = cast(i);
+    },
+    setHandler(handler) {
+      self.handler = handler;
     },
   }));
 

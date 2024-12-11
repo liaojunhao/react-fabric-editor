@@ -5,12 +5,9 @@ import { createStore } from 'tdesign-editor/lib/model/store';
 
 import 'tdesign-editor/lib/design-editor.css';
 
-// store.addPage();
-// store.addPage({ background: '#ffc' });
-
 function App() {
   const store = createStore();
-  // store.addPage();
+
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
       <TdesignEditorContainer>

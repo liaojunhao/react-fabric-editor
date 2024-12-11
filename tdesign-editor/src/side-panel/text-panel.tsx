@@ -35,16 +35,15 @@ const TextPanel = ({ store }: { store: StoreType }) => {
   const [value, setValue] = useState('text');
 
   const addText = () => {
-    const activePage = store.activePage;
-    const newElement = {
-      type: 'textbox',
-      fontFamily: 'Roboto',
-      fontSize: 55,
-      text: 'hello world！',
-    };
-
-    const r = activePage?.addElement(newElement);
-    // console.log('r ---> ', r);
+    // const activePage = store.activePage;
+    // const newElement = {
+    //   type: 'textbox',
+    //   fontFamily: 'Roboto',
+    //   fontSize: 55,
+    //   text: 'hello world！',
+    // };
+    // const r = activePage?.addElement(newElement);
+    // // console.log('r ---> ', r);
   };
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -54,12 +53,13 @@ const TextPanel = ({ store }: { store: StoreType }) => {
           setValue(e);
         }}
       >
-        <Tab id="text">{getName('sidePanel.text')}</Tab>
-        <Tab id="font">{getName('sidePanel.myFonts')}</Tab>
+        {/* <Tab id="text">{getName('sidePanel.text')}</Tab>
+        <Tab id="font">{getName('sidePanel.myFonts')}</Tab> */}
       </Tabs>
       {value === 'text' && (
         <Container style={{ margin: '10px 0' }}>
-          <Button onClick={addText}>添加文字</Button>
+          {/* <Button onClick={addText}>添加文字</Button> */}
+          123
         </Container>
       )}
       {value === 'font' && <Container>font</Container>}
