@@ -35,15 +35,13 @@ const TextPanel = ({ store }: { store: StoreType }) => {
   const [value, setValue] = useState('text');
 
   const addText = () => {
-    // const activePage = store.activePage;
-    // const newElement = {
-    //   type: 'textbox',
-    //   fontFamily: 'Roboto',
-    //   fontSize: 55,
-    //   text: 'hello world！',
-    // };
-    // const r = activePage?.addElement(newElement);
-    // // console.log('r ---> ', r);
+    const newElement = {
+      type: 'textbox',
+      fontFamily: 'Roboto',
+      fontSize: 55,
+      text: 'hello world！',
+    };
+    store.addElement(newElement, { skipSelect: false });
   };
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -58,8 +56,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
       </Tabs>
       {value === 'text' && (
         <Container style={{ margin: '10px 0' }}>
-          {/* <Button onClick={addText}>添加文字</Button> */}
-          123
+          <Button onClick={addText}>添加文字</Button>
         </Container>
       )}
       {value === 'font' && <Container>font</Container>}

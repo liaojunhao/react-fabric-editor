@@ -94,7 +94,7 @@ export const SidePanel = observer(({ sections, store }: SidePanelProps) => {
   const RenderPanel = currentSection?.Panel;
 
   return (
-    <SidePanelContainer className="bp5-navbar tdesign-side-panel">
+    <SidePanelContainer className="tdesign-side-panel">
       <TabsWrap ref={tabsWrapRef} className="tdesign-side-tabs-container">
         <TabsContainer className="tdesign-side-tabs-inner">
           {renderSections.map(({ name, Tab }) => {

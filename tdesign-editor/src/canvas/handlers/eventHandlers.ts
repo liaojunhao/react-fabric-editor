@@ -8,13 +8,11 @@ class EventHandlers {
       width: this.handlers.canvasElParent.offsetWidth,
       height: this.handlers.canvasElParent.offsetHeight,
     });
-    console.log('scale', scale);
     return scale;
   }
 
   auto() {
     const scale = this._getScale();
-    console.log('auto scale', scale);
   }
 
   /**
@@ -40,8 +38,13 @@ class EventHandlers {
     canvas.setHeight(nextHeight);
 
     if (!workarea) return;
-
     this.setCenterFromObject(workarea);
+
+    // 超出画布不展示
+    workarea.clone(this.handlers.propertiesToInclude).then((cloned) => {
+      canvas.clipPath = cloned;
+      canvas.requestRenderAll();
+    });
   }
 }
 

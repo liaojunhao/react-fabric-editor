@@ -8,7 +8,7 @@ class WorkareaHandlers {
       id: 'workarea',
       width: this.handlers.workareaWidth,
       height: this.handlers.workareaHeight,
-      absolutePositioned: true,
+      // absolutePositioned: true,
       fill: '#ffffff',
       selectable: false,
       hoverCursor: 'default',

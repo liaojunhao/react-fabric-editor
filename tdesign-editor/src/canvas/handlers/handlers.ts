@@ -1,6 +1,8 @@
 import { Canvas, FabricObject } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 
+import { CanvasObjects } from './canvasObjects';
+
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 
@@ -20,6 +22,7 @@ class Handlers {
   public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
   public objects: FabricObject[] = [];
+
   public workareaWidth = 600;
   public workareaHeight = 500;
 
@@ -51,6 +54,29 @@ class Handlers {
   initHandler() {
     this.workareaHandler = new WorkareaHandlers(this);
     this.eventHandlers = new EventHandlers(this);
+  }
+
+  /**
+   * 添加元素
+   * @param options
+   * @param centered
+   * @param loaded
+   */
+  addObject(options, { skipSelect = false, centered = true }) {
+    const { type, ...textOptions } = options;
+    const element = CanvasObjects[type].render(textOptions);
+    this.canvas.add(element);
+    this.objects.push(element);
+    if (centered) {
+      this.canvas.centerObject(element);
+    }
+
+    if (!skipSelect) {
+      this.canvas.setActiveObject(element);
+    }
+
+    this.canvas.renderAll();
+    return element;
   }
 }
 

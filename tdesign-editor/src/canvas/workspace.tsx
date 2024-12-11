@@ -4,9 +4,7 @@ import Handlers from './handlers';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
 
-const EditorCanvas = styled.div`
-  background-color: rgba(232, 232, 232, 0.9);
-`;
+const EditorCanvas = styled.div``;
 
 export type WorkspaceProps = {
   store: StoreType;
