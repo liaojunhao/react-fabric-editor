@@ -1,8 +1,38 @@
 import Handlers from './handlers';
+import { util, Rect } from 'fabric';
 class EventHandlers {
   constructor(private handlers: Handlers) {}
+
+  private _getScale() {
+    const scale = util.findScaleToFit(this.handlers.workareaHandler.workarea, {
+      width: this.handlers.canvasElParent.offsetWidth,
+      height: this.handlers.canvasElParent.offsetHeight,
+    });
+    console.log('scale', scale);
+    return scale;
+  }
+
+  auto() {
+    const scale = this._getScale();
+    console.log('auto scale', scale);
+  }
+
+  /**
+   * 设置画布中心到指定对象中心点上
+   * @param {Object} obj 指定的对象
+   */
+  setCenterFromObject(obj: Rect) {
+    const { canvas } = this.handlers;
+    const objCenter = obj.getCenterPoint();
+    const viewportTransform = canvas.viewportTransform;
+    if (canvas.width === undefined || canvas.height === undefined || !viewportTransform) return;
+    viewportTransform[4] = canvas.width / 2 - objCenter.x * viewportTransform[0];
+    viewportTransform[5] = canvas.height / 2 - objCenter.y * viewportTransform[3];
+    canvas.setViewportTransform(viewportTransform);
+    canvas.renderAll();
+  }
+
   resize(nextWidth: number, nextHeight: number) {
-    console.log(nextWidth, nextHeight);
     const canvas = this.handlers.canvas;
     const workarea = this.handlers.workareaHandler.workarea;
     // 设置新的画布大小
@@ -11,13 +41,7 @@ class EventHandlers {
 
     if (!workarea) return;
 
-    const objCenter = workarea.getCenterPoint();
-    const viewportTransform = canvas.viewportTransform;
-    if (canvas.width === undefined || canvas.height === undefined || !viewportTransform) return;
-    viewportTransform[4] = canvas.width / 2 - objCenter.x * viewportTransform[0];
-    viewportTransform[5] = canvas.height / 2 - objCenter.y * viewportTransform[3];
-    canvas.setViewportTransform(viewportTransform);
-    canvas.renderAll();
+    this.setCenterFromObject(workarea);
   }
 }
 

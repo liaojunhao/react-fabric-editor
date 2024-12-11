@@ -17,7 +17,7 @@ class Handlers {
   get propertiesToInclude() {
     return this._propertiesToInclude;
   }
-
+  public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
   public objects: FabricObject[] = [];
   public workareaWidth = 600;
@@ -37,6 +37,7 @@ class Handlers {
       controlsAboveOverlay: true, // 超出clipPath后仍然展示控制条
       preserveObjectStacking: true, // 当选择画布中的对象时，让对象不在顶层。
     });
+    this.canvasElParent = canvasElParent;
     this.canvas = canvas;
     this.workareaWidth = workareaWidth || this.workareaWidth;
     this.workareaHeight = workareaHeight || this.workareaHeight;
