@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreType } from '../model/store';
 import styled from 'styled-components';
@@ -28,7 +28,7 @@ type ToolbarProps = {
   downloadButtonEnabled?: boolean;
   components?: any;
 };
-export const Toolbar: React.FC<ToolbarProps> = observer(({ store }) => {
+export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {} }) => {
   if (!store) {
     return <div>没有传入或注册 store 对象无法初始化 Toolbar 组件</div>;
   }
@@ -39,11 +39,15 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store }) => {
   const isCrop = isOne && currentEle._cropModeEnabled;
   const CurrentToolbar = isOne && ComponentsTypes[currentEle?.type]; // 对应的工具组件
 
+  const _ = useRef(components);
+  const s = _.current;
+  console.log(s);
+
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
       <NavInner>
         {!isCrop && <HistoryButtons store={store}></HistoryButtons>}
-        {CurrentToolbar && <CurrentToolbar store={store}></CurrentToolbar>}
+        {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
       </NavInner>
     </NavbarContainer>
   );

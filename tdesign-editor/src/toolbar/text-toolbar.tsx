@@ -1,16 +1,40 @@
 import React from 'react';
 import { StoreType } from '../model/store';
+import { extendToolbar, ElementContainer } from './element-container';
+type InputProps = {
+  elements: Array<any>;
+  store: StoreType;
+};
 type PageProps = {
   store: StoreType;
   components?: any;
 };
 
-const PROPS_MAP = {};
+const FontMenu = () => {
+  return <div>字体列表</div>;
+};
 
-export const TextToolbar: React.FC<PageProps> = ({ store }) => {
+// 各种文字工具
+export const TextFontFamily = ({ elements, store }: InputProps) => {
+  return <FontMenu></FontMenu>;
+};
+
+const PROPS_MAP = {
+  TextFontFamily: TextFontFamily,
+};
+
+export const TextToolbar: React.FC<PageProps> = ({ store, components }) => {
   const n = store.selectedElements;
   const keys = ['TextFill', 'TextFontFamily', 'TextFontSize', 'TextFontVariant', 'TextSpacing', 'TextFilters'];
-
-  console.log(n);
-  return <div>文字工具栏</div>;
+  const r = extendToolbar({ type: 'textbox', usedItems: keys, components: components });
+  return (
+    <ElementContainer
+      items={r}
+      itemRender={(a) => {
+        const RenderComponent = components[a] || PROPS_MAP[a];
+        // console.log('RenderComponent', RenderComponent);
+        return RenderComponent && <RenderComponent elements={n} element={n[0]} store={store} key={a}></RenderComponent>;
+      }}
+    ></ElementContainer>
+  );
 };
