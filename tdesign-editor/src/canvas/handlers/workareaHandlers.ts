@@ -27,12 +27,12 @@ class WorkareaHandlers {
     this._initResizeObserve();
     this._bindWheel();
   }
-
+  // 初始化整个画布
   private _initBackground() {
     this.handlers.canvas.setWidth(this.workareaEl.offsetWidth);
     this.handlers.canvas.setHeight(this.workareaEl.offsetHeight);
   }
-
+  // 初始化工作区
   private _initWorkarea() {
     const { width, height } = this.option;
     const workarea = new Rect({
@@ -86,8 +86,6 @@ class WorkareaHandlers {
     });
   }
 
-  zoomToPoint() {}
-
   auto() {
     const scale = this._getScale();
     this.setZoomAuto(scale * this.zoomRatio);
@@ -133,14 +131,16 @@ class WorkareaHandlers {
       });
   }
 
-  getWorkspase() {
-    //@ts-expect-error
-    return this.handlers.canvas.getObjects().find((item) => item.id === 'workspace');
-  }
+  // 好像暂时不需要这样查找
+  // getWorkspase() {
+  //   //@ts-expect-error
+  //   return this.handlers.canvas.getObjects().find((item) => item.id === 'workarea');
+  // }
 
   setWorkspaseBg(color: string) {
-    const workspase = this.getWorkspase();
+    const workspase = this.workarea;
     workspase?.set('fill', color);
+    this.handlers.canvas.renderAll();
   }
 }
 

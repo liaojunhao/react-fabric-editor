@@ -57,6 +57,13 @@ const TextPanel = ({ store }: { store: StoreType }) => {
       {value === 'text' && (
         <Container style={{ margin: '10px 0' }}>
           <Button onClick={addText}>添加文字</Button>
+          <Button
+            onClick={() => {
+              store.setWorkspaseBg('red');
+            }}
+          >
+            修改工作区的颜色
+          </Button>
         </Container>
       )}
       {value === 'font' && <Container>font</Container>}

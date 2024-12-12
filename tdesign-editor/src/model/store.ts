@@ -58,22 +58,26 @@ export const Store = types
       console.log(t);
     },
   }))
-  .actions((self) => {
-    return {
-      addElement(obj, { skipSelect = false, centered = true }) {
-        // 先看有没有这个类型
-        const n = TYPES_MAP[obj.type];
-        if (!n) return void console.error('Can not find model with type ' + obj.type);
-        // 在创建这个数据
-        const element = Object.assign({ id: nanoid(10) }, obj);
-        // 渲染层的选择
-        const ele = self.handler.addObject(element, { skipSelect, centered });
-        // 数据层的选择
-        !skipSelect && self.selectElements([ele.id]);
-        return ele;
-      },
-    };
-  });
+  .actions((self) => ({
+    // 添加元素
+    addElement(obj, { skipSelect = false, centered = true }) {
+      // 先看有没有这个类型
+      const n = TYPES_MAP[obj.type];
+      if (!n) return void console.error('Can not find model with type ' + obj.type);
+      // 在创建这个数据
+      const element = Object.assign({ id: nanoid(10) }, obj);
+      // 渲染层的选择
+      const ele = self.handler.addObject(element, { skipSelect, centered });
+      // 数据层的选择
+      !skipSelect && self.selectElements([ele.id]);
+      return ele;
+    },
+
+    // 修改工作区颜色
+    setWorkspaseBg(color: string) {
+      self.handler.workareaHandler.setWorkspaseBg(color);
+    },
+  }));
 
 export type StoreType = Instance<typeof Store>;
 
