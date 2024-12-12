@@ -5,6 +5,7 @@ import { CanvasObjects } from './canvasObjects';
 
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
+import CanvasEventEmitter from '../utils/notifier';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -15,6 +16,7 @@ interface HandlerOption {
 }
 
 class Handlers {
+  // 一些私有属性
   private _propertiesToInclude = PROPERTIES_TO_INCLUDE;
   get propertiesToInclude() {
     return this._propertiesToInclude;
@@ -22,21 +24,13 @@ class Handlers {
   public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
   public backgroundColor: string;
-  public _objects: FabricObject[] = [];
-  set objects(val) {
-    console.log('val ---> ', val);
-    this._objects = val;
-  }
+  public objects: FabricObject[] = [];
+  public workareaOption: { width: number; height: number };
 
-  get objects() {
-    return this._objects;
-  }
-
-  public workareaWidth: number;
-  public workareaHeight: number;
-
+  // 一些控制模块
   public workareaHandlers: WorkareaHandlers;
   public eventHandlers: EventHandlers;
+  public event: CanvasEventEmitter;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -49,8 +43,10 @@ class Handlers {
     });
     this.canvasElParent = canvasElParent;
     this.canvas = canvas;
-    this.workareaWidth = workareaWidth || 600;
-    this.workareaHeight = workareaHeight || 400;
+    this.workareaOption = {
+      width: workareaWidth || 600,
+      height: workareaHeight || 400,
+    };
 
     this.initHandler();
   }
@@ -59,6 +55,7 @@ class Handlers {
    * 初始化所有控制模块
    */
   initHandler() {
+    this.event = new CanvasEventEmitter(this); // 他需要在第一位
     this.workareaHandlers = new WorkareaHandlers(this);
     this.eventHandlers = new EventHandlers(this);
   }
@@ -67,7 +64,6 @@ class Handlers {
    * 添加元素
    * @param options
    * @param centered
-   * @param loaded
    */
   addObject(options, { skipSelect = false, centered = true }) {
     const { type, ...textOptions } = options;

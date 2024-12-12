@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Handlers from './handlers';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
+import { SelectEvent } from './utils/types';
 
 const EditorCanvas = styled.div``;
 
@@ -25,6 +26,19 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
       workareaHeight: store.height,
     });
     store.setHandler(_handler);
+
+    /**
+     * 监听发布事件
+     */
+    _handler.event.on(SelectEvent.ONE, (e: any[]) => {
+      store.selectElements(e.map((i) => i.id));
+    });
+    _handler.event.on(SelectEvent.MULTI, (e) => {
+      store.selectElements(e.map((i) => i.id));
+    });
+    _handler.event.on(SelectEvent.CANCEL, (e) => {
+      store.selectElements(e.map((i) => i.id));
+    });
 
     //@ts-expect-error
     window._c = _handler;

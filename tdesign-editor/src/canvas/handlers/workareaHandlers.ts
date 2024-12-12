@@ -10,8 +10,8 @@ class WorkareaHandlers {
   private resizeObserver: ResizeObserver;
   constructor(private handlers: Handlers) {
     this._init({
-      width: this.handlers.workareaWidth,
-      height: this.handlers.workareaHeight,
+      width: this.handlers.workareaOption.width,
+      height: this.handlers.workareaOption.height,
     });
   }
 
@@ -87,16 +87,22 @@ class WorkareaHandlers {
     });
   }
 
+  /**
+   * 设置工作区域的大小（需要改造）
+   * @param width
+   * @param height
+   */
   setSize(width: number, height: number) {
     this._initBackground();
     this.option.width = width;
     this.option.height = height;
-    // this.handlers.workareaWidth = width;
-    // this.handlers.workareaHeight = height;
+    this.handlers.workareaOption.width = width;
+    this.handlers.workareaOption.width = height;
     this.workarea.set('width', width);
     this.workarea.set('height', height);
     // this.editor.emit('sizeChange', this.workspace.width, this.workspace.height);
     this.auto();
+    // todo:其他元素也要修改位置
   }
 
   auto() {

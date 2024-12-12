@@ -2,15 +2,6 @@ import { types, Instance } from 'mobx-state-tree';
 import { nanoid } from 'nanoid';
 import Handlers from '../canvas/handlers';
 
-export const forEveryChild = (e, t) => {
-  if (e.objects) {
-    for (const r of e.objects) {
-      if (!0 === t(r)) break;
-      forEveryChild(r, t);
-    }
-  }
-};
-
 // 目前有的元素类型
 const TYPES_MAP = {
   textbox: true,
@@ -31,14 +22,14 @@ export const Store = types
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
     handler: types.frozen<Handlers>(),
-    objects: types.array(types.frozen()), // 画布所有的元素
+    // objects: types.array(types.frozen()), // 画布所有的元素
   })
   .views((self) => ({
     get selectedElements() {
       return self.selectedElementsIds
         .map((t) => {
           //@ts-expect-error
-          for (const i of self.handler.objects) if (i.id === t) return i;
+          for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
         })
         .filter((e) => !!e);
     },
@@ -46,7 +37,10 @@ export const Store = types
       const t = [];
       return t;
     },
-    find(t) {},
+    getElementById(id) {
+      //@ts-expect-error
+      return self.handler.canvas.getObjects().find((item) => item.id === id);
+    },
   }))
   .actions((self) => ({
     setHandler(handler) {
@@ -57,8 +51,13 @@ export const Store = types
         self.openedSidePanel = t;
       }
     },
-    selectElements(t) {
-      // console.log(t);
+    selectElements(ids) {
+      const els = ids
+        .map((id) => self.getElementById(id))
+        .filter((e) => !!e)
+        .map((e) => e.id);
+      // console.log('selectElements ---> ', els);
+      self.selectedElementsIds = els;
     },
   }))
   .actions((self) => ({
@@ -76,12 +75,10 @@ export const Store = types
       !skipSelect && self.selectElements([ele.id]);
       return ele;
     },
-
     // 修改工作区颜色
     setWorkspaseBg(color: string) {
       self.handler.workareaHandlers.setWorkspaseBg(color);
     },
-
     // 修改工作区大小
     setSize(width: number, height: number) {
       self.handler.workareaHandlers.setSize(width, height);

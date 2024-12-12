@@ -2,6 +2,7 @@ import { TdesignEditorContainer, SidePanelWrap, WorkspaceWrap } from 'tdesign-ed
 import { SidePanel } from 'tdesign-editor/lib/side-panel';
 import { Workspace } from 'tdesign-editor/lib/canvas/workspace';
 import { createStore } from 'tdesign-editor/lib/model/store';
+import { Toolbar } from 'tdesign-editor/lib/toolbar/toolbar';
 
 import 'tdesign-editor/lib/design-editor.css';
 
@@ -15,6 +16,7 @@ function App() {
           <SidePanel store={store}></SidePanel>
         </SidePanelWrap>
         <WorkspaceWrap>
+          <Toolbar store={store} />
           <Workspace store={store}></Workspace>
         </WorkspaceWrap>
       </TdesignEditorContainer>
