@@ -34,9 +34,6 @@ class Handlers {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
     this.backgroundColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
     const canvas = new Canvas(canvasEl, {
-      backgroundColor: this.backgroundColor,
-      height: canvasElParent.clientHeight,
-      width: canvasElParent.clientWidth,
       fireRightClick: true, // 启用右键，button的数字为3
       stopContextMenu: true, // 禁止默认右键菜单
       controlsAboveOverlay: true, // 超出clipPath后仍然展示控制条

@@ -3,18 +3,19 @@ import { Rect, iMatrix, Point, util } from 'fabric';
 import { throttle } from 'lodash-es';
 class WorkareaHandlers {
   public workarea: Rect;
-  public workareaEl: HTMLDivElement;
   public zoomRatio: number = 0.85;
   public option: { width: number; height: number };
-  public resizeObserver: ResizeObserver;
+
+  private workareaEl: HTMLDivElement;
+  private resizeObserver: ResizeObserver;
   constructor(private handlers: Handlers) {
-    this.init({
+    this._init({
       width: this.handlers.workareaWidth,
       height: this.handlers.workareaHeight,
     });
   }
 
-  init(option: { width: number; height: number }) {
+  private _init(option: { width: number; height: number }) {
     const workareaEl = this.handlers.canvasElParent;
     if (!workareaEl) {
       throw new Error('element #workspace is missing, plz check!');
@@ -24,6 +25,7 @@ class WorkareaHandlers {
     this._initBackground();
     this._initWorkarea();
     this._initResizeObserve();
+    this._bindWheel();
   }
 
   private _initBackground() {
@@ -61,12 +63,30 @@ class WorkareaHandlers {
     this.resizeObserver.observe(this.workareaEl);
   }
 
+  private _bindWheel() {
+    this.handlers.canvas.on('mouse:wheel', (opt) => {
+      const canvas = this.handlers.canvas;
+
+      const delta = opt.e.deltaY;
+      let zoom = canvas.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.01) zoom = 0.01;
+      const center = canvas.getCenter();
+      canvas.zoomToPoint(new Point(center.left, center.top), zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+    });
+  }
+
   private _getScale() {
     return util.findScaleToFit(this.workarea, {
       width: this.workareaEl.offsetWidth,
       height: this.workareaEl.offsetHeight,
     });
   }
+
+  zoomToPoint() {}
 
   auto() {
     const scale = this._getScale();
