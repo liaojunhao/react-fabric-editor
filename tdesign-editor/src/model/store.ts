@@ -1,5 +1,6 @@
 import { types, Instance } from 'mobx-state-tree';
 import { nanoid } from 'nanoid';
+import Handlers from '../canvas/handlers';
 
 export const forEveryChild = (e, t) => {
   if (e.objects) {
@@ -29,13 +30,14 @@ export const Store = types
     dpi: 72,
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
-    handler: types.frozen(),
+    handler: types.frozen<Handlers>(),
     objects: types.array(types.frozen()), // 画布所有的元素
   })
   .views((self) => ({
     get selectedElements() {
       return self.selectedElementsIds
         .map((t) => {
+          //@ts-expect-error
           for (const i of self.handler.objects) if (i.id === t) return i;
         })
         .filter((e) => !!e);
@@ -44,6 +46,7 @@ export const Store = types
       const t = [];
       return t;
     },
+    find(t) {},
   }))
   .actions((self) => ({
     setHandler(handler) {
@@ -55,7 +58,7 @@ export const Store = types
       }
     },
     selectElements(t) {
-      console.log(t);
+      // console.log(t);
     },
   }))
   .actions((self) => ({
@@ -65,7 +68,8 @@ export const Store = types
       const n = TYPES_MAP[obj.type];
       if (!n) return void console.error('Can not find model with type ' + obj.type);
       // 在创建这个数据
-      const element = Object.assign({ id: nanoid(10) }, obj);
+      const _id = nanoid(10);
+      const element = Object.assign({ id: _id, name: `${_id}_${obj.type}` }, obj);
       // 渲染层的选择
       const ele = self.handler.addObject(element, { skipSelect, centered });
       // 数据层的选择
@@ -75,7 +79,12 @@ export const Store = types
 
     // 修改工作区颜色
     setWorkspaseBg(color: string) {
-      self.handler.workareaHandler.setWorkspaseBg(color);
+      self.handler.workareaHandlers.setWorkspaseBg(color);
+    },
+
+    // 修改工作区大小
+    setSize(width: number, height: number) {
+      self.handler.workareaHandlers.setSize(width, height);
     },
   }));
 

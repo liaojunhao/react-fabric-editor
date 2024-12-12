@@ -21,8 +21,13 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
       canvasElParent: containerRef.current,
       canvasEl: canvasEl.current,
       backgroundColor: backgroundColor,
+      workareaWidth: store.width,
+      workareaHeight: store.height,
     });
     store.setHandler(_handler);
+
+    //@ts-expect-error
+    window._c = _handler;
   }, []);
 
   return (

@@ -22,12 +22,20 @@ class Handlers {
   public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
   public backgroundColor: string;
-  public objects: FabricObject[] = [];
+  public _objects: FabricObject[] = [];
+  set objects(val) {
+    console.log('val ---> ', val);
+    this._objects = val;
+  }
 
-  public workareaWidth = 600;
-  public workareaHeight = 500;
+  get objects() {
+    return this._objects;
+  }
 
-  public workareaHandler: WorkareaHandlers;
+  public workareaWidth: number;
+  public workareaHeight: number;
+
+  public workareaHandlers: WorkareaHandlers;
   public eventHandlers: EventHandlers;
 
   constructor(private option: HandlerOption) {
@@ -41,8 +49,8 @@ class Handlers {
     });
     this.canvasElParent = canvasElParent;
     this.canvas = canvas;
-    this.workareaWidth = workareaWidth || this.workareaWidth;
-    this.workareaHeight = workareaHeight || this.workareaHeight;
+    this.workareaWidth = workareaWidth || 600;
+    this.workareaHeight = workareaHeight || 400;
 
     this.initHandler();
   }
@@ -51,7 +59,7 @@ class Handlers {
    * 初始化所有控制模块
    */
   initHandler() {
-    this.workareaHandler = new WorkareaHandlers(this);
+    this.workareaHandlers = new WorkareaHandlers(this);
     this.eventHandlers = new EventHandlers(this);
   }
 
@@ -68,7 +76,7 @@ class Handlers {
     this.objects.push(element);
 
     if (centered) {
-      const center = this.workareaHandler.workarea.getCenterPoint();
+      const center = this.workareaHandlers.workarea.getCenterPoint();
       this.canvas._centerObject(element, center);
     }
 

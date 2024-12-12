@@ -52,7 +52,7 @@ class WorkareaHandlers {
 
     this.auto();
   }
-
+  // 监听窗口的变化
   private _initResizeObserve() {
     const resizeObserver = new ResizeObserver(
       throttle(() => {
@@ -63,6 +63,7 @@ class WorkareaHandlers {
     this.resizeObserver.observe(this.workareaEl);
   }
 
+  // 滑动事件
   private _bindWheel() {
     this.handlers.canvas.on('mouse:wheel', (opt) => {
       const canvas = this.handlers.canvas;
@@ -70,8 +71,8 @@ class WorkareaHandlers {
       const delta = opt.e.deltaY;
       let zoom = canvas.getZoom();
       zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
+      if (zoom > 10) zoom = 10;
+      if (zoom < 0.1) zoom = 0.1;
       const center = canvas.getCenter();
       canvas.zoomToPoint(new Point(center.left, center.top), zoom);
       opt.e.preventDefault();
@@ -84,6 +85,18 @@ class WorkareaHandlers {
       width: this.workareaEl.offsetWidth,
       height: this.workareaEl.offsetHeight,
     });
+  }
+
+  setSize(width: number, height: number) {
+    this._initBackground();
+    this.option.width = width;
+    this.option.height = height;
+    // this.handlers.workareaWidth = width;
+    // this.handlers.workareaHeight = height;
+    this.workarea.set('width', width);
+    this.workarea.set('height', height);
+    // this.editor.emit('sizeChange', this.workspace.width, this.workspace.height);
+    this.auto();
   }
 
   auto() {
@@ -141,6 +154,12 @@ class WorkareaHandlers {
     const workspase = this.workarea;
     workspase?.set('fill', color);
     this.handlers.canvas.renderAll();
+  }
+
+  destroy() {
+    this.resizeObserver.disconnect();
+    this.handlers.canvas.off();
+    console.log('destroy');
   }
 }
 

@@ -41,7 +41,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
       fontSize: 55,
       text: 'hello world！',
     };
-    store.addElement(newElement, { skipSelect: false });
+    store.addElement(newElement, { skipSelect: false, centered: false });
   };
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -63,6 +63,13 @@ const TextPanel = ({ store }: { store: StoreType }) => {
             }}
           >
             修改工作区的颜色
+          </Button>
+          <Button
+            onClick={() => {
+              store.setSize(300, 100);
+            }}
+          >
+            修改画布大小
           </Button>
         </Container>
       )}
