@@ -23,6 +23,10 @@ const ComponentsTypes = {
   textbox: TextToolbar,
 };
 
+export function registerToolbarComponent(e, t) {
+  ComponentsTypes[e] = t;
+}
+
 type ToolbarProps = {
   store: StoreType;
   downloadButtonEnabled?: boolean;

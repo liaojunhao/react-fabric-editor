@@ -14,7 +14,6 @@ const FontMenu = () => {
   return <div>字体列表</div>;
 };
 
-// 各种文字工具
 export const TextFontFamily = ({ elements, store }: InputProps) => {
   return <FontMenu></FontMenu>;
 };
@@ -22,17 +21,17 @@ export const TextFontFamily = ({ elements, store }: InputProps) => {
 const PROPS_MAP = {
   TextFontFamily: TextFontFamily,
 };
-
 export const TextToolbar: React.FC<PageProps> = ({ store, components }) => {
   const n = store.selectedElements;
   const keys = ['TextFill', 'TextFontFamily', 'TextFontSize', 'TextFontVariant', 'TextSpacing', 'TextFilters'];
-  const r = extendToolbar({ type: 'textbox', usedItems: keys, components: components });
+  const r = extendToolbar({ type: 'text', usedItems: keys, components: components });
+  console.log('r ---> ', r);
   return (
     <ElementContainer
       items={r}
       itemRender={(a) => {
+        console.log('a ---> ', a);
         const RenderComponent = components[a] || PROPS_MAP[a];
-        // console.log('RenderComponent', RenderComponent);
         return RenderComponent && <RenderComponent elements={n} element={n[0]} store={store} key={a}></RenderComponent>;
       }}
     ></ElementContainer>

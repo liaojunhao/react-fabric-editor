@@ -1,6 +1,8 @@
-import { types, Instance } from 'mobx-state-tree';
+import { types, Instance, onSnapshot, getSnapshot } from 'mobx-state-tree';
 import { nanoid } from 'nanoid';
 import Handlers from '../canvas/handlers';
+import { isEqual } from 'lodash-es';
+import { validateKey } from '../utils/validate-key';
 
 // 目前有的元素类型
 const TYPES_MAP = {
@@ -12,7 +14,7 @@ const TYPES_MAP = {
 
 export const Store = types
   .model('Store', {
-    openedSidePanel: '',
+    openedSidePanel: 'text',
     width: 1080,
     height: 1080,
     scale: 1,
@@ -22,7 +24,7 @@ export const Store = types
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
     handler: types.frozen<Handlers>(),
-    // objects: types.array(types.frozen()), TODO
+    objects: types.array(types.frozen()),
   })
   .views((self) => ({
     // 计算出当前选中了多少元素
@@ -45,11 +47,6 @@ export const Store = types
 
       return t;
     },
-    /**
-     * 获取画布中对应的元素-单个
-     * @param id 元素id
-     * @returns
-     */
     getElementById(id) {
       //@ts-expect-error
       return self.handler.canvas.getObjects().find((item) => item.id === id);
@@ -64,10 +61,6 @@ export const Store = types
         self.openedSidePanel = t;
       }
     },
-    /**
-     * 数据层-设置选中的元素
-     * @param ids 元素的id
-     */
     selectElements(ids) {
       const els = ids
         .map((id) => self.getElementById(id))
@@ -108,16 +101,36 @@ export const Store = types
         console.log('解析psd');
       });
     },
-    // 加载json
-    importJSON() {},
+  }))
+  .actions((self) => ({
+    on(event: string, callback: (e) => void) {
+      if ('change' === event) {
+        let beforeObjects = getSnapshot(self.objects);
+
+        return onSnapshot(self.objects, (objects) => {
+          const afterObjects = objects;
+          // 深度对比有数据不一样才去做变化
+          if (!isEqual(beforeObjects, afterObjects)) {
+            beforeObjects = afterObjects;
+            callback(afterObjects);
+          }
+        });
+      }
+    },
+    toJSON() {},
+    loadJSON() {},
   }));
 
 export type StoreType = Instance<typeof Store>;
 
 export interface StoreProps {
   key: string;
+  showCredit: boolean;
 }
 export function createStore(props?: StoreProps) {
-  return Store.create();
+  const { key, showCredit } = props;
+  const _store = Store.create();
+  validateKey(key, showCredit);
+  return _store;
 }
 export default createStore;

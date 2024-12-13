@@ -28,7 +28,7 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     store.setHandler(_handler);
 
     /**
-     * 监听发布事件
+     * 监听选择事件
      */
     _handler.event.on(SelectEvent.ONE, (e: any[]) => {
       store.selectElements(e.map((i) => i.id));
@@ -39,6 +39,9 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     _handler.event.on(SelectEvent.CANCEL, (e) => {
       store.selectElements(e.map((i) => i.id));
     });
+    /**
+     * 监听数据有改变
+     */
 
     //@ts-expect-error
     window._c = _handler;

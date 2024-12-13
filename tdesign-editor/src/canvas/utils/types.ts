@@ -5,3 +5,12 @@ export enum SelectEvent {
   CANCEL = 'selectCancel',
   CHANGE = 'objectsChange',
 }
+
+// 生命周期事件类型
+export enum IEditorHooksType {
+  hookImportBefore = 'hookImportBefore',
+  hookImportAfter = 'hookImportAfter',
+  hookSaveBefore = 'hookSaveBefore',
+  hookSaveAfter = 'hookSaveAfter',
+  hookTransform = 'hookTransform',
+}

@@ -28,6 +28,11 @@ class WorkareaHandlers {
     this._bindWheel();
   }
 
+  /**
+   * 钩子函数
+   * - hookImportAfter import之后
+   * @returns
+   */
   hookImportAfter() {
     return new Promise((resolve) => {
       //@ts-expect-error
@@ -111,16 +116,6 @@ class WorkareaHandlers {
    * @param height
    */
   setSize(width: number, height: number) {
-    // this._initBackground();
-    // this.option.width = width;
-    // this.option.height = height;
-    // this.handlers.workareaOption.width = width;
-    // this.handlers.workareaOption.width = height;
-    // this.workarea.set('width', width);
-    // this.workarea.set('height', height);
-    // // this.editor.emit('sizeChange', this.workspace.width, this.workspace.height);
-    // this.auto();
-
     this._initBackground();
     this.option.width = width;
     this.option.height = height;
@@ -132,7 +127,6 @@ class WorkareaHandlers {
     this.handlers.workareaOption.width = height;
     // this.editor.emit('sizeChange', this.workarea.width, this.workarea.height);
     this.auto();
-
     // todo:其他元素也要修改位置
   }
 

@@ -3,6 +3,9 @@ import Handlers from '../handlers';
 import { Canvas } from 'fabric';
 import { SelectEvent } from './types';
 
+/**
+ * 这是一个特殊的类，主要是做发布订阅
+ */
 class CanvasEventEmitter extends EventEmitter {
   canvas: Canvas;
   constructor(private handlers: Handlers) {

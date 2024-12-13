@@ -1,6 +1,6 @@
 import { Canvas, FabricObject, Path } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
-import { CanvasObjects } from './canvasObjects';
+import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
@@ -105,6 +105,7 @@ class Handlers {
 
     jsonFile = JSON.stringify(temp);
 
+    // TODO：需要改造
     this.canvas.loadFromJSON(jsonFile, () => {
       this.canvas.renderAll();
       // 这里必须要异步，不然获取的画布对象不是最新额度
@@ -112,7 +113,6 @@ class Handlers {
         this.workareaHandlers.hookImportAfter().then(() => {
           this.canvas.renderAll();
           callback && callback();
-          // this.editor.emit('loadJson');
         });
       });
     });
