@@ -22,9 +22,10 @@ export const Store = types
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
     handler: types.frozen<Handlers>(),
-    // objects: types.array(types.frozen()), // 画布所有的元素
+    // objects: types.array(types.frozen()), TODO
   })
   .views((self) => ({
+    // 计算出当前选中了多少元素
     get selectedElements() {
       return self.selectedElementsIds
         .map((t) => {
@@ -35,8 +36,20 @@ export const Store = types
     },
     get selectedShapes() {
       const t = [];
+      for (const item of this.selectedElements) {
+        if (item) {
+          item?.type !== 'group' && t.push(item);
+          item?.type === 'group' && t.push(...item.objects);
+        }
+      }
+
       return t;
     },
+    /**
+     * 获取画布中对应的元素-单个
+     * @param id 元素id
+     * @returns
+     */
     getElementById(id) {
       //@ts-expect-error
       return self.handler.canvas.getObjects().find((item) => item.id === id);
@@ -51,6 +64,10 @@ export const Store = types
         self.openedSidePanel = t;
       }
     },
+    /**
+     * 数据层-设置选中的元素
+     * @param ids 元素的id
+     */
     selectElements(ids) {
       const els = ids
         .map((id) => self.getElementById(id))
@@ -83,6 +100,16 @@ export const Store = types
     setSize(width: number, height: number) {
       self.handler.workareaHandlers.setSize(width, height);
     },
+  }))
+  .actions((self) => ({
+    // 解析psd
+    insertPSD(files: File) {
+      self.handler.psdHandlers.insertPSD(files, () => {
+        console.log('解析psd');
+      });
+    },
+    // 加载json
+    importJSON() {},
   }));
 
 export type StoreType = Instance<typeof Store>;

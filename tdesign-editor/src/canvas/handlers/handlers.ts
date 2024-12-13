@@ -1,11 +1,11 @@
-import { Canvas, FabricObject } from 'fabric';
+import { Canvas, FabricObject, Path } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
-
 import { CanvasObjects } from './canvasObjects';
-
+import CanvasEventEmitter from '../utils/notifier';
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
-import CanvasEventEmitter from '../utils/notifier';
+import PsdHandlers from './psdHandlers';
+import { nanoid } from 'nanoid';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -27,10 +27,11 @@ class Handlers {
   public objects: FabricObject[] = [];
   public workareaOption: { width: number; height: number };
 
+  public event: CanvasEventEmitter;
   // 一些控制模块
   public workareaHandlers: WorkareaHandlers;
   public eventHandlers: EventHandlers;
-  public event: CanvasEventEmitter;
+  public psdHandlers: PsdHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -48,16 +49,18 @@ class Handlers {
       height: workareaHeight || 400,
     };
 
-    this.initHandler();
+    this._initHandler();
   }
 
   /**
    * 初始化所有控制模块
    */
-  initHandler() {
+  private _initHandler() {
     this.event = new CanvasEventEmitter(this); // 他需要在第一位
+
     this.workareaHandlers = new WorkareaHandlers(this);
     this.eventHandlers = new EventHandlers(this);
+    this.psdHandlers = new PsdHandlers(this);
   }
 
   /**
@@ -82,6 +85,37 @@ class Handlers {
 
     this.canvas.renderAll();
     return element;
+  }
+
+  /**
+   * 加载JSON
+   */
+  async importJSON(jsonFile: string | object, callback?: () => void) {
+    const temp = typeof jsonFile === 'string' ? JSON.parse(jsonFile) : jsonFile;
+
+    const textPaths: Record<'id' | 'path', any>[] = [];
+    temp.objects.forEach((item: any) => {
+      !item.id && (item.id = nanoid());
+      // 收集所有路径文本元素i-text，并设置path为null
+      if (item.type === 'i-text' && item.path) {
+        textPaths.push({ id: item.id, path: item.path });
+        item.path = null;
+      }
+    });
+
+    jsonFile = JSON.stringify(temp);
+
+    this.canvas.loadFromJSON(jsonFile, () => {
+      this.canvas.renderAll();
+      // 这里必须要异步，不然获取的画布对象不是最新额度
+      setTimeout(() => {
+        this.workareaHandlers.hookImportAfter().then(() => {
+          this.canvas.renderAll();
+          callback && callback();
+          // this.editor.emit('loadJson');
+        });
+      });
+    });
   }
 }
 

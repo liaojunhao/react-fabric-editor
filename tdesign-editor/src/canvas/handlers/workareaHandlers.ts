@@ -27,6 +27,24 @@ class WorkareaHandlers {
     this._initResizeObserve();
     this._bindWheel();
   }
+
+  hookImportAfter() {
+    return new Promise((resolve) => {
+      //@ts-expect-error
+      const workspace = this.handlers.canvas.getObjects().find((item) => item.id === 'workarea');
+      if (workspace) {
+        workspace.set('selectable', false);
+        workspace.set('hasControls', false);
+        workspace.set('evented', false);
+        if (workspace.width && workspace.height) {
+          this.setSize(workspace.width, workspace.height);
+          // this.editor.emit('sizeChange', workspace.width, workspace.height);
+        }
+      }
+      resolve('');
+    });
+  }
+
   // 初始化整个画布
   private _initBackground() {
     this.handlers.canvas.setWidth(this.workareaEl.offsetWidth);
@@ -81,7 +99,7 @@ class WorkareaHandlers {
   }
 
   private _getScale() {
-    return util.findScaleToFit(this.workarea, {
+    return util.findScaleToFit(this.getWorkspase(), {
       width: this.workareaEl.offsetWidth,
       height: this.workareaEl.offsetHeight,
     });
@@ -93,15 +111,28 @@ class WorkareaHandlers {
    * @param height
    */
   setSize(width: number, height: number) {
+    // this._initBackground();
+    // this.option.width = width;
+    // this.option.height = height;
+    // this.handlers.workareaOption.width = width;
+    // this.handlers.workareaOption.width = height;
+    // this.workarea.set('width', width);
+    // this.workarea.set('height', height);
+    // // this.editor.emit('sizeChange', this.workspace.width, this.workspace.height);
+    // this.auto();
+
     this._initBackground();
     this.option.width = width;
     this.option.height = height;
-    this.handlers.workareaOption.width = width;
-    this.handlers.workareaOption.width = height;
+    // 重新设置workspace
+    this.workarea = this.getWorkspase();
     this.workarea.set('width', width);
     this.workarea.set('height', height);
-    // this.editor.emit('sizeChange', this.workspace.width, this.workspace.height);
+    this.handlers.workareaOption.width = width;
+    this.handlers.workareaOption.width = height;
+    // this.editor.emit('sizeChange', this.workarea.width, this.workarea.height);
     this.auto();
+
     // todo:其他元素也要修改位置
   }
 
@@ -150,14 +181,13 @@ class WorkareaHandlers {
       });
   }
 
-  // 好像暂时不需要这样查找
-  // getWorkspase() {
-  //   //@ts-expect-error
-  //   return this.handlers.canvas.getObjects().find((item) => item.id === 'workarea');
-  // }
+  getWorkspase() {
+    //@ts-expect-error
+    return this.handlers.canvas.getObjects().find((item) => item.id === 'workarea') as Rect;
+  }
 
   setWorkspaseBg(color: string) {
-    const workspase = this.workarea;
+    const workspase = this.getWorkspase();
     workspase?.set('fill', color);
     this.handlers.canvas.renderAll();
   }

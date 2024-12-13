@@ -41,7 +41,6 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
 
   const _ = useRef(components);
   const s = _.current;
-  console.log(s);
 
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
