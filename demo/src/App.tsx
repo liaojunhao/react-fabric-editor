@@ -26,14 +26,14 @@ const useHeight = () => {
 function App() {
   const store = createStore();
   const project = createProject({ store });
-  const height = useHeight();
+  // const height = useHeight();
 
   return (
     <ProjectContext.Provider value={project}>
       <div
         style={{
           width: '100vw',
-          height: height + 'px',
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
         }}

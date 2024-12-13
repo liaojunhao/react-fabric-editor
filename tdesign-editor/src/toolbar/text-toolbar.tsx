@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StoreType } from '../model/store';
 import { extendToolbar, ElementContainer } from './element-container';
 import useSWR from 'swr';
 import { getGoogleFontsListAPI } from '../utils/api';
 import { isGoogleFontChanged, getFontsList, globalFonts } from '../utils/fonts';
-import { Popover, Button } from '@blueprintjs/core';
-
+import { Popover, Button, InputGroup, MenuItem, MenuDivider } from '@blueprintjs/core';
+import { Search } from '@blueprintjs/icons';
+import { FixedSizeList } from 'react-window';
+import styled from 'styled-components';
+import { getGoogleFontImage } from '../utils/api';
 type InputProps = {
   elements: Array<any>;
   store: StoreType;
@@ -16,17 +19,104 @@ type PageProps = {
   components?: any;
 };
 
+const Image = styled.img`
+  height: 20px;
+
+  .bp5-dark & {
+    filter: invert(1);
+  }
+`;
+
 const googleFonts = getFontsList();
 
+const FontItem = ({ fontFamily, handleClick, modifiers, store, isCustom }) => {
+  const [l, o] = useState(!isCustom);
+
+  useEffect(() => {
+    l || store.loadFont(fontFamily);
+  }, [fontFamily, l]);
+
+  if ('_divider' === fontFamily) {
+    return (
+      <div style={{ paddingTop: 10 }}>
+        <MenuDivider></MenuDivider>
+      </div>
+    );
+  }
+  const i = l ? (
+    <Image
+      src={getGoogleFontImage(fontFamily)}
+      alt={fontFamily}
+      onError={() => {
+        o(!1);
+      }}
+    ></Image>
+  ) : (
+    fontFamily
+  );
+
+  return (
+    <MenuItem
+      text={i}
+      active={modifiers.active}
+      disabled={modifiers.disabled}
+      onClick={handleClick}
+      style={{ fontFamily: '"' + fontFamily + '"' }}
+    ></MenuItem>
+  );
+};
+const SearchInput = ({ onChange, defaultValue }) => {
+  const inputRef = useRef(null);
+  useEffect(() => {
+    inputRef.current && inputRef.current.focus();
+  }, []);
+  return (
+    <InputGroup
+      inputRef={inputRef}
+      leftIcon={<Search />}
+      defaultValue={defaultValue}
+      onChange={(t) => {
+        onChange(t.target.value);
+      }}
+    ></InputGroup>
+  );
+};
 const FontMenu = ({ store, fonts, activeFont, activeFontLabel, onFontSelect }) => {
-  const [o, i] = useState('');
-  const l = fonts.filter((e) => e.toLowerCase().indexOf(o.toLowerCase()) >= 0);
+  const [key, setKey] = useState('');
+  const i = fonts.filter((e) => e.toLowerCase().indexOf(key.toLowerCase()) >= 0);
   return (
     <Popover
       content={
         <div>
-          <div>搜索</div>
-          <div style={{ paddingTop: '5px' }}></div>
+          <SearchInput
+            onChange={(e) => {
+              setKey(e);
+            }}
+            defaultValue={key}
+          />
+          <div style={{ paddingTop: 6 }}>
+            <FixedSizeList height={Math.min(400, 30 * i.length) + 10} width={210} itemCount={i.length} itemSize={30}>
+              {({ index, style }) => {
+                const item = i[index];
+                return (
+                  <div style={style}>
+                    <FontItem
+                      key={item}
+                      fontFamily={item}
+                      modifiers={{ active: activeFont === item }}
+                      handleClick={() => {
+                        onFontSelect(item);
+                      }}
+                      store={store}
+                      isCustom={
+                        store.fonts.find((e) => e.fontFamily === item) || globalFonts.find((e) => e.fontFamily === item)
+                      }
+                    ></FontItem>
+                  </div>
+                );
+              }}
+            </FixedSizeList>
+          </div>
         </div>
       }
     >
@@ -52,7 +142,6 @@ const fetcher = (e) =>
     : fetch(e)
         .then((e) => e.json())
         .then((t) => ((cache[e] = t), t));
-
 export const TextFontFamily = ({ elements, store }: InputProps) => {
   // 获取全局字体
   const { data, mutate } = useSWR(getGoogleFontsListAPI(), fetcher, {
@@ -81,7 +170,9 @@ export const TextFontFamily = ({ elements, store }: InputProps) => {
       store={store}
       activeFont={elements[0].fontFamily}
       activeFontLabel={elementName}
-      onFontSelect={(n) => {}}
+      onFontSelect={(n) => {
+        console.log('选择了这个字体', n);
+      }}
     ></FontMenu>
   );
 };
