@@ -22,6 +22,7 @@ export const Store = types
     unit: 'px',
     dpi: 72,
     custom: types.frozen(),
+    fonts: types.array(types.frozen()),
     selectedElementsIds: types.array(types.string),
     handler: types.frozen<Handlers>(),
     objects: types.array(types.frozen()), // 这个数据只能去触发存储，不能实际拿来操作
@@ -47,6 +48,7 @@ export const Store = types
 
       return t;
     },
+    // find(callback) {},
     getElementById(id) {
       //@ts-expect-error
       return self.handler.canvas.getObjects().find((item) => item.id === id);

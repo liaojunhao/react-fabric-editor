@@ -3,8 +3,8 @@
  */
 import { getKey } from './validate-key';
 
-export const URI = 'https://api.yitu.com';
-export const API = 'https://api.yitu.com/api';
+export const URI = 'https://api.polotno.com';
+export const API = 'https://api.polotno.com/api';
 
 export const getAPI = () => URI + '/api';
 

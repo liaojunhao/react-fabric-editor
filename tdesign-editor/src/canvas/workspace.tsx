@@ -1,4 +1,4 @@
-import React, { useEffect, createRef } from 'react';
+import React, { useEffect, createRef, useRef } from 'react';
 import styled from 'styled-components';
 import Handlers from './handlers';
 import { StoreType } from '../model/store';
@@ -16,9 +16,11 @@ export type WorkspaceProps = {
 export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) => {
   const containerRef = createRef<HTMLDivElement>();
   const canvasEl = createRef<HTMLCanvasElement>();
+  const handlerRef = useRef(null);
 
   // 初始化画布
   useEffect(() => {
+    // if (!handlerRef.current) return;
     const _handler = new Handlers({
       canvasElParent: containerRef.current,
       canvasEl: canvasEl.current,

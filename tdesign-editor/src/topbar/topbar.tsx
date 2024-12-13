@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useProject } from '../project';
-import { Navbar, Alignment } from '@blueprintjs/core';
+import { Navbar, Alignment, EditableText } from '@blueprintjs/core';
 import { FileMenu } from './file-menu';
 import { StoreType } from '../model/store';
 
@@ -32,6 +32,14 @@ const Topbar: React.FC<TopbarProps> = ({ store }) => {
       <NavInner>
         <Navbar.Group align={Alignment.LEFT}>
           <FileMenu store={store} project={project} />
+          <div
+            style={{
+              paddingLeft: '20px',
+              maxWidth: '200px',
+            }}
+          >
+            <EditableText placeholder="设计名称" onChange={(name) => {}} />
+          </div>
         </Navbar.Group>
       </NavInner>
     </NavbarContainer>
