@@ -115,6 +115,7 @@ export const Store = types
           // 深度对比有数据不一样才去做变化
           if (!isEqual(beforeObjects, afterObjects)) {
             beforeObjects = afterObjects;
+            if (afterObjects.length === 1) return;
             callback(afterObjects);
           }
         });
