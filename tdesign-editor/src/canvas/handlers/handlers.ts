@@ -1,4 +1,4 @@
-import { Canvas, FabricObject, Path } from 'fabric';
+import { Canvas, FabricObject } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
@@ -6,6 +6,8 @@ import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
 import { nanoid } from 'nanoid';
+import { SelectEvent } from '../utils/types';
+import { string } from 'mobx-state-tree/dist/internal';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -28,7 +30,6 @@ class Handlers {
   public workareaOption: { width: number; height: number };
 
   public event: CanvasEventEmitter;
-  // 一些控制模块
   public workareaHandlers: WorkareaHandlers;
   public eventHandlers: EventHandlers;
   public psdHandlers: PsdHandlers;
@@ -63,16 +64,20 @@ class Handlers {
     this.psdHandlers = new PsdHandlers(this);
   }
 
+  addObjects(object) {
+    this.objects.push(object.toObject(this.propertiesToInclude));
+    this.event.emit(SelectEvent.CHANGE, this.objects);
+  }
+
   /**
    * 添加元素
    * @param options
    * @param centered
    */
-  addObject(options, { skipSelect = false, centered = true }) {
+  addObject(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
     const { type, ...textOptions } = options;
     const element = CanvasObjects[type].render(textOptions);
     this.canvas.add(element);
-    this.objects.push(element);
 
     if (centered) {
       const center = this.workareaHandlers.workarea.getCenterPoint();
@@ -84,6 +89,8 @@ class Handlers {
     }
 
     this.canvas.renderAll();
+
+    this.addObjects(element);
     return element;
   }
 

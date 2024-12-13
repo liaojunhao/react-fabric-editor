@@ -24,7 +24,7 @@ export const Store = types
     custom: types.frozen(),
     selectedElementsIds: types.array(types.string),
     handler: types.frozen<Handlers>(),
-    objects: types.array(types.frozen()),
+    objects: types.array(types.frozen()), // 这个数据只能去触发存储，不能实际拿来操作
   })
   .views((self) => ({
     // 计算出当前选中了多少元素
@@ -53,6 +53,9 @@ export const Store = types
     },
   }))
   .actions((self) => ({
+    setObjects(objs) {
+      self.objects = objs;
+    },
     setHandler(handler) {
       self.handler = handler;
     },
@@ -124,13 +127,12 @@ export const Store = types
 export type StoreType = Instance<typeof Store>;
 
 export interface StoreProps {
-  key: string;
-  showCredit: boolean;
+  key?: string;
+  showCredit?: boolean;
 }
 export function createStore(props?: StoreProps) {
-  const { key, showCredit } = props;
   const _store = Store.create();
-  validateKey(key, showCredit);
+  validateKey(props?.key, props?.showCredit);
   return _store;
 }
 export default createStore;

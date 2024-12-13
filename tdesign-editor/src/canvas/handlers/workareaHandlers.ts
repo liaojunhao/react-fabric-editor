@@ -1,6 +1,7 @@
 import Handlers from './handlers';
 import { Rect, iMatrix, Point, util } from 'fabric';
 import { throttle } from 'lodash-es';
+import { SelectEvent } from '../utils/types';
 class WorkareaHandlers {
   public workarea: Rect;
   public zoomRatio: number = 0.85;
@@ -30,7 +31,6 @@ class WorkareaHandlers {
 
   /**
    * 钩子函数
-   * - hookImportAfter import之后
    * @returns
    */
   hookImportAfter() {
@@ -55,6 +55,7 @@ class WorkareaHandlers {
     this.handlers.canvas.setWidth(this.workareaEl.offsetWidth);
     this.handlers.canvas.setHeight(this.workareaEl.offsetHeight);
   }
+
   // 初始化工作区
   private _initWorkarea() {
     const { width, height } = this.option;
@@ -64,6 +65,7 @@ class WorkareaHandlers {
       height,
       id: 'workarea',
       strokeWidth: 0,
+      name: 'workarea',
     });
     workarea.set('selectable', false);
     workarea.set('hasControls', false);
@@ -74,7 +76,14 @@ class WorkareaHandlers {
     this.workarea = workarea;
 
     this.auto();
+    // 初始化画布（只做一次）
+    setTimeout(() => {
+      //@ts-ignore
+      this.handlers.objects.push(this.workarea.toObject(this.handlers.propertiesToInclude));
+      this.handlers.event.emit(SelectEvent.CHANGE, this.handlers.objects);
+    });
   }
+
   // 监听窗口的变化
   private _initResizeObserve() {
     const resizeObserver = new ResizeObserver(

@@ -4,6 +4,7 @@ import Handlers from './handlers';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
 import { SelectEvent } from './utils/types';
+import { PROPERTIES_TO_INCLUDE } from './constants';
 
 const EditorCanvas = styled.div``;
 
@@ -42,8 +43,11 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     /**
      * 监听数据有改变
      */
+    _handler.event.on(SelectEvent.CHANGE, (e) => {
+      store.setObjects(e);
+    });
 
-    //@ts-expect-error
+    //@ts-expect-error 测试使用
     window._c = _handler;
   }, []);
 

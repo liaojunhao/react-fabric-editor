@@ -16,7 +16,7 @@ async function isKeyPaid(e) {
   return true;
 }
 
-export async function validateKey(apiKey, showCreditFlag) {
+export async function validateKey(apiKey?: string, showCreditFlag?: boolean) {
   API_KEY = apiKey; // 这里赋予密钥
   const isPaidKey = await isKeyPaid(apiKey);
 

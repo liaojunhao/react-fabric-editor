@@ -25,12 +25,11 @@ export const TextToolbar: React.FC<PageProps> = ({ store, components }) => {
   const n = store.selectedElements;
   const keys = ['TextFill', 'TextFontFamily', 'TextFontSize', 'TextFontVariant', 'TextSpacing', 'TextFilters'];
   const r = extendToolbar({ type: 'text', usedItems: keys, components: components });
-  console.log('r ---> ', r);
+
   return (
     <ElementContainer
       items={r}
       itemRender={(a) => {
-        console.log('a ---> ', a);
         const RenderComponent = components[a] || PROPS_MAP[a];
         return RenderComponent && <RenderComponent elements={n} element={n[0]} store={store} key={a}></RenderComponent>;
       }}
