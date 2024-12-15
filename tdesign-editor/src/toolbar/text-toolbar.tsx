@@ -4,8 +4,8 @@ import { extendToolbar, ElementContainer } from './element-container';
 import useSWR from 'swr';
 import { getGoogleFontsListAPI } from '../utils/api';
 import { isGoogleFontChanged, getFontsList, globalFonts } from '../utils/fonts';
-import { Popover, Button, InputGroup, MenuItem, MenuDivider, NumericInput } from '@blueprintjs/core';
-import { Search } from '@blueprintjs/icons';
+import { Popover, Button, InputGroup, MenuItem, MenuDivider, ButtonGroup, NumericInput } from '@blueprintjs/core';
+import { Search, AlignLeft, AlignCenter, AlignRight, AlignJustify } from '@blueprintjs/icons';
 import { FixedSizeList } from 'react-window';
 import styled from 'styled-components';
 import { getGoogleFontImage } from '../utils/api';
@@ -144,6 +144,7 @@ const fetcher = (e) =>
     : fetch(e)
         .then((e) => e.json())
         .then((t) => ((cache[e] = t), t));
+// 字体设置
 export const TextFontFamily = observer(({ elements, store }: InputProps) => {
   // 获取全局字体
   const { data, mutate } = useSWR(getGoogleFontsListAPI(), fetcher, {
@@ -161,7 +162,7 @@ export const TextFontFamily = observer(({ elements, store }: InputProps) => {
   elementName.length > 15 && (elementName = elementName.slice(0, 15) + '...');
   const i = [];
   store.objects.forEach((item) => {
-    if ('Textbox' === item.type) {
+    if ('textbox' === item.type.toLowerCase()) {
       i.push(item.fontFamily);
     }
   });
@@ -178,7 +179,7 @@ export const TextFontFamily = observer(({ elements, store }: InputProps) => {
     ></FontMenu>
   );
 });
-
+// 字号大小
 export const TextFontSize = observer(({ elements, store }: InputProps) => {
   return (
     <NumericInput
@@ -195,10 +196,43 @@ export const TextFontSize = observer(({ elements, store }: InputProps) => {
     ></NumericInput>
   );
 });
+const ALIGN_OPTIONS = ['left', 'center', 'right', 'justify'];
+// 文字对齐方式
+export const TextFontVariant = observer(({ elements, store }: InputProps) => {
+  const n = elements[0]; // 这里默认显示第一个元素的对齐方式
+  const align = n.textAlign;
+
+  return (
+    <ButtonGroup>
+      <Button
+        minimal={true}
+        icon={
+          align === 'left' ? (
+            <AlignLeft />
+          ) : align === 'center' ? (
+            <AlignCenter />
+          ) : align === 'right' ? (
+            <AlignRight />
+          ) : (
+            <AlignJustify />
+          )
+        }
+        onClick={() => {
+          const a = (ALIGN_OPTIONS.indexOf(n.textAlign) + 1 + ALIGN_OPTIONS.length) % ALIGN_OPTIONS.length;
+          const r = ALIGN_OPTIONS[a];
+          elements.forEach((e) => {
+            store.setElement(e, { textAlign: r });
+          });
+        }}
+      ></Button>
+    </ButtonGroup>
+  );
+});
 
 const PROPS_MAP = {
   TextFontFamily: TextFontFamily,
   TextFontSize: TextFontSize,
+  TextFontVariant: TextFontVariant,
 };
 
 /**

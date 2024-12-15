@@ -40,6 +40,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
       fontFamily: 'Roboto',
       fontSize: 55,
       text: 'hello world！',
+      width: 555,
     };
     store.addElement(newElement, { skipSelect: false, centered: false });
   };

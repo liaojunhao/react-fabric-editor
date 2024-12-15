@@ -44,7 +44,6 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   // n = e.selectedElements.every((e) => e.styleEditable);
   let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
   // let i = n && l && ComponentsTypes[a.type];
-  // console.log(currentEle?.type);
   if (oneType && currentEle?.type === 'textbox') {
     CurrentToolbar = ComponentsTypes[currentEle?.type];
   } else {
@@ -52,7 +51,6 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
       // 多个不同的元素就现实 ManyToolbar
     }
   }
-
   const _ = useRef(components);
   const s = _.current;
 
