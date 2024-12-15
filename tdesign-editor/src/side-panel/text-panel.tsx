@@ -52,6 +52,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
           setValue(e);
         }}
       >
+        <Tab id="text">测试</Tab>
         {/* <Tab id="text">{getName('sidePanel.text')}</Tab>
         <Tab id="font">{getName('sidePanel.myFonts')}</Tab> */}
       </Tabs>
@@ -72,6 +73,7 @@ const TextPanel = ({ store }: { store: StoreType }) => {
           >
             修改画布大小
           </Button>
+          <Button>添加图片</Button>
         </Container>
       )}
       {value === 'font' && <Container>font</Container>}

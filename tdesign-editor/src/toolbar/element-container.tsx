@@ -69,7 +69,7 @@ export const ElementContainer = ({ items, itemRender }: { items: any; itemRender
     <Container style={{ width: divWidth + 'px' }} ref={divRef} className="bp5-navbar-group bp5-align-left">
       <OverflowList
         items={items}
-        style={{ width: '100%' }}
+        style={{ width: '100%', gap: 5 }}
         visibleItemRenderer={itemRender}
         collapseFrom={Boundary.END}
         overflowRenderer={(e) => (

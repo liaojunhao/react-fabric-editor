@@ -5,7 +5,17 @@ import useSWR from 'swr';
 import { getGoogleFontsListAPI } from '../utils/api';
 import { isGoogleFontChanged, getFontsList, globalFonts } from '../utils/fonts';
 import { Popover, Button, InputGroup, MenuItem, MenuDivider, ButtonGroup, NumericInput } from '@blueprintjs/core';
-import { Search, AlignLeft, AlignCenter, AlignRight, AlignJustify } from '@blueprintjs/icons';
+import {
+  Search,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+} from '@blueprintjs/icons';
 import { FixedSizeList } from 'react-window';
 import styled from 'styled-components';
 import { getGoogleFontImage } from '../utils/api';
@@ -199,29 +209,76 @@ export const TextFontSize = observer(({ elements, store }: InputProps) => {
 const ALIGN_OPTIONS = ['left', 'center', 'right', 'justify'];
 // 文字对齐方式
 export const TextFontVariant = observer(({ elements, store }: InputProps) => {
-  const n = elements[0]; // 这里默认显示第一个元素的对齐方式
-  const align = n.textAlign;
+  const n = elements[0];
+  console.log('n ---> ', n);
+  const textAlign = n.textAlign;
+  const fontWeight = n.fontWeight;
+  const fontStyle = n.fontStyle;
+  const underline = n.underline;
+  const linethrough = n.linethrough;
 
   return (
-    <ButtonGroup>
+    <ButtonGroup style={{ gap: 5 }}>
       <Button
         minimal={true}
         icon={
-          align === 'left' ? (
+          textAlign === 'left' ? (
             <AlignLeft />
-          ) : align === 'center' ? (
+          ) : textAlign === 'center' ? (
             <AlignCenter />
-          ) : align === 'right' ? (
+          ) : textAlign === 'right' ? (
             <AlignRight />
           ) : (
             <AlignJustify />
           )
         }
         onClick={() => {
-          const a = (ALIGN_OPTIONS.indexOf(n.textAlign) + 1 + ALIGN_OPTIONS.length) % ALIGN_OPTIONS.length;
+          const a = (ALIGN_OPTIONS.indexOf(textAlign) + 1 + ALIGN_OPTIONS.length) % ALIGN_OPTIONS.length;
           const r = ALIGN_OPTIONS[a];
           elements.forEach((e) => {
             store.setElement(e, { textAlign: r });
+          });
+        }}
+      ></Button>
+      <Button
+        minimal={true}
+        icon={<Bold />}
+        active={fontWeight === 'bold'}
+        onClick={() => {
+          const a = 'bold' === fontWeight;
+          elements.forEach((e) => {
+            a ? store.setElement(e, { fontWeight: 'normal' }) : store.setElement(e, { fontWeight: 'bold' });
+          });
+        }}
+      ></Button>
+      <Button
+        minimal={true}
+        icon={<Italic />}
+        active={fontStyle === 'italic'}
+        onClick={() => {
+          const a = 'italic' === fontStyle;
+          elements.forEach((e) => {
+            a ? store.setElement(e, { fontStyle: 'normal' }) : store.setElement(e, { fontStyle: 'italic' });
+          });
+        }}
+      ></Button>
+      <Button
+        minimal={true}
+        icon={<Underline />}
+        active={underline}
+        onClick={() => {
+          elements.forEach((e) => {
+            underline ? store.setElement(e, { underline: false }) : store.setElement(e, { underline: true });
+          });
+        }}
+      ></Button>
+      <Button
+        minimal={true}
+        icon={<Strikethrough />}
+        active={linethrough}
+        onClick={() => {
+          elements.forEach((e) => {
+            linethrough ? store.setElement(e, { linethrough: false }) : store.setElement(e, { linethrough: true });
           });
         }}
       ></Button>
