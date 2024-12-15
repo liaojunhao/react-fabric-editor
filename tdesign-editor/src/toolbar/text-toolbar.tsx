@@ -20,6 +20,7 @@ import { FixedSizeList } from 'react-window';
 import styled from 'styled-components';
 import { getGoogleFontImage } from '../utils/api';
 import { observer } from 'mobx-react-lite';
+import ColorPicker from './color-picker';
 
 type InputProps = {
   elements: Array<any>;
@@ -210,7 +211,6 @@ const ALIGN_OPTIONS = ['left', 'center', 'right', 'justify'];
 // 文字对齐方式
 export const TextFontVariant = observer(({ elements, store }: InputProps) => {
   const n = elements[0];
-  console.log('n ---> ', n);
   const textAlign = n.textAlign;
   const fontWeight = n.fontWeight;
   const fontStyle = n.fontStyle;
@@ -285,11 +285,31 @@ export const TextFontVariant = observer(({ elements, store }: InputProps) => {
     </ButtonGroup>
   );
 });
+// 文字颜色
+export const TextFill = observer(({ elements, store }: InputProps) => {
+  const element = elements[0];
+  console.log('颜色的设置 ---> ', element);
+  return (
+    <ColorPicker
+      value={element.fill}
+      style={{ marginRight: '5px' }}
+      store={store}
+      gradientEnabled={false}
+      onChange={(color) => {
+        console.log('TextFill ---> onChange', color);
+        elements.forEach((e) => {
+          store.setElement(e, { fill: color });
+        });
+      }}
+    ></ColorPicker>
+  );
+});
 
 const PROPS_MAP = {
   TextFontFamily: TextFontFamily,
   TextFontSize: TextFontSize,
   TextFontVariant: TextFontVariant,
+  TextFill: TextFill,
 };
 
 /**
