@@ -4,11 +4,13 @@ import { extendToolbar, ElementContainer } from './element-container';
 import useSWR from 'swr';
 import { getGoogleFontsListAPI } from '../utils/api';
 import { isGoogleFontChanged, getFontsList, globalFonts } from '../utils/fonts';
-import { Popover, Button, InputGroup, MenuItem, MenuDivider } from '@blueprintjs/core';
+import { Popover, Button, InputGroup, MenuItem, MenuDivider, NumericInput } from '@blueprintjs/core';
 import { Search } from '@blueprintjs/icons';
 import { FixedSizeList } from 'react-window';
 import styled from 'styled-components';
 import { getGoogleFontImage } from '../utils/api';
+import { observer } from 'mobx-react-lite';
+
 type InputProps = {
   elements: Array<any>;
   store: StoreType;
@@ -142,7 +144,7 @@ const fetcher = (e) =>
     : fetch(e)
         .then((e) => e.json())
         .then((t) => ((cache[e] = t), t));
-export const TextFontFamily = ({ elements, store }: InputProps) => {
+export const TextFontFamily = observer(({ elements, store }: InputProps) => {
   // 获取全局字体
   const { data, mutate } = useSWR(getGoogleFontsListAPI(), fetcher, {
     isPaused: () => isGoogleFontChanged(),
@@ -175,11 +177,34 @@ export const TextFontFamily = ({ elements, store }: InputProps) => {
       }}
     ></FontMenu>
   );
-};
+});
+
+export const TextFontSize = observer(({ elements, store }: InputProps) => {
+  return (
+    <NumericInput
+      onValueChange={(n) => {
+        // elements是真实的实例
+        elements.forEach((e) => {
+          store.setElement(e, { fontSize: n, width: Math.max(n, e.width) });
+        });
+      }}
+      value={Math.round(elements[0].fontSize)}
+      style={{ width: 50 }}
+      min={5}
+      max={4 * store.height}
+    ></NumericInput>
+  );
+});
 
 const PROPS_MAP = {
   TextFontFamily: TextFontFamily,
+  TextFontSize: TextFontSize,
 };
+
+/**
+ * 文字工具栏
+ *  - 这里多选择都是文字的时候给他统一的设置
+ */
 export const TextToolbar: React.FC<PageProps> = ({ store, components }) => {
   const n = store.selectedElements;
   const keys = ['TextFill', 'TextFontFamily', 'TextFontSize', 'TextFontVariant', 'TextSpacing', 'TextFilters'];

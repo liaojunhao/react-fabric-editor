@@ -7,7 +7,6 @@ import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
-import { string } from 'mobx-state-tree/dist/internal';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -64,7 +63,7 @@ class Handlers {
     this.psdHandlers = new PsdHandlers(this);
   }
 
-  addObjects(object) {
+  private _addObjects(object) {
     this.objects.push(object.toObject(this.propertiesToInclude));
     this.event.emit(SelectEvent.CHANGE, this.objects);
   }
@@ -74,7 +73,7 @@ class Handlers {
    * @param options
    * @param centered
    */
-  addObject(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
+  addElement(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
     const { type, ...textOptions } = options;
     const element = CanvasObjects[type].render(textOptions);
     this.canvas.add(element);
@@ -90,8 +89,24 @@ class Handlers {
 
     this.canvas.renderAll();
 
-    this.addObjects(element);
+    this._addObjects(element);
     return element;
+  }
+
+  /**
+   * 设置元素属性
+   * @param target
+   * @param options
+   */
+  setElement(target: FabricObject, options) {
+    Object.keys(options).forEach((property) => {
+      const value = options[property];
+      target.set(property, value);
+      target.setCoords();
+      this.canvas.requestRenderAll();
+      // 画布改完了去刷新UI要更新
+      this.event.emit(SelectEvent.UPDATA, Math.random());
+    });
   }
 
   /**

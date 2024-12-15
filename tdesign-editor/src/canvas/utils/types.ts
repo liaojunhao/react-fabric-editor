@@ -4,6 +4,7 @@ export enum SelectEvent {
   MULTI = 'selectMultiple',
   CANCEL = 'selectCancel',
   CHANGE = 'objectsChange',
+  UPDATA = 'randomUpdata',
 }
 
 // 生命周期事件类型

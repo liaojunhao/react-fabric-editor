@@ -48,6 +48,9 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     _handler.event.on(SelectEvent.CHANGE, (e) => {
       store.setObjects(e);
     });
+    _handler.event.on(SelectEvent.UPDATA, (e) => {
+      store.setRandomUpdata(e);
+    });
 
     //@ts-expect-error 测试使用
     window._c = _handler;

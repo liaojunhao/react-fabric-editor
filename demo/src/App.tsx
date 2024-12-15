@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { TdesignEditorContainer, SidePanelWrap, WorkspaceWrap } from 'tdesign-editor';
 import { SidePanel } from 'tdesign-editor/lib/side-panel';
 import { Workspace } from 'tdesign-editor/lib/canvas/workspace';
@@ -9,22 +9,22 @@ import { createProject, ProjectContext } from 'tdesign-editor/lib/project';
 
 import 'tdesign-editor/lib/design-editor.css';
 
-const getOffsetHeight = () => {
-  return window.innerHeight;
-};
+// const getOffsetHeight = () => {
+//   return window.innerHeight;
+// };
 
-const useHeight = () => {
-  const [height, setHeight] = React.useState(getOffsetHeight());
-  React.useEffect(() => {
-    window.addEventListener('resize', () => {
-      setHeight(getOffsetHeight());
-    });
-  }, []);
-  return height;
-};
+// const useHeight = () => {
+//   const [height, setHeight] = React.useState(getOffsetHeight());
+//   React.useEffect(() => {
+//     window.addEventListener('resize', () => {
+//       setHeight(getOffsetHeight());
+//     });
+//   }, []);
+//   return height;
+// };
 
 function App() {
-  const store = createStore();
+  const store = createStore({ key: 'YfyjzbKDIRtvhiaehanr' });
   const project = createProject({ store });
   // const height = useHeight();
 

@@ -36,12 +36,22 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   if (!store) {
     return <div>没有传入或注册 store 对象无法初始化 Toolbar 组件</div>;
   }
+  // 是否选中的都是相同的元素
+  const oneType = 1 === new Set(store.selectedElements.map((e) => e.type)).size;
+  // console.log(oneType);
   const isOne = store.selectedElements.length === 1;
   const currentEle = store.selectedElements[0];
   // n = e.selectedElements.every((e) => e.styleEditable);
-  //@ts-expect-error
-  const isCrop = isOne && currentEle._cropModeEnabled;
-  const CurrentToolbar = isOne && ComponentsTypes[currentEle?.type]; // 对应的工具组件
+  let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
+  // let i = n && l && ComponentsTypes[a.type];
+  // console.log(currentEle?.type);
+  if (oneType && currentEle?.type === 'textbox') {
+    CurrentToolbar = ComponentsTypes[currentEle?.type];
+  } else {
+    if (store.selectedElements.length > 1) {
+      // 多个不同的元素就现实 ManyToolbar
+    }
+  }
 
   const _ = useRef(components);
   const s = _.current;
@@ -49,7 +59,7 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
       <NavInner>
-        {!isCrop && <HistoryButtons store={store}></HistoryButtons>}
+        <HistoryButtons store={store}></HistoryButtons>
         {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
       </NavInner>
     </NavbarContainer>

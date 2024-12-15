@@ -24,12 +24,16 @@ export const Store = types
     custom: types.frozen(),
     fonts: types.array(types.frozen()),
     selectedElementsIds: types.array(types.string),
+    // 为了让UI刷新
+    randomUpdata: 0,
     handler: types.frozen<Handlers>(),
-    objects: types.array(types.frozen()), // 这个数据只能去触发存储，不能实际拿来操作
+    // 这个数据只能去触发存储，不能实际拿来操作（为了触发存储才设置的）
+    objects: types.array(types.frozen()),
   })
   .views((self) => ({
     // 计算出当前选中了多少元素
     get selectedElements() {
+      const updata = self.randomUpdata;
       return self.selectedElementsIds
         .map((t) => {
           //@ts-expect-error
@@ -55,6 +59,9 @@ export const Store = types
     },
   }))
   .actions((self) => ({
+    setRandomUpdata(val) {
+      self.randomUpdata = val;
+    },
     setObjects(objs) {
       self.objects = objs;
     },
@@ -71,7 +78,6 @@ export const Store = types
         .map((id) => self.getElementById(id))
         .filter((e) => !!e)
         .map((e) => e.id);
-      // console.log('selectElements ---> ', els);
       self.selectedElementsIds = els;
     },
   }))
@@ -85,10 +91,14 @@ export const Store = types
       const _id = nanoid(10);
       const element = Object.assign({ id: _id, name: `${_id}_${obj.type}` }, obj);
       // 渲染层的选择
-      const ele = self.handler.addObject(element, { skipSelect, centered });
+      const ele = self.handler.addElement(element, { skipSelect, centered });
       // 数据层的选择
       !skipSelect && self.selectElements([ele.id]);
       return ele;
+    },
+    // 设置元素属性
+    setElement(target, option) {
+      self.handler.setElement(target, option);
     },
     // 修改工作区颜色
     setWorkspaseBg(color: string) {
