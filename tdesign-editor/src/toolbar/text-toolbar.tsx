@@ -4,7 +4,16 @@ import { extendToolbar, ElementContainer } from './element-container';
 import useSWR from 'swr';
 import { getGoogleFontsListAPI } from '../utils/api';
 import { isGoogleFontChanged, getFontsList, globalFonts } from '../utils/fonts';
-import { Popover, Button, InputGroup, MenuItem, MenuDivider, ButtonGroup, NumericInput } from '@blueprintjs/core';
+import {
+  Popover,
+  Button,
+  InputGroup,
+  MenuItem,
+  MenuDivider,
+  ButtonGroup,
+  NumericInput,
+  Position,
+} from '@blueprintjs/core';
 import {
   Search,
   AlignLeft,
@@ -21,6 +30,7 @@ import styled from 'styled-components';
 import { getGoogleFontImage } from '../utils/api';
 import { observer } from 'mobx-react-lite';
 import ColorPicker from './color-picker';
+import { getName } from '../utils/l10n';
 
 type InputProps = {
   elements: Array<any>;
@@ -288,20 +298,84 @@ export const TextFontVariant = observer(({ elements, store }: InputProps) => {
 // 文字颜色
 export const TextFill = observer(({ elements, store }: InputProps) => {
   const element = elements[0];
-  console.log('颜色的设置 ---> ', element);
+  // console.log('颜色的设置 ---> ', element);
   return (
     <ColorPicker
       value={element.fill}
       style={{ marginRight: '5px' }}
-      store={store}
       gradientEnabled={false}
       onChange={(color) => {
-        console.log('TextFill ---> onChange', color);
+        // console.log('TextFill ---> onChange', color);
         elements.forEach((e) => {
           store.setElement(e, { fill: color });
         });
       }}
+      store={store}
     ></ColorPicker>
+  );
+});
+
+export const NumberInput = ({ value, onValueChange, ...option }) => {
+  const [r, l] = useState(value.toString());
+  useEffect(() => {
+    l(value.toString());
+  }, [value]);
+
+  return (
+    <NumericInput
+      value={r}
+      onValueChange={(e, t) => {
+        console.log('e, t', e, t);
+        l(t), Number.isNaN(e) || onValueChange(e);
+      }}
+      {...option}
+    ></NumericInput>
+  );
+};
+
+// 文字间距
+export const TextSpacing = observer(({ elements, store }: InputProps) => {
+  const n = elements[0];
+  const a = (n) => {
+    console.log('让画布更新', n);
+    elements.forEach((e) => {
+      store.setElement(e, n);
+    });
+  };
+  const r = 'number' == typeof n.lineHeight ? 100 * n.lineHeight : 120;
+  return (
+    <Popover
+      content={
+        <div style={{ padding: '15px', width: '230px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingTop: '5px',
+              paddingBottom: '5px',
+            }}
+          >
+            <div>{getName('toolbar.lineHeight')}</div>
+            <div>
+              <NumberInput
+                value={Math.round(r)}
+                onValueChange={(e) => {
+                  a({ lineHeight: e / 100 });
+                }}
+                style={{ width: '50px' }}
+                min={50}
+                max={250}
+                buttonPosition="none"
+              ></NumberInput>
+            </div>
+          </div>
+        </div>
+      }
+      position={Position.BOTTOM}
+    >
+      <Button icon="add-clip" minimal={true}></Button>
+    </Popover>
   );
 });
 
@@ -310,6 +384,7 @@ const PROPS_MAP = {
   TextFontSize: TextFontSize,
   TextFontVariant: TextFontVariant,
   TextFill: TextFill,
+  TextSpacing: TextSpacing,
 };
 
 /**
