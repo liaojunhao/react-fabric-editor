@@ -6,6 +6,7 @@ import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
 import FilterHandlers from './filterHandlers';
+import EffectHandlers from './effectHandlers';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
 
@@ -34,6 +35,7 @@ class Handlers {
   public eventHandlers: EventHandlers;
   public psdHandlers: PsdHandlers;
   public filterHandlers: FilterHandlers;
+  public effectHandlers: EffectHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -63,6 +65,7 @@ class Handlers {
     this.eventHandlers = new EventHandlers(this);
     this.psdHandlers = new PsdHandlers(this);
     this.filterHandlers = new FilterHandlers(this);
+    this.effectHandlers = new EffectHandlers(this);
   }
 
   // TODO：需要改造
@@ -109,16 +112,36 @@ class Handlers {
         // 模糊
         case 'blurEnabled':
           target.set(property, value);
-          //@ts-ignore
-          if (!target.blurRadius) {
-            target.set('blurRadius', 0);
-          }
-
-          this.filterHandlers.changeColorMode('blur', 0);
-
           break;
+        // 模糊调整
         case 'blurRadius':
           target.set(property, value);
+          break;
+        // 阴影
+        case 'shadowEnabled':
+          target.set(property, value);
+          // 渲染层的实现
+          if (value) {
+            this.effectHandlers.setShadow({ blur: 10, color: '#000', offsetX: 10, offsetY: 10 });
+          } else {
+            this.effectHandlers.setShadow({});
+          }
+          break;
+        // 阴影模糊调整
+        case 'shadowBlur':
+          this.effectHandlers.setShadowBlur(value);
+          break;
+        // 阴影x调整
+        case 'shadowOffsetX':
+          this.effectHandlers.setShadowOffsetX(value);
+          break;
+        // 阴影y调整
+        case 'shadowOffsetY':
+          this.effectHandlers.setShadowOffsetY(value);
+          break;
+        // 调整投影颜色
+        case 'shadowColor':
+          this.effectHandlers.setShadowColor(value);
           break;
         default:
           target.set(property, value);

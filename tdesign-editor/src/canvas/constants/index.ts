@@ -7,4 +7,5 @@ export const PROPERTIES_TO_INCLUDE = [
   // 自定义的模糊属性
   'blurEnabled',
   'blurRadius',
+  'shadowEnabled',
 ];

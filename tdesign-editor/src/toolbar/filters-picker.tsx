@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button } from '@blueprintjs/core';
 import { getName } from '../utils/l10n';
@@ -8,7 +8,22 @@ import { LeftJoin } from '@blueprintjs/icons';
 import ColorPicker from './color-picker';
 
 const limit = (e, t, a) => Math.max(t, Math.min(a, e));
-const NumberInput = () => <div>1</div>;
+
+export const NumberInput = ({ value, onValueChange, ...option }) => {
+  const [l, r] = useState(value.toString());
+  useEffect(() => {
+    r(value.toString());
+  }, [value]);
+  return (
+    <NumericInput
+      value={l}
+      onValueChange={(e, t) => {
+        r(t), Number.isNaN(e) || onValueChange(e);
+      }}
+      {...option}
+    ></NumericInput>
+  );
+};
 
 const EnablerNumberInput = ({
   label,
@@ -79,8 +94,6 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
     });
   };
 
-  console.log('l', l);
-
   return (
     <Popover
       position={Position.BOTTOM}
@@ -94,53 +107,187 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
             overflow: 'auto',
           }}
         >
-          {o && (
-            <EnablerNumberInput
-              label={getName('toolbar.blur')}
-              enabled={l.blurEnabled || false}
-              visible={c || r}
-              onEnabledChange={(e) => {
-                d({ blurEnabled: e });
-              }}
-              numberValue={l.blurRadius || 0}
-              onNumberValueChange={(e) => {
-                d({ blurRadius: e });
-              }}
-              min={0}
-              max={100}
-            ></EnablerNumberInput>
-          )}
-          {r && (
-            <Switch
-              checked={!!l.stroke}
-              label={getName('toolbar.textStroke')}
-              onChange={(e) => {
-                d({ stroke: e.target.checked ? '#000' : null });
-              }}
-              alignIndicator={Alignment.RIGHT}
-              style={{ marginTop: 20 }}
-            ></Switch>
-          )}
-          {r && !!l.stroke && (
+          {
+            // 模糊
+            o && (
+              <EnablerNumberInput
+                label={getName('toolbar.blur')}
+                enabled={l.blurEnabled || false}
+                visible={c || r}
+                onEnabledChange={(e) => {
+                  d({ blurEnabled: e });
+                }}
+                numberValue={l.blurRadius || 0}
+                onNumberValueChange={(e) => {
+                  d({ blurRadius: e });
+                }}
+                min={0}
+                max={100}
+              ></EnablerNumberInput>
+            )
+          }
+          {
+            // 描边
+            r && (
+              <Switch
+                checked={!!l.stroke}
+                label={getName('toolbar.textStroke')}
+                onChange={(e) => {
+                  d({ stroke: e.target.checked ? '#000' : null });
+                }}
+                alignIndicator={Alignment.RIGHT}
+                style={{ marginTop: 20 }}
+              ></Switch>
+            )
+          }
+          {
+            // 描边
+            r && !!l.stroke && (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <ColorPicker
+                    value={l.stroke}
+                    size={30}
+                    onChange={(e) => {
+                      d({ stroke: e });
+                    }}
+                    store={store}
+                  ></ColorPicker>
+                  <NumericInput
+                    defaultValue={l.strokeWidth}
+                    onValueChange={(e) => {
+                      d({ strokeWidth: limit(e, 1, 30) });
+                    }}
+                    style={{ width: '80px' }}
+                    min={1}
+                    max={Math.round(l.fontSize / 2)}
+                  ></NumericInput>
+                </div>
+              </>
+            )
+          }
+          <Switch
+            checked={!!l.shadowEnabled}
+            label={getName('toolbar.shadow')}
+            onChange={(e) => {
+              d({ shadowEnabled: e.target.checked });
+            }}
+            alignIndicator={Alignment.RIGHT}
+            style={{ marginTop: 20 }}
+          ></Switch>
+          {l.shadowEnabled && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingTop: '5px',
+                  paddingBottom: '5px',
+                }}
+              >
+                <div>{getName('toolbar.blur')}</div>
+                <div>
+                  <NumberInput
+                    value={l.shadow.blur}
+                    onValueChange={(e) => {
+                      d({ shadowBlur: limit(e, -50, 50) });
+                    }}
+                    style={{ width: 50 }}
+                    min={0}
+                    max={50}
+                    buttonPosition="none"
+                  ></NumberInput>
+                </div>
+              </div>
+              <Slider
+                value={l.shadow.blur}
+                onChange={(e) => {
+                  d({ shadowBlur: e });
+                }}
+                min={0}
+                max={50}
+                showTrackFill={false}
+                labelRenderer={false}
+              ></Slider>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingTop: '5px',
+                  paddingBottom: '5px',
+                }}
+              >
+                <div>{getName('toolbar.offsetX')}</div>
+                <div>
+                  <NumberInput
+                    value={l.shadow.offsetX}
+                    onValueChange={(e) => {
+                      d({ shadowOffsetX: limit(e, -50, 50) });
+                    }}
+                    style={{ width: 50 }}
+                    min={-50}
+                    max={50}
+                    buttonPosition="none"
+                  ></NumberInput>
+                </div>
+              </div>
+              <Slider
+                value={l.shadow.offsetX}
+                onChange={(e) => {
+                  d({ shadowOffsetX: e });
+                }}
+                min={-50}
+                max={50}
+                showTrackFill={false}
+                labelRenderer={false}
+              ></Slider>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingTop: '5px',
+                  paddingBottom: '5px',
+                }}
+              >
+                <div>{getName('toolbar.offsetY')}</div>
+                <div>
+                  <NumberInput
+                    value={l.shadow.offsetY}
+                    onValueChange={(e) => {
+                      d({ shadowOffsetY: limit(e, -50, 50) });
+                    }}
+                    style={{ width: 50 }}
+                    min={-50}
+                    max={50}
+                    buttonPosition="none"
+                  ></NumberInput>
+                </div>
+              </div>
+              <Slider
+                value={l.shadow.offsetY}
+                onChange={(e) => {
+                  d({ shadowOffsetY: e });
+                }}
+                min={-50}
+                max={50}
+                showTrackFill={false}
+                labelRenderer={false}
+              ></Slider>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '5px', paddingBottom: '5px' }}
+              >
+                <div style={{ lineHeight: '30px' }}>{getName('toolbar.color')}</div>
                 <ColorPicker
-                  value={l.stroke}
+                  value={l.shadow.color}
                   size={30}
                   onChange={(e) => {
-                    d({ stroke: e });
+                    d({ shadowColor: e });
                   }}
                   store={store}
                 ></ColorPicker>
-                <NumericInput
-                  defaultValue={l.strokeWidth}
-                  onValueChange={(e) => {
-                    d({ strokeWidth: limit(e, 1, 30) });
-                  }}
-                  style={{ width: '80px' }}
-                  min={1}
-                  max={Math.round(l.fontSize / 2)}
-                ></NumericInput>
               </div>
             </>
           )}
