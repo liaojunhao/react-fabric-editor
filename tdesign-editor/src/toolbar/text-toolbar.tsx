@@ -13,6 +13,7 @@ import {
   ButtonGroup,
   NumericInput,
   Position,
+  Slider,
 } from '@blueprintjs/core';
 import {
   Search,
@@ -31,6 +32,7 @@ import { getGoogleFontImage } from '../utils/api';
 import { observer } from 'mobx-react-lite';
 import ColorPicker from './color-picker';
 import { getName } from '../utils/l10n';
+import { FiltersPicker } from './filters-picker';
 
 type InputProps = {
   elements: Array<any>;
@@ -298,14 +300,12 @@ export const TextFontVariant = observer(({ elements, store }: InputProps) => {
 // 文字颜色
 export const TextFill = observer(({ elements, store }: InputProps) => {
   const element = elements[0];
-  // console.log('颜色的设置 ---> ', element);
   return (
     <ColorPicker
       value={element.fill}
       style={{ marginRight: '5px' }}
       gradientEnabled={false}
       onChange={(color) => {
-        // console.log('TextFill ---> onChange', color);
         elements.forEach((e) => {
           store.setElement(e, { fill: color });
         });
@@ -325,7 +325,7 @@ export const NumberInput = ({ value, onValueChange, ...option }) => {
     <NumericInput
       value={r}
       onValueChange={(e, t) => {
-        console.log('e, t', e, t);
+        // console.log('e, t', e, t);
         l(t), Number.isNaN(e) || onValueChange(e);
       }}
       {...option}
@@ -336,17 +336,19 @@ export const NumberInput = ({ value, onValueChange, ...option }) => {
 // 文字间距
 export const TextSpacing = observer(({ elements, store }: InputProps) => {
   const n = elements[0];
+  // 设置字体数据
   const a = (n) => {
-    console.log('让画布更新', n);
     elements.forEach((e) => {
       store.setElement(e, n);
     });
   };
+  // 字行高
   const r = 'number' == typeof n.lineHeight ? 100 * n.lineHeight : 120;
+
   return (
     <Popover
       content={
-        <div style={{ padding: '15px', width: '230px' }}>
+        <div style={{ padding: '13px', width: '230px' }}>
           <div
             style={{
               display: 'flex',
@@ -370,11 +372,56 @@ export const TextSpacing = observer(({ elements, store }: InputProps) => {
               ></NumberInput>
             </div>
           </div>
+          <Slider
+            value={Math.round(r)}
+            onChange={(e) => {
+              a({ lineHeight: e / 100 });
+            }}
+            min={50}
+            max={250}
+            stepSize={1}
+            showTrackFill={false}
+            labelRenderer={false}
+          ></Slider>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingTop: '5px',
+              paddingBottom: '5px',
+            }}
+          >
+            <div>{getName('toolbar.letterSpacing')}</div>
+            <div>
+              <NumberInput
+                value={Math.round(n.charSpacing)}
+                onValueChange={(e) => {
+                  a({ charSpacing: e });
+                }}
+                style={{ width: '50px' }}
+                min={-50}
+                max={250}
+                buttonPosition="none"
+              ></NumberInput>
+            </div>
+          </div>
+          <Slider
+            value={Math.round(n.charSpacing)}
+            onChange={(e) => {
+              a({ charSpacing: e });
+            }}
+            min={-50}
+            max={250}
+            stepSize={1}
+            showTrackFill={false}
+            labelRenderer={false}
+          ></Slider>
         </div>
       }
       position={Position.BOTTOM}
     >
-      <Button icon="add-clip" minimal={true}></Button>
+      <Button icon="properties" minimal={true}></Button>
     </Popover>
   );
 });
@@ -385,6 +432,7 @@ const PROPS_MAP = {
   TextFontVariant: TextFontVariant,
   TextFill: TextFill,
   TextSpacing: TextSpacing,
+  TextFilters: FiltersPicker,
 };
 
 /**

@@ -1,17 +1,42 @@
 import React from 'react';
-import { SketchPicker } from 'react-color';
+// import { SketchPicker } from 'react-color';
+import { Saturation, ColorWrap } from 'react-color/lib/components/common';
 
-// export const Sketch = ({}) => {
-//   return (
-//     <div>
-//       <SketchPicker />
-//     </div>
-//   );
-// };
-class Sketch extends React.Component {
-  render() {
-    return <SketchPicker />;
-  }
+interface Props {
+  width: any;
+  rgb: any;
+  hex: any;
+  hsv: any;
+  hsl: any;
+  onChange: any;
+  onSwatchHover: any;
+  disableAlpha: any;
+  presetColors: any;
+  renderers: any;
+  styles?: {};
+  className?: string;
 }
+const Sketch: React.FC<Props> = ({
+  width,
+  rgb,
+  hex,
+  hsv,
+  hsl,
+  onChange,
+  onSwatchHover,
+  disableAlpha,
+  presetColors,
+  renderers,
+  styles: passedStyles,
+  className,
+}) => {
+  return (
+    <div className="sketch-picker" style={{}}>
+      <div style={{}}>
+        <Saturation></Saturation>
+      </div>
+    </div>
+  );
+};
 
-export default Sketch;
+export default ColorWrap(Sketch);
