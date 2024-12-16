@@ -16,7 +16,7 @@ class EffectHandlers {
     const defaultOffsetX = 0;
     const defaultOffsetY = 10;
     if (!blur && !color && !offsetX && !offsetY) {
-      delete currentObj.shadow;
+      currentObj.shadow = null;
     } else {
       currentObj.shadow = new Shadow({
         blur: blur ?? defaultBlur,
