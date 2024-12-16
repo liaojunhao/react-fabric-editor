@@ -5,6 +5,7 @@ import CanvasEventEmitter from '../utils/notifier';
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
+import FilterHandlers from './filterHandlers';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
 
@@ -32,6 +33,7 @@ class Handlers {
   public workareaHandlers: WorkareaHandlers;
   public eventHandlers: EventHandlers;
   public psdHandlers: PsdHandlers;
+  public filterHandlers: FilterHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -56,13 +58,14 @@ class Handlers {
    * 初始化所有控制模块
    */
   private _initHandler() {
-    this.event = new CanvasEventEmitter(this); // 他需要在第一位
-
+    this.event = new CanvasEventEmitter(this);
     this.workareaHandlers = new WorkareaHandlers(this);
     this.eventHandlers = new EventHandlers(this);
     this.psdHandlers = new PsdHandlers(this);
+    this.filterHandlers = new FilterHandlers(this);
   }
 
+  // TODO：需要改造
   private _addObjects(object) {
     this.objects.push(object.toObject(this.propertiesToInclude));
     this.event.emit(SelectEvent.CHANGE, this.objects);
@@ -88,7 +91,7 @@ class Handlers {
     }
 
     this.canvas.renderAll();
-
+    // TODO：需要改造
     this._addObjects(element);
     return element;
   }
@@ -101,7 +104,27 @@ class Handlers {
   setElement(target: FabricObject, options) {
     Object.keys(options).forEach((property) => {
       const value = options[property];
-      target.set(property, value);
+
+      switch (property) {
+        // 模糊
+        case 'blurEnabled':
+          target.set(property, value);
+          //@ts-ignore
+          if (!target.blurRadius) {
+            target.set('blurRadius', 0);
+          }
+
+          this.filterHandlers.changeColorMode('blur', 0);
+
+          break;
+        case 'blurRadius':
+          target.set(property, value);
+          break;
+        default:
+          target.set(property, value);
+          break;
+      }
+
       target.setCoords();
       this.canvas.requestRenderAll();
       // 画布改完了去刷新UI要更新
