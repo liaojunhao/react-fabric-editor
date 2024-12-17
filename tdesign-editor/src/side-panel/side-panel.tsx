@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { getName } from '../utils/l10n';
 import { Icon } from '@blueprintjs/core';
+import { CloudUpload } from '@blueprintjs/icons';
 import { StoreType } from '../model/store';
 import { SectionTab } from './tab-button';
 
-import TextPanel from './text-panel';
+import { TextPanel } from './text-panel';
+import { UploadPanel } from './upload-panel';
 
 interface SectionTabProps {
   onClick: any;
@@ -33,7 +35,21 @@ export const TextSection: Section = {
     return <TextPanel store={store}></TextPanel>;
   },
 };
-export const DEFAULT_SECTIONS = [TextSection];
+export const UploadSection: Section = {
+  name: 'upload',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.upload'), ...props }}>
+        <Icon icon={<CloudUpload></CloudUpload>}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <UploadPanel store={store}></UploadPanel>;
+  },
+};
+
+export const DEFAULT_SECTIONS = [TextSection, UploadSection];
 
 const SidePanelContainer = styled.div`
   display: flex;
@@ -83,7 +99,7 @@ interface SidePanelProps {
 }
 export const SidePanel = observer(({ sections, store }: SidePanelProps) => {
   useOnFirstRender(() => {
-    store.openSidePanel('text');
+    store.openSidePanel('upload');
   });
   const tabsWrapRef = useRef(null);
 

@@ -14,7 +14,7 @@ const TYPES_MAP = {
 
 export const Store = types
   .model('Store', {
-    openedSidePanel: 'text',
+    openedSidePanel: 'upload',
     width: 1080,
     height: 1080,
     scale: 1,

@@ -86,10 +86,11 @@ export const FileMenu: React.FC<FileMenuProps> = ({ store, project }) => {
         <div className={Classes.DIALOG_BODY}>
           <h2>这是什么的？</h2>
           <p>
-            <strong>超图设计工具</strong> 是一款用于创建图形设计的 Web 应用程序。您可以混合使用图像、文本
+            <strong>易图设计工具</strong> 是一款用于创建图形设计的 Web 应用程序。您可以混合使用图像、文本
             和插图来制作社交媒体帖子、YouTube 预览、播客封面、名片和演示文稿。
           </p>
           <h2>它是开源的嘛?</h2>
+          <p>部分源代码开源</p>
         </div>
       </Dialog>
     </>

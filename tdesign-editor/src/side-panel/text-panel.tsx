@@ -31,7 +31,7 @@ const FontContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-const TextPanel = ({ store }: { store: StoreType }) => {
+export const TextPanel = ({ store }: { store: StoreType }) => {
   const [value, setValue] = useState('text');
 
   const addText = () => {
@@ -73,12 +73,9 @@ const TextPanel = ({ store }: { store: StoreType }) => {
           >
             修改画布大小
           </Button>
-          <Button>添加图片</Button>
         </Container>
       )}
       {value === 'font' && <Container>font</Container>}
     </div>
   );
 };
-
-export default TextPanel;
