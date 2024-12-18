@@ -8,6 +8,11 @@ import { PROPERTIES_TO_INCLUDE } from './constants';
 
 const EditorCanvas = styled.div``;
 
+let onDomDrop = null;
+export const registerNextDomDrop = (e) => {
+  onDomDrop = e;
+};
+
 export type WorkspaceProps = {
   store: StoreType;
   components?: any;
@@ -68,6 +73,8 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
         backgroundColor: backgroundColor || '#f1f1f1',
       }}
       tabIndex={0}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(n) => {}}
     >
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
         <canvas id="canvas" ref={canvasEl}></canvas>

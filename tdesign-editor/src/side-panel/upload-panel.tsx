@@ -4,6 +4,8 @@ import { getName } from '../utils/l10n';
 import { Button } from '@blueprintjs/core';
 import { Upload } from '@blueprintjs/icons';
 import { localFileToURL } from '../utils/file';
+import { ImagesGrid } from './images-grid';
+import { selectImage } from './select-image';
 
 let uploadFunc = async (e) => localFileToURL(e);
 export function setUploadFunc(e) {
@@ -29,8 +31,6 @@ export const UploadPanel = ({ store }: { store: StoreType }) => {
   useEffect(() => {
     filesCache = t;
   }, [t]);
-
-  console.log('t --->', t);
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -71,6 +71,32 @@ export const UploadPanel = ({ store }: { store: StoreType }) => {
           ></input>
         </label>
       </div>
+      <ImagesGrid
+        images={t}
+        isLoading={i}
+        //@ts-ignore
+        getPreview={(e) => e.preview}
+        onSelect={async (t) => {
+          const r = t.url;
+          const a = t.type;
+          if ('image' === a) {
+            selectImage({ src: r, store: store });
+          }
+        }}
+        getExtra={(img) => {
+          return (
+            <Button
+              icon="trash"
+              minimal={true}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log('删除');
+              }}
+              style={{ color: '#fff' }}
+            />
+          );
+        }}
+      ></ImagesGrid>
     </div>
   );
 };

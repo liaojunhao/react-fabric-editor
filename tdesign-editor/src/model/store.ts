@@ -83,17 +83,17 @@ export const Store = types
   }))
   .actions((self) => ({
     // 添加元素
-    addElement(obj, { skipSelect = false, centered = true }) {
+    async addElement(obj, { skipSelect = false, centered = false }) {
       // 先看有没有这个类型
-      const n = TYPES_MAP[obj.type];
-      if (!n) return void console.error('Can not find model with type ' + obj.type);
+      const fabricObject = TYPES_MAP[obj.type];
+      if (!fabricObject) return void console.error('Can not find model with type ' + obj.type);
       // 在创建这个数据
       const _id = nanoid(10);
       const element = Object.assign({ id: _id, name: `${_id}_${obj.type}` }, obj);
       // 渲染层的选择
-      const ele = self.handler.addElement(element, { skipSelect, centered });
+      const ele = await self.handler.addElement(element, { skipSelect, centered });
       // 数据层的选择
-      !skipSelect && self.selectElements([ele.id]);
+      ele && !skipSelect && self.selectElements([ele.id]);
       return ele;
     },
     // 设置元素属性

@@ -79,24 +79,27 @@ class Handlers {
    * @param options
    * @param centered
    */
-  addElement(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
+  async addElement(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
     const { type, ...textOptions } = options;
-    const element = CanvasObjects[type].render(textOptions);
-    this.canvas.add(element);
+    const element = await CanvasObjects[type].render(textOptions, this);
+    if (element) {
+      this.canvas.add(element);
 
-    if (centered) {
-      const center = this.workareaHandlers.workarea.getCenterPoint();
-      this.canvas._centerObject(element, center);
+      if (centered) {
+        const center = this.workareaHandlers.workarea.getCenterPoint();
+        this.canvas._centerObject(element, center);
+      }
+
+      if (!skipSelect) {
+        this.canvas.setActiveObject(element);
+      }
+
+      this.canvas.renderAll();
+
+      // TODO：需要改造
+      this._addObjects(element);
+      return element;
     }
-
-    if (!skipSelect) {
-      this.canvas.setActiveObject(element);
-    }
-
-    this.canvas.renderAll();
-    // TODO：需要改造
-    this._addObjects(element);
-    return element;
   }
 
   /**
