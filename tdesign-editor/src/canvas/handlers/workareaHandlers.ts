@@ -30,7 +30,7 @@ class WorkareaHandlers {
   }
 
   /**
-   * 钩子函数
+   * 钩子函数 TODO：需要改造
    * @returns
    */
   hookImportAfter() {
@@ -76,11 +76,10 @@ class WorkareaHandlers {
     this.workarea = workarea;
 
     this.auto();
+
     // 初始化画布（只做一次）
     setTimeout(() => {
-      //@ts-ignore
-      this.handlers.objects.push(this.workarea.toObject(this.handlers.propertiesToInclude));
-      this.handlers.event.emit(SelectEvent.CHANGE, this.handlers.objects);
+      this.handlers.event.emit(SelectEvent.UPDATA, Math.random());
     });
   }
 

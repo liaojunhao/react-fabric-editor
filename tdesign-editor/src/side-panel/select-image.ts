@@ -16,7 +16,8 @@ export const selectImage = async ({ src, droppedPos, targetElement, store }: Pro
   const scale = Math.min(store.width / n, store.height / g, 1);
   n *= scale;
   g *= scale;
+  // 计算加图时候的坐标的
   // const c = ((null == t ? void 0 : t.x) || s.width / 2) - n / 2,
   // r = ((null == t ? void 0 : t.y) || s.height / 2) - g / 2;
-  store.addElement({ type: 'image', src: src, scaleX: scale, scaleY: scale }, {});
+  store.addElement({ type: 'image', src: src, scaleX: scale, scaleY: scale }, { centered: true });
 };

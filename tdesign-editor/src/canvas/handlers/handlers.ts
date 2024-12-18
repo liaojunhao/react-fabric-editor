@@ -2,13 +2,15 @@ import { Canvas, FabricObject } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
+import { nanoid } from 'nanoid';
+import { SelectEvent } from '../utils/types';
+
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
 import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
-import { nanoid } from 'nanoid';
-import { SelectEvent } from '../utils/types';
+import GuidelineHandlers from './guidelineHandlers';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -27,7 +29,7 @@ class Handlers {
   public canvasElParent: HTMLDivElement;
   public canvas: Canvas;
   public backgroundColor: string;
-  public objects: FabricObject[] = [];
+  // public objects: FabricObject[] = [];
   public workareaOption: { width: number; height: number };
 
   public event: CanvasEventEmitter;
@@ -36,6 +38,7 @@ class Handlers {
   public psdHandlers: PsdHandlers;
   public filterHandlers: FilterHandlers;
   public effectHandlers: EffectHandlers;
+  public guidelineHandlers: GuidelineHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -66,12 +69,7 @@ class Handlers {
     this.psdHandlers = new PsdHandlers(this);
     this.filterHandlers = new FilterHandlers(this);
     this.effectHandlers = new EffectHandlers(this);
-  }
-
-  // TODO：需要改造
-  private _addObjects(object) {
-    this.objects.push(object.toObject(this.propertiesToInclude));
-    this.event.emit(SelectEvent.CHANGE, this.objects);
+    this.guidelineHandlers = new GuidelineHandlers(this);
   }
 
   /**
@@ -96,8 +94,7 @@ class Handlers {
 
       this.canvas.renderAll();
 
-      // TODO：需要改造
-      this._addObjects(element);
+      this.event.emit(SelectEvent.UPDATA, Math.random());
       return element;
     }
   }
@@ -156,6 +153,18 @@ class Handlers {
       // 画布改完了去刷新UI要更新
       this.event.emit(SelectEvent.UPDATA, Math.random());
     });
+  }
+
+  /**
+   * 删除元素
+   */
+  remove() {
+    const activeObject = this.canvas.getActiveObject();
+    if (!activeObject) {
+      return false;
+    }
+    this.canvas.discardActiveObject();
+    this.canvas.remove(activeObject);
   }
 
   /**

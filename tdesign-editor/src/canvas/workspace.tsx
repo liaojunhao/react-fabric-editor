@@ -21,11 +21,9 @@ export type WorkspaceProps = {
 export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) => {
   const containerRef = createRef<HTMLDivElement>();
   const canvasEl = createRef<HTMLCanvasElement>();
-  const handlerRef = useRef(null);
 
   // 初始化画布
   useEffect(() => {
-    // if (!handlerRef.current) return;
     const _handler = new Handlers({
       canvasElParent: containerRef.current,
       canvasEl: canvasEl.current,
@@ -50,9 +48,6 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     /**
      * 监听数据有改变
      */
-    _handler.event.on(SelectEvent.CHANGE, (e) => {
-      store.setObjects(e);
-    });
     _handler.event.on(SelectEvent.UPDATA, (e) => {
       store.setRandomUpdata(e);
     });
@@ -60,6 +55,8 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     //@ts-expect-error 测试使用
     window._c = _handler;
   }, []);
+
+  useEffect(() => {}, [store.children]);
 
   return (
     <EditorCanvas

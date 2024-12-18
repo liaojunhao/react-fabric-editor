@@ -15,8 +15,8 @@ const TYPES_MAP = {
 export const Store = types
   .model('Store', {
     openedSidePanel: 'upload',
-    width: 1080,
-    height: 1080,
+    width: 666,
+    height: 1000,
     scale: 1,
     scaleToFit: 1,
     unit: 'px',
@@ -24,22 +24,26 @@ export const Store = types
     custom: types.frozen(),
     fonts: types.array(types.frozen()),
     selectedElementsIds: types.array(types.string),
-    // 为了让UI刷新
-    randomUpdata: 0,
+    randomUpdata: 1,
     handler: types.frozen<Handlers>(),
-    // 这个数据只能去触发存储，不能实际拿来操作（为了触发存储才设置的）
     objects: types.array(types.frozen()),
   })
   .views((self) => ({
-    // 计算出当前选中了多少元素
+    get children() {
+      this.updateObjects();
+      return self.randomUpdata;
+    },
     get selectedElements() {
-      const updata = self.randomUpdata;
-      return self.selectedElementsIds
-        .map((t) => {
-          //@ts-expect-error
-          for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
-        })
-        .filter((e) => !!e);
+      const updata = self.randomUpdata === 0 ? 1 : self.randomUpdata;
+      return (
+        !updata ||
+        self.selectedElementsIds
+          .map((t) => {
+            //@ts-expect-error
+            for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
+          })
+          .filter((e) => !!e)
+      );
     },
     get selectedShapes() {
       const t = [];
@@ -52,13 +56,20 @@ export const Store = types
 
       return t;
     },
-    // find(callback) {},
     getElementById(id) {
       //@ts-expect-error
       return self.handler.canvas.getObjects().find((item) => item.id === id);
     },
   }))
   .actions((self) => ({
+    updateObjects() {
+      if (self.handler) {
+        const _objects = self.handler.canvas.getObjects().map((item) => {
+          return item.toObject(self.handler.propertiesToInclude);
+        });
+        self.objects.replace(_objects); // 使用 replace 方法更新数组
+      }
+    },
     setRandomUpdata(val) {
       self.randomUpdata = val;
     },

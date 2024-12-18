@@ -86,6 +86,7 @@ export const UploadPanel = ({ store }: { store: StoreType }) => {
         getExtra={(img) => {
           return (
             <Button
+              intent="primary"
               icon="trash"
               minimal={true}
               onClick={(e) => {
