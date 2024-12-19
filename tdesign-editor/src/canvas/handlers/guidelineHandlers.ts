@@ -1,342 +1,273 @@
 import Handlers from './handlers';
-import { Point } from 'fabric';
+import { fabric } from 'fabric';
+
+declare interface VerticalLine {
+  x: number;
+  y1: number;
+  y2: number;
+}
+
+declare interface HorizontalLine {
+  x1: number;
+  x2: number;
+  y: number;
+}
 
 class GuidelineHandlers {
-  private ctx: CanvasRenderingContext2D;
-  aligningLineOffset = 2;
-  aligningLineMargin = 4;
-  aligningLineWidth = 1;
-  aligningLineColor = 'rgb(255, 73, 255)';
-  viewportTransform: number[];
-  zoom = 1;
-  verticalLines: { x?: number; y1?: number; y2?: number }[];
-  horizontalLines: { y?: number; x1?: number; x2?: number }[];
+  defautOption = {
+    color: 'rgba(255,95,95,1)',
+    width: 1,
+  };
 
   constructor(private handlers: Handlers) {
-    this.handlers.canvas.on('before:render', this.beforeRender.bind(this));
-    this.handlers.canvas.on('after:render', this.afterRender.bind(this));
+    const { canvas } = this.handlers;
+    const ctx = canvas.getSelectionContext();
+    const aligningLineOffset = 5;
+    const aligningLineMargin = 4;
+    const This = this;
+    let viewportTransform: number[] | undefined = canvas.viewportTransform;
+    let zoom = 1;
 
-    this.ctx = this.handlers.canvas.getSelectionContext();
-    this.aligningLineOffset = 5;
-    this.aligningLineMargin = 4;
-    this.aligningLineWidth = 1;
-    this.aligningLineColor = 'rgb(255, 0, 0)';
-    this.viewportTransform = this.handlers.canvas.viewportTransform;
-    this.zoom = this.handlers.canvas.getZoom();
-    this.verticalLines = [];
-    this.horizontalLines = [];
-  }
-
-  drawVerticalLine(coords) {
-    this.drawLine(
-      coords.x + 0.5,
-      coords.y1 > coords.y2 ? coords.y2 : coords.y1,
-      coords.x + 0.5,
-      coords.y2 > coords.y1 ? coords.y2 : coords.y1,
-    );
-  }
-
-  drawHorizontalLine(coords) {
-    this.drawLine(
-      coords.x1 > coords.x2 ? coords.x2 : coords.x1,
-      coords.y + 0.5,
-      coords.x2 > coords.x1 ? coords.x2 : coords.x1,
-      coords.y + 0.5,
-    );
-  }
-
-  drawLine(x1, y1, x2, y2) {
-    this.viewportTransform = this.handlers.canvas.viewportTransform;
-    this.zoom = this.handlers.canvas.getZoom();
-    const { ctx, aligningLineWidth, aligningLineColor, viewportTransform, zoom } = this;
-    ctx.save();
-    ctx.lineWidth = aligningLineWidth;
-    ctx.strokeStyle = aligningLineColor;
-    ctx.beginPath();
-    ctx.moveTo(x1 * zoom + viewportTransform[4], y1 * zoom + viewportTransform[5]);
-    ctx.lineTo(x2 * zoom + viewportTransform[4], y2 * zoom + viewportTransform[5]);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  isInRange(v1, v2) {
-    const { aligningLineMargin } = this;
-    v1 = Math.round(v1);
-    v2 = Math.round(v2);
-    for (let i = v1 - aligningLineMargin, len = v1 + aligningLineMargin; i <= len; i++) {
-      if (i === v2) {
-        return true;
-      }
+    function drawVerticalLine(coords: VerticalLine) {
+      drawLine(
+        coords.x + 0.5,
+        coords.y1 > coords.y2 ? coords.y2 : coords.y1,
+        coords.x + 0.5,
+        coords.y2 > coords.y1 ? coords.y2 : coords.y1,
+      );
     }
-    return false;
-  }
 
-  movingGuidelines(target) {
-    if (!target) {
-      return;
+    function drawHorizontalLine(coords: HorizontalLine) {
+      drawLine(
+        coords.x1 > coords.x2 ? coords.x2 : coords.x1,
+        coords.y + 0.5,
+        coords.x2 > coords.x1 ? coords.x2 : coords.x1,
+        coords.y + 0.5,
+      );
     }
-    const canvasObjects = this.handlers.canvas.getObjects();
-    const activeObjectCenter = target.getCenterPoint();
-    const activeObjectLeft = activeObjectCenter.x;
-    const activeObjectTop = activeObjectCenter.y;
-    const activeObjectBoundingRect = target.getBoundingRect();
-    const activeObjectHeight = activeObjectBoundingRect.height / this.viewportTransform[3];
-    const activeObjectWidth = activeObjectBoundingRect.width / this.viewportTransform[0];
-    let horizontalInTheRange = false;
-    let verticalInTheRange = false;
-    const { _currentTransform: transform } = this.handlers.canvas;
-    if (!transform) return;
 
-    // It should be trivial to DRY this up by encapsulating (repeating) creation of x1, x2, y1, and y2 into functions,
-    // but we're not doing it here for perf. reasons -- as this a function that's invoked on every mouse move
+    function drawLine(x1: number, y1: number, x2: number, y2: number) {
+      if (viewportTransform == null) return;
 
-    for (let i = canvasObjects.length; i--; ) {
-      if (
-        canvasObjects[i] === target ||
-        //@ts-ignore
-        canvasObjects[i].superType === 'port' ||
-        //@ts-ignore
-        canvasObjects[i].superType === 'link' ||
-        !canvasObjects[i].evented
-      ) {
-        continue;
+      ctx.moveTo(x1 * zoom + viewportTransform[4], y1 * zoom + viewportTransform[5]);
+      ctx.lineTo(x2 * zoom + viewportTransform[4], y2 * zoom + viewportTransform[5]);
+    }
+
+    function isInRange(value1: number, value2: number) {
+      value1 = Math.round(value1);
+      value2 = Math.round(value2);
+      for (let i = value1 - aligningLineMargin, len = value1 + aligningLineMargin; i <= len; i++) {
+        if (i === value2) {
+          return true;
+        }
       }
+      return false;
+    }
 
-      const objectCenter = canvasObjects[i].getCenterPoint();
-      const objectLeft = objectCenter.x;
-      const objectTop = objectCenter.y;
-      const objectBoundingRect = canvasObjects[i].getBoundingRect();
-      const objectHeight = objectBoundingRect.height / this.viewportTransform[3];
-      const objectWidth = objectBoundingRect.width / this.viewportTransform[0];
+    const verticalLines: VerticalLine[] = [];
+    const horizontalLines: HorizontalLine[] = [];
 
-      // snap by the horizontal center line
-      if (this.isInRange(objectLeft, activeObjectLeft)) {
-        verticalInTheRange = true;
-        // @ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const y1 = -5000;
-          const y2 = 5000;
-          this.verticalLines.push({
-            x: objectLeft,
-            y1,
-            y2,
-          });
-        } else {
-          this.verticalLines.push({
+    canvas.on('mouse:down', () => {
+      viewportTransform = canvas.viewportTransform;
+      zoom = canvas.getZoom();
+    });
+
+    canvas.on('object:moving', (e) => {
+      if (viewportTransform === undefined || e.target === undefined) return;
+
+      const activeObject = e.target;
+      const canvasObjects = canvas.getObjects();
+      const activeObjectCenter = activeObject.getCenterPoint();
+      const activeObjectLeft = activeObjectCenter.x;
+      const activeObjectTop = activeObjectCenter.y;
+      const activeObjectBoundingRect = activeObject.getBoundingRect();
+      const activeObjectHeight = activeObjectBoundingRect.height / viewportTransform[3];
+      const activeObjectWidth = activeObjectBoundingRect.width / viewportTransform[0];
+      let horizontalInTheRange = false;
+      let verticalInTheRange = false;
+      const transform = canvas._currentTransform;
+
+      if (!transform) return;
+
+      for (let i = canvasObjects.length; i--; ) {
+        // 要对比的边界不能是自己
+        if (canvasObjects[i] === activeObject) continue;
+
+        const objectCenter = canvasObjects[i].getCenterPoint();
+        const objectLeft = objectCenter.x;
+        const objectTop = objectCenter.y;
+        const objectBoundingRect = canvasObjects[i].getBoundingRect();
+        const objectHeight = objectBoundingRect.height / viewportTransform[3];
+        const objectWidth = objectBoundingRect.width / viewportTransform[0];
+
+        // snap by the horizontal center line
+        if (isInRange(objectLeft, activeObjectLeft)) {
+          verticalInTheRange = true;
+          verticalLines.push({
             x: objectLeft,
             y1:
               objectTop < activeObjectTop
-                ? objectTop - objectHeight / 2 - this.aligningLineOffset
-                : objectTop + objectHeight / 2 + this.aligningLineOffset,
+                ? objectTop - objectHeight / 2 - aligningLineOffset
+                : objectTop + objectHeight / 2 + aligningLineOffset,
             y2:
               activeObjectTop > objectTop
-                ? activeObjectTop + activeObjectHeight / 2 + this.aligningLineOffset
-                : activeObjectTop - activeObjectHeight / 2 - this.aligningLineOffset,
+                ? activeObjectTop + activeObjectHeight / 2 + aligningLineOffset
+                : activeObjectTop - activeObjectHeight / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(new fabric.Point(objectLeft, activeObjectTop), 'center', 'center');
         }
-        target.setPositionByOrigin(new Point(objectLeft, activeObjectTop), 'center', 'center');
-      }
 
-      // snap by the left edge
-      if (this.isInRange(objectLeft - objectWidth / 2, activeObjectLeft - activeObjectWidth / 2)) {
-        verticalInTheRange = true;
-        console.log(canvasObjects[i]);
-        // @ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const y1 = -5000;
-          const y2 = 5000;
-          let x = objectLeft - objectWidth / 2;
-          // @ts-ignore
-          if (canvasObjects[i].layout === 'fullscreen') {
-            x = 0;
-          }
-          this.verticalLines.push({
-            x,
-            y1,
-            y2,
-          });
-        } else {
-          this.verticalLines.push({
+        // snap by the left edge
+        if (isInRange(objectLeft - objectWidth / 2, activeObjectLeft - activeObjectWidth / 2)) {
+          verticalInTheRange = true;
+          verticalLines.push({
             x: objectLeft - objectWidth / 2,
             y1:
               objectTop < activeObjectTop
-                ? objectTop - objectHeight / 2 - this.aligningLineOffset
-                : objectTop + objectHeight / 2 + this.aligningLineOffset,
+                ? objectTop - objectHeight / 2 - aligningLineOffset
+                : objectTop + objectHeight / 2 + aligningLineOffset,
             y2:
               activeObjectTop > objectTop
-                ? activeObjectTop + activeObjectHeight / 2 + this.aligningLineOffset
-                : activeObjectTop - activeObjectHeight / 2 - this.aligningLineOffset,
+                ? activeObjectTop + activeObjectHeight / 2 + aligningLineOffset
+                : activeObjectTop - activeObjectHeight / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(
+            new fabric.Point(objectLeft - objectWidth / 2 + activeObjectWidth / 2, activeObjectTop),
+            'center',
+            'center',
+          );
         }
-        target.setPositionByOrigin(
-          new Point(objectLeft - objectWidth / 2 + activeObjectWidth / 2, activeObjectTop),
-          'center',
-          'center',
-        );
-      }
 
-      // snap by the right edge
-      if (this.isInRange(objectLeft + objectWidth / 2, activeObjectLeft + activeObjectWidth / 2)) {
-        verticalInTheRange = true;
-        //@ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const y1 = -5000;
-          const y2 = 5000;
-          let x = objectLeft + objectWidth / 2;
-          //@ts-ignore
-          if (canvasObjects[i].layout === 'fullscreen') {
-            x = this.handlers.canvas.getWidth();
-          }
-          this.verticalLines.push({
-            x,
-            y1,
-            y2,
-          });
-        } else {
-          this.verticalLines.push({
+        // snap by the right edge
+        if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft + activeObjectWidth / 2)) {
+          verticalInTheRange = true;
+          verticalLines.push({
             x: objectLeft + objectWidth / 2,
             y1:
               objectTop < activeObjectTop
-                ? objectTop - objectHeight / 2 - this.aligningLineOffset
-                : objectTop + objectHeight / 2 + this.aligningLineOffset,
+                ? objectTop - objectHeight / 2 - aligningLineOffset
+                : objectTop + objectHeight / 2 + aligningLineOffset,
             y2:
               activeObjectTop > objectTop
-                ? activeObjectTop + activeObjectHeight / 2 + this.aligningLineOffset
-                : activeObjectTop - activeObjectHeight / 2 - this.aligningLineOffset,
+                ? activeObjectTop + activeObjectHeight / 2 + aligningLineOffset
+                : activeObjectTop - activeObjectHeight / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(
+            new fabric.Point(objectLeft + objectWidth / 2 - activeObjectWidth / 2, activeObjectTop),
+            'center',
+            'center',
+          );
         }
-        target.setPositionByOrigin(
-          new Point(objectLeft + objectWidth / 2 - activeObjectWidth / 2, activeObjectTop),
-          'center',
-          'center',
-        );
-      }
 
-      // snap by the vertical center line
-      if (this.isInRange(objectTop, activeObjectTop)) {
-        horizontalInTheRange = true;
-        //@ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const x1 = -5000;
-          const x2 = 5000;
-          this.horizontalLines.push({
-            y: objectTop,
-            x1,
-            x2,
-          });
-        } else {
-          this.horizontalLines.push({
+        // snap by the vertical center line
+        if (isInRange(objectTop, activeObjectTop)) {
+          horizontalInTheRange = true;
+          horizontalLines.push({
             y: objectTop,
             x1:
               objectLeft < activeObjectLeft
-                ? objectLeft - objectWidth / 2 - this.aligningLineOffset
-                : objectLeft + objectWidth / 2 + this.aligningLineOffset,
+                ? objectLeft - objectWidth / 2 - aligningLineOffset
+                : objectLeft + objectWidth / 2 + aligningLineOffset,
             x2:
               activeObjectLeft > objectLeft
-                ? activeObjectLeft + activeObjectWidth / 2 + this.aligningLineOffset
-                : activeObjectLeft - activeObjectWidth / 2 - this.aligningLineOffset,
+                ? activeObjectLeft + activeObjectWidth / 2 + aligningLineOffset
+                : activeObjectLeft - activeObjectWidth / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop), 'center', 'center');
         }
-        target.setPositionByOrigin(new Point(activeObjectLeft, objectTop), 'center', 'center');
-      }
 
-      // snap by the top edge
-      if (this.isInRange(objectTop - objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
-        horizontalInTheRange = true;
-        //@ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const x1 = -5000;
-          const x2 = 5000;
-          let y = objectTop - objectHeight / 2;
-          //@ts-ignore
-          if (canvasObjects[i].layout === 'fullscreen') {
-            y = 0;
-          }
-          this.horizontalLines.push({
-            y,
-            x1,
-            x2,
-          });
-        } else {
-          this.horizontalLines.push({
+        // snap by the top edge
+        if (isInRange(objectTop - objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
+          horizontalInTheRange = true;
+          horizontalLines.push({
             y: objectTop - objectHeight / 2,
             x1:
               objectLeft < activeObjectLeft
-                ? objectLeft - objectWidth / 2 - this.aligningLineOffset
-                : objectLeft + objectWidth / 2 + this.aligningLineOffset,
+                ? objectLeft - objectWidth / 2 - aligningLineOffset
+                : objectLeft + objectWidth / 2 + aligningLineOffset,
             x2:
               activeObjectLeft > objectLeft
-                ? activeObjectLeft + activeObjectWidth / 2 + this.aligningLineOffset
-                : activeObjectLeft - activeObjectWidth / 2 - this.aligningLineOffset,
+                ? activeObjectLeft + activeObjectWidth / 2 + aligningLineOffset
+                : activeObjectLeft - activeObjectWidth / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(
+            new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 + activeObjectHeight / 2),
+            'center',
+            'center',
+          );
         }
-        target.setPositionByOrigin(
-          new Point(activeObjectLeft, objectTop - objectHeight / 2 + activeObjectHeight / 2),
-          'center',
-          'center',
-        );
-      }
 
-      // snap by the bottom edge
-      if (this.isInRange(objectTop + objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
-        horizontalInTheRange = true;
-        //@ts-ignore
-        if (canvasObjects[i].id === 'workarea') {
-          const x1 = -5000;
-          const x2 = 5000;
-          let y = objectTop + objectHeight / 2;
-          //@ts-ignore
-          if (canvasObjects[i].layout === 'fullscreen') {
-            y = this.handlers.canvas.getHeight();
-          }
-          this.horizontalLines.push({
-            y,
-            x1,
-            x2,
-          });
-        } else {
-          this.horizontalLines.push({
+        // snap by the bottom edge
+        if (isInRange(objectTop + objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
+          horizontalInTheRange = true;
+          horizontalLines.push({
             y: objectTop + objectHeight / 2,
             x1:
               objectLeft < activeObjectLeft
-                ? objectLeft - objectWidth / 2 - this.aligningLineOffset
-                : objectLeft + objectWidth / 2 + this.aligningLineOffset,
+                ? objectLeft - objectWidth / 2 - aligningLineOffset
+                : objectLeft + objectWidth / 2 + aligningLineOffset,
             x2:
               activeObjectLeft > objectLeft
-                ? activeObjectLeft + activeObjectWidth / 2 + this.aligningLineOffset
-                : activeObjectLeft - activeObjectWidth / 2 - this.aligningLineOffset,
+                ? activeObjectLeft + activeObjectWidth / 2 + aligningLineOffset
+                : activeObjectLeft - activeObjectWidth / 2 - aligningLineOffset,
           });
+          activeObject.setPositionByOrigin(
+            new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 - activeObjectHeight / 2),
+            'center',
+            'center',
+          );
         }
-        target.setPositionByOrigin(
-          new Point(activeObjectLeft, objectTop + objectHeight / 2 - activeObjectHeight / 2),
-          'center',
-          'center',
-        );
       }
-    }
 
-    if (!horizontalInTheRange) {
-      this.horizontalLines.length = 0;
-    }
+      if (!horizontalInTheRange) {
+        horizontalLines.length = 0;
+      }
 
-    if (!verticalInTheRange) {
-      this.verticalLines.length = 0;
-    }
+      if (!verticalInTheRange) {
+        verticalLines.length = 0;
+      }
+    });
+
+    canvas.on('before:render', () => {
+      // fix 保存图片时报错
+      if (canvas.contextTop === null) {
+        return;
+      }
+      try {
+        canvas.clearContext(canvas.contextTop);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    canvas.on('after:render', () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.lineWidth = This.defautOption.width;
+      ctx.strokeStyle = This.defautOption.color;
+      for (let i = verticalLines.length; i--; ) {
+        drawVerticalLine(verticalLines[i]);
+      }
+      for (let j = horizontalLines.length; j--; ) {
+        drawHorizontalLine(horizontalLines[j]);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // noinspection NestedAssignmentJS
+      verticalLines.length = 0;
+      horizontalLines.length = 0;
+    });
+
+    canvas.on('mouse:up', () => {
+      verticalLines.length = 0;
+      horizontalLines.length = 0;
+      canvas.renderAll();
+    });
   }
 
-  beforeRender() {
-    this.handlers.canvas.clearContext(this.handlers.guidelineHandlers.ctx);
-  }
-
-  afterRender() {
-    for (let i = this.verticalLines.length; i--; ) {
-      this.drawVerticalLine(this.verticalLines[i]);
-    }
-    for (let i = this.horizontalLines.length; i--; ) {
-      this.drawHorizontalLine(this.horizontalLines[i]);
-    }
-    this.verticalLines.length = 0;
-    this.horizontalLines.length = 0;
+  destroy() {
+    console.log('pluginDestroy');
   }
 }
 

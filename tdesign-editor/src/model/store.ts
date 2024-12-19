@@ -99,8 +99,7 @@ export const Store = types
       const fabricObject = TYPES_MAP[obj.type];
       if (!fabricObject) return void console.error('Can not find model with type ' + obj.type);
       // 在创建这个数据
-      const _id = nanoid(10);
-      const element = Object.assign({ id: _id, name: `${_id}_${obj.type}` }, obj);
+      const element = Object.assign({ name: `new_${obj.type}` }, obj);
       // 渲染层的选择
       const ele = await self.handler.addElement(element, { skipSelect, centered });
       // 数据层的选择

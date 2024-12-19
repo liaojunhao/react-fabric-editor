@@ -1,4 +1,5 @@
-import { Canvas, FabricObject } from 'fabric';
+// import { Canvas, FabricObject } from 'fabric';
+import { fabric } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
@@ -11,6 +12,7 @@ import PsdHandlers from './psdHandlers';
 import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
 import GuidelineHandlers from './guidelineHandlers';
+import AddHandlers from './addHandlers';
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -27,9 +29,8 @@ class Handlers {
     return this._propertiesToInclude;
   }
   public canvasElParent: HTMLDivElement;
-  public canvas: Canvas;
+  public canvas: fabric.Canvas;
   public backgroundColor: string;
-  // public objects: FabricObject[] = [];
   public workareaOption: { width: number; height: number };
 
   public event: CanvasEventEmitter;
@@ -39,11 +40,12 @@ class Handlers {
   public filterHandlers: FilterHandlers;
   public effectHandlers: EffectHandlers;
   public guidelineHandlers: GuidelineHandlers;
+  public addHandlers: AddHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
     this.backgroundColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
-    const canvas = new Canvas(canvasEl, {
+    const canvas = new fabric.Canvas(canvasEl, {
       fireRightClick: true, // 启用右键，button的数字为3
       stopContextMenu: true, // 禁止默认右键菜单
       controlsAboveOverlay: true, // 超出clipPath后仍然展示控制条
@@ -70,6 +72,7 @@ class Handlers {
     this.filterHandlers = new FilterHandlers(this);
     this.effectHandlers = new EffectHandlers(this);
     this.guidelineHandlers = new GuidelineHandlers(this);
+    this.addHandlers = new AddHandlers(this);
   }
 
   /**
@@ -77,23 +80,14 @@ class Handlers {
    * @param options
    * @param centered
    */
-  async addElement(options: { id: string; name: string; type: string }, { skipSelect = false, centered = true }) {
+  async addElement(
+    options: { id: string; name: string; type: string },
+    { skipSelect = false, scale = false, centered = true },
+  ) {
     const { type, ...textOptions } = options;
     const element = await CanvasObjects[type].render(textOptions, this);
     if (element) {
-      this.canvas.add(element);
-
-      if (centered) {
-        const center = this.workareaHandlers.workarea.getCenterPoint();
-        this.canvas._centerObject(element, center);
-      }
-
-      if (!skipSelect) {
-        this.canvas.setActiveObject(element);
-      }
-
-      this.canvas.renderAll();
-
+      this.addHandlers.addBaseType(element, { skipSelect, scale, centered });
       this.event.emit(SelectEvent.UPDATA, Math.random());
       return element;
     }
@@ -104,7 +98,7 @@ class Handlers {
    * @param target
    * @param options
    */
-  setElement(target: FabricObject, options) {
+  setElement(target, options) {
     Object.keys(options).forEach((property) => {
       const value = options[property];
 

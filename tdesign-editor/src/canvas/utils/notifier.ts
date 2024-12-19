@@ -1,19 +1,19 @@
 import EventEmitter from 'events';
 import Handlers from '../handlers';
-import { Canvas } from 'fabric';
+import { fabric } from 'fabric';
 import { SelectEvent } from './types';
 
 /**
  * 这是一个特殊的类，主要是做发布订阅
  */
 class CanvasEventEmitter extends EventEmitter {
-  canvas: Canvas;
+  canvas: fabric.Canvas;
   constructor(private handlers: Handlers) {
     super();
     this._init(this.handlers.canvas);
   }
 
-  private _init(canvas: Canvas) {
+  private _init(canvas: fabric.Canvas) {
     this.canvas = canvas;
     this.canvas.on('selection:created', () => this.selected());
     this.canvas.on('selection:updated', () => this.selected());

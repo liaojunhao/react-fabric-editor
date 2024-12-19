@@ -28,7 +28,7 @@
     "esModuleInterop": true // 启用对 ES 模块与 CommonJS 模块之间的互操作性支持。这对于与 CommonJS 模块（如 Node.js 模块）一起使用非常有用
   },
   // 编译文件
-  "include": ["./src", "./globals.d.ts"],
+  "include": ["./src", "./globals.d.ts", "typings/**/*.ts", "typings/**/*.d.ts"],
   "exclude": [
     "**/*.jsx",
     "**/**/_usage/*",

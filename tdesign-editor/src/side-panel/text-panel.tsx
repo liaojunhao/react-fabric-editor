@@ -42,7 +42,7 @@ export const TextPanel = ({ store }: { store: StoreType }) => {
       text: 'hello world！',
       width: 555,
     };
-    store.addElement(newElement, { skipSelect: false, centered: false });
+    store.addElement(newElement, { skipSelect: false, centered: true });
   };
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

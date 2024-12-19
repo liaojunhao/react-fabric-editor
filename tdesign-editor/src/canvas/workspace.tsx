@@ -1,10 +1,10 @@
-import React, { useEffect, createRef, useRef } from 'react';
+import React, { useEffect, createRef } from 'react';
 import styled from 'styled-components';
 import Handlers from './handlers';
 import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
 import { SelectEvent } from './utils/types';
-import { PROPERTIES_TO_INCLUDE } from './constants';
+// import { PROPERTIES_TO_INCLUDE } from './constants';
 
 const EditorCanvas = styled.div``;
 

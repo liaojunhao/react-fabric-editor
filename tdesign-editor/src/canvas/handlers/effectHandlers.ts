@@ -1,5 +1,5 @@
 import Handlers from './handlers';
-import { Shadow } from 'fabric';
+import { fabric } from 'fabric';
 
 class EffectHandlers {
   constructor(private handlers: Handlers) {}
@@ -18,7 +18,7 @@ class EffectHandlers {
     if (!blur && !color && !offsetX && !offsetY) {
       currentObj.shadow = null;
     } else {
-      currentObj.shadow = new Shadow({
+      currentObj.shadow = new fabric.Shadow({
         blur: blur ?? defaultBlur,
         color: color ?? '#000000',
         offsetX: offsetX ?? defaultOffsetX,
@@ -39,7 +39,7 @@ class EffectHandlers {
       return;
     }
     if (currentObj.shadow) {
-      currentObj.shadow.blur = blur;
+      (currentObj.shadow as fabric.Shadow).blur = blur;
     }
     this.handlers.canvas.renderAll();
   }
@@ -55,7 +55,7 @@ class EffectHandlers {
       return;
     }
     if (currentObj.shadow) {
-      currentObj.shadow.offsetX = offsetX;
+      (currentObj.shadow as fabric.Shadow).offsetX = offsetX;
     }
     this.handlers.canvas.renderAll();
   }
@@ -70,7 +70,7 @@ class EffectHandlers {
       return;
     }
     if (currentObj.shadow) {
-      currentObj.shadow.offsetY = offsetY;
+      (currentObj.shadow as fabric.Shadow).offsetY = offsetY;
     }
     this.handlers.canvas.renderAll();
   }
@@ -86,7 +86,7 @@ class EffectHandlers {
       return;
     }
     if (currentObj.shadow) {
-      currentObj.shadow.color = color;
+      (currentObj.shadow as fabric.Shadow).color = color;
     }
     this.handlers.canvas.renderAll();
   }

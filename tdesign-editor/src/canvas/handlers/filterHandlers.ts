@@ -1,5 +1,5 @@
 import Handlers from './handlers';
-import { filters, Image, Textbox } from 'fabric';
+import { fabric } from 'fabric';
 
 class FilterHandlers {
   constructor(private handlers: Handlers) {}
@@ -10,14 +10,15 @@ class FilterHandlers {
    * @param value
    */
   changeColorMode(type: string, value: number) {
-    const activeObject = this.handlers.canvas.getActiveObject() as Image;
+    const activeObject = this.handlers.canvas.getActiveObject() as fabric.Image;
     if (!activeObject) return;
     switch (type) {
       case 'blur':
-        const blurFilter = new filters.Blur({ blur: value });
+        const blurFilter = new fabric.Image.filters.Blur({ blur: value });
         // 避免删除到其他的滤镜效果
-        activeObject.filters = activeObject.filters.filter((obj) => obj.type !== type);
-        activeObject.filters.push(blurFilter);
+        activeObject.filters.filter((obj) => console.log(obj));
+        // activeObject.filters = activeObject.filters.filter((obj) => obj.type !== type);
+        // activeObject.filters.push(blurFilter);
         break;
 
       default:

@@ -1,9 +1,9 @@
 import Handlers from './handlers';
-import { Rect, iMatrix, Point, util } from 'fabric';
+import { fabric } from 'fabric';
 import { throttle } from 'lodash-es';
 import { SelectEvent } from '../utils/types';
 class WorkareaHandlers {
-  public workarea: Rect;
+  public workarea: fabric.Rect;
   public zoomRatio: number = 0.85;
   public option: { width: number; height: number };
 
@@ -35,7 +35,6 @@ class WorkareaHandlers {
    */
   hookImportAfter() {
     return new Promise((resolve) => {
-      //@ts-expect-error
       const workspace = this.handlers.canvas.getObjects().find((item) => item.id === 'workarea');
       if (workspace) {
         workspace.set('selectable', false);
@@ -59,7 +58,7 @@ class WorkareaHandlers {
   // 初始化工作区
   private _initWorkarea() {
     const { width, height } = this.option;
-    const workarea = new Rect({
+    const workarea = new fabric.Rect({
       fill: 'rgba(255,255,255,1)',
       width,
       height,
@@ -105,14 +104,14 @@ class WorkareaHandlers {
       if (zoom > 10) zoom = 10;
       if (zoom < 0.1) zoom = 0.1;
       const center = canvas.getCenter();
-      canvas.zoomToPoint(new Point(center.left, center.top), zoom);
+      canvas.zoomToPoint(new fabric.Point(center.left, center.top), zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
   }
 
   private _getScale() {
-    return util.findScaleToFit(this.getWorkspase(), {
+    return fabric.util.findScaleToFit(this.getWorkspase(), {
       width: this.workareaEl.offsetWidth,
       height: this.workareaEl.offsetHeight,
     });
@@ -140,6 +139,7 @@ class WorkareaHandlers {
 
   auto() {
     const scale = this._getScale();
+    console.log('scale', scale * this.zoomRatio);
     this.setZoomAuto(scale * this.zoomRatio);
   }
 
@@ -147,7 +147,7 @@ class WorkareaHandlers {
    * 设置画布中心到指定对象中心点上
    * @param {Object} obj 指定的对象
    */
-  setCenterFromObject(obj: Rect) {
+  setCenterFromObject(obj: fabric.Rect) {
     const { canvas } = this.handlers;
     const objCenter = obj.getCenterPoint();
     const viewportTransform = canvas.viewportTransform;
@@ -165,22 +165,18 @@ class WorkareaHandlers {
     this.handlers.canvas.setWidth(width);
     this.handlers.canvas.setHeight(height);
     const center = this.handlers.canvas.getCenter();
-    this.handlers.canvas.setViewportTransform(iMatrix);
-    this.handlers.canvas.zoomToPoint(new Point(center.left, center.top), scale);
+    console.log('iMatrix', fabric.iMatrix);
+    this.handlers.canvas.setViewportTransform(fabric.iMatrix);
+    this.handlers.canvas.zoomToPoint(new fabric.Point(center.left, center.top), scale);
     if (!this.workarea) return;
     this.setCenterFromObject(this.workarea);
 
-    // 超出画布不展示;
-    this.workarea
-      .clone()
-      .then((cloned: Rect) => {
-        this.handlers.canvas.clipPath = cloned;
-        this.handlers.canvas.requestRenderAll();
-        if (cb) cb(this.workarea.left, this.workarea.top);
-      })
-      .catch((e) => {
-        console.error('clone error', e);
-      });
+    // 超出画布不展示
+    this.workarea.clone((cloned: fabric.Rect) => {
+      this.handlers.canvas.clipPath = cloned;
+      this.handlers.canvas.requestRenderAll();
+    });
+    if (cb) cb(this.workarea.left, this.workarea.top);
   }
 
   getWorkspase() {
