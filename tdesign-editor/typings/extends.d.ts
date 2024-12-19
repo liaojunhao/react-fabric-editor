@@ -33,6 +33,7 @@ declare namespace fabric {
     fontFamily?: string;
     _objects?: ICollection.Object[];
     aCoords?: any;
+    _cropModeEnabled?: boolean;
     [string]?: any;
   }
 
@@ -48,5 +49,12 @@ declare namespace fabric {
       source: Record<string, unknown> | fabric.Object,
       destination: Record<string, unknown> | fabric.Object,
     ) => number;
+  }
+
+  export interface Image {
+    extensionType?: string;
+    extension: any;
+    blurEnabled?: boolean;
+    blurRadius?: number;
   }
 }

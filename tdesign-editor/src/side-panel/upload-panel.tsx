@@ -50,6 +50,7 @@ export const UploadPanel = ({ store }: { store: StoreType }) => {
             type="file"
             ref={a}
             style={{ display: 'none' }}
+            accept="image/png, image/jpeg"
             onChange={async (e) => {
               const { target: t } = e;
               r(true);

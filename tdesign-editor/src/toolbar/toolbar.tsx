@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { HistoryButtons } from './history-buttons';
 import { TextToolbar } from './text-toolbar';
+import { ImageToolbar } from './image-toolbar';
 
 const NavbarContainer = styled.div`
   white-space: nowrap;
@@ -21,6 +22,7 @@ const NavInner = styled.div`
 
 const ComponentsTypes = {
   textbox: TextToolbar,
+  image: ImageToolbar,
 };
 
 export function registerToolbarComponent(e, t) {
@@ -38,7 +40,6 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   }
   // 是否选中的都是相同的元素
   const oneType = 1 === new Set(store.selectedElements.map((e) => e.type)).size;
-  // console.log(oneType);
   const isOne = store.selectedElements.length === 1;
   const currentEle = store.selectedElements[0];
   // n = e.selectedElements.every((e) => e.styleEditable);

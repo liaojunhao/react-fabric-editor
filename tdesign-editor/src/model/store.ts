@@ -39,14 +39,17 @@ export const Store = types
     },
     get selectedElements() {
       const updata = self.randomUpdata === 0 ? 1 : self.randomUpdata;
-      return (
-        !updata ||
-        self.selectedElementsIds
-          .map((t) => {
-            for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
-          })
-          .filter((e) => !!e)
-      );
+      return !updata
+        ? self.selectedElementsIds
+            .map((t) => {
+              for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
+            })
+            .filter((e) => !!e)
+        : self.selectedElementsIds
+            .map((t) => {
+              for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
+            })
+            .filter((e) => !!e);
     },
     get selectedShapes() {
       const t = [];

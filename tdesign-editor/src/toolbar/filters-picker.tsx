@@ -35,9 +35,6 @@ const EnablerNumberInput = ({
   min,
   max,
 }) => {
-  // console.log('numberValue ---> ', numberValue);
-  // console.log('label ===> ', label);
-  // console.log('enabled', enabled);
   return visible ? (
     <>
       <Switch
@@ -49,26 +46,33 @@ const EnablerNumberInput = ({
         alignIndicator={Alignment.RIGHT}
         style={{ marginTop: 20 }}
       ></Switch>
-      {
-        // open
-        enabled && (
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-            <div style={{ paddingTop: '7px' }}>
-              <Slider
-                value={numberValue}
-                onChange={(e) => {
-                  onNumberValueChange(e);
-                }}
-                min={min}
-                max={max}
-                labelStepSize={50}
-                showTrackFill={false}
-                labelRenderer={false}
-              ></Slider>
-            </div>
+      {enabled && (
+        <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+          <div style={{ paddingTop: '7px' }}>
+            <Slider
+              value={numberValue}
+              onChange={(e) => {
+                onNumberValueChange(e);
+              }}
+              min={min}
+              max={max}
+              labelStepSize={50}
+              showTrackFill={false}
+              labelRenderer={false}
+            ></Slider>
           </div>
-        )
-      }
+          <NumericInput
+            value={numberValue}
+            onValueChange={(e) => {
+              onNumberValueChange(limit(e, min, max));
+            }}
+            buttonPosition="none"
+            style={{ width: '45px', padding: '0 5px', marginLeft: '10px' }}
+            min={min}
+            max={max}
+          ></NumericInput>
+        </div>
+      )}
     </>
   ) : null;
 };
@@ -79,7 +83,7 @@ interface Props {
   store: StoreType;
 }
 export const FiltersPicker: React.FC<Props> = observer(({ element, store, elements }) => {
-  const n = elements || [element];
+  const n = elements || [element]; // [element]没有响应式
   const l = n[0];
   // 文字、图片、svg、的特效都在这边制作
   const r = 'textbox' === l.type;
@@ -113,7 +117,7 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
               <EnablerNumberInput
                 label={getName('toolbar.blur')}
                 enabled={l.blurEnabled || false}
-                visible={c || r}
+                visible={o}
                 onEnabledChange={(e) => {
                   d({ blurEnabled: e });
                 }}

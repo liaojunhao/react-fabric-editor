@@ -110,10 +110,12 @@ class Handlers {
         // 模糊
         case 'blurEnabled':
           target.set(property, value);
+          this.filterHandlers.changeFiltersByParams('Blur', value);
           break;
         // 模糊调整
         case 'blurRadius':
           target.set(property, value);
+          this.filterHandlers.changeFiltersByParams('Blur', true);
           break;
         // 阴影
         case 'shadowEnabled':
@@ -147,7 +149,7 @@ class Handlers {
       }
 
       target.setCoords();
-      this.canvas.requestRenderAll();
+      this.canvas.renderAll();
 
       this.event.emit(SelectEvent.UPDATA, Math.random());
       // updataFn(this); // TODO：这里用防抖会有点问题，就是数据更新不及时了
