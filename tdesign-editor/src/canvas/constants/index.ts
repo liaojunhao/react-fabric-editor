@@ -4,8 +4,15 @@ export const PROPERTIES_TO_INCLUDE = [
   'selectable',
   'hasControls',
   'linkData',
-  // 自定义的模糊属性
+
+  /**
+   * 自定义的模糊属性
+   */
+  'shadowEnabled',
+
   'blurEnabled',
   'blurRadius',
-  'shadowEnabled',
+
+  'brightnessEnabled',
+  'brightness',
 ];

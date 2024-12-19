@@ -107,12 +107,21 @@ class Handlers {
       const value = options[property];
 
       switch (property) {
+        // 亮度
+        case 'brightnessEnabled':
+          target.set(property, value);
+          this.filterHandlers.changeFiltersByParams('Brightness', value);
+          break;
+        case 'brightness':
+          target.set(property, value);
+          this.filterHandlers.changeFiltersByParams('Brightness', true);
+          break;
         // 模糊
         case 'blurEnabled':
           target.set(property, value);
           this.filterHandlers.changeFiltersByParams('Blur', value);
           break;
-        // 模糊调整
+        // 模糊 - 半径调整
         case 'blurRadius':
           target.set(property, value);
           this.filterHandlers.changeFiltersByParams('Blur', true);
@@ -127,19 +136,19 @@ class Handlers {
             this.effectHandlers.setShadow({});
           }
           break;
-        // 阴影模糊调整
+        // 阴影 - 模糊调整
         case 'shadowBlur':
           this.effectHandlers.setShadowBlur(value);
           break;
-        // 阴影x调整
+        // 阴影 - x调整
         case 'shadowOffsetX':
           this.effectHandlers.setShadowOffsetX(value);
           break;
-        // 阴影y调整
+        // 阴影 - y调整
         case 'shadowOffsetY':
           this.effectHandlers.setShadowOffsetY(value);
           break;
-        // 调整投影颜色
+        // 调整 - 投影颜色
         case 'shadowColor':
           this.effectHandlers.setShadowColor(value);
           break;
@@ -152,7 +161,6 @@ class Handlers {
       this.canvas.renderAll();
 
       this.event.emit(SelectEvent.UPDATA, Math.random());
-      // updataFn(this); // TODO：这里用防抖会有点问题，就是数据更新不及时了
     });
   }
 

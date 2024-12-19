@@ -56,5 +56,7 @@ declare namespace fabric {
     extension: any;
     blurEnabled?: boolean;
     blurRadius?: number;
+    brightnessEnabled?: boolean;
+    brightness?: number;
   }
 }

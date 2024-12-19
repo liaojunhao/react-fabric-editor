@@ -98,6 +98,11 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
     });
   };
 
+  const blurEnabled = l.blurEnabled || false;
+  const blurRadius = l.blurRadius || 0;
+  const brightnessEnabled = l.brightnessEnabled || false;
+  const brightness = l.brightness || 0;
+
   return (
     <Popover
       position={Position.BOTTOM}
@@ -116,17 +121,36 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
             o && (
               <EnablerNumberInput
                 label={getName('toolbar.blur')}
-                enabled={l.blurEnabled || false}
+                enabled={blurEnabled}
                 visible={o}
                 onEnabledChange={(e) => {
                   d({ blurEnabled: e });
                 }}
-                numberValue={l.blurRadius || 0}
+                numberValue={blurRadius}
                 onNumberValueChange={(e) => {
                   d({ blurRadius: e });
                 }}
                 min={0}
                 max={100}
+              ></EnablerNumberInput>
+            )
+          }
+          {
+            // 亮度
+            o && (
+              <EnablerNumberInput
+                label={getName('toolbar.brightness')}
+                enabled={brightnessEnabled}
+                visible={o}
+                onEnabledChange={(e) => {
+                  d({ brightnessEnabled: e });
+                }}
+                numberValue={100 * brightness + 100}
+                onNumberValueChange={(e) => {
+                  d({ brightness: (e - 100) / 100 });
+                }}
+                min={0}
+                max={200}
               ></EnablerNumberInput>
             )
           }

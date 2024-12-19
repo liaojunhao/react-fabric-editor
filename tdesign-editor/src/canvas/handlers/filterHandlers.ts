@@ -168,15 +168,18 @@ class FilterHandlers {
     const activeObject = this.handlers.canvas.getActiveObject() as fabric.Image;
     if (!activeObject) return;
 
-    console.log(activeObject.blurRadius);
-
     const filtersAll = [...paramsFilters];
     const moduleInfo = filtersAll.find((item) => item.type === type);
     if (value) {
       moduleInfo.params.forEach((paramsItem) => {
-        console.log('paramsItem', paramsItem);
-        const value = activeObject.blurRadius || 0;
-        this._changeAttr(type, paramsItem.key, value * paramsItem.step, activeObject);
+        if (type === 'Blur') {
+          const value = activeObject.blurRadius || 0;
+          this._changeAttr(type, paramsItem.key, value * paramsItem.step, activeObject);
+        }
+        if (type === 'Brightness') {
+          const value = activeObject.brightness || 0;
+          this._changeAttr(type, paramsItem.key, value, activeObject);
+        }
       });
     } else {
       this._removeFilter(activeObject, type);
@@ -202,7 +205,6 @@ class FilterHandlers {
   // 设置滤镜值
   _changeAttr(type, key, value, activeObject) {
     const itemFilter = this._getFilter(activeObject, type);
-    console.log('itemFilter', itemFilter);
     if (itemFilter) {
       itemFilter[key] = value;
     } else {
@@ -215,7 +217,7 @@ class FilterHandlers {
   }
 
   // 删除滤镜
-  _removeFilter(sourceImg: fabric.Image, type: string) {
+  _removeFilter(sourceImg, type) {
     const fabricType = this._getFabricFilterType(type);
     sourceImg.filters = sourceImg.filters.filter((value) => value.type !== fabricType);
     sourceImg.applyFilters();
