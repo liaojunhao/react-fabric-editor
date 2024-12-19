@@ -1,10 +1,10 @@
-// import { Canvas, FabricObject } from 'fabric';
 import { fabric } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
+// import { debounce } from 'lodash-es';
 
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
@@ -13,6 +13,10 @@ import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
 import GuidelineHandlers from './guidelineHandlers';
 import AddHandlers from './addHandlers';
+
+// const updataFn = debounce((_this) => {
+//   _this.event.emit(SelectEvent.UPDATA, Math.random());
+// }, 1000);
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -144,8 +148,9 @@ class Handlers {
 
       target.setCoords();
       this.canvas.requestRenderAll();
-      // 画布改完了去刷新UI要更新
+
       this.event.emit(SelectEvent.UPDATA, Math.random());
+      // updataFn(this); // TODO：这里用防抖会有点问题，就是数据更新不及时了
     });
   }
 
@@ -183,12 +188,10 @@ class Handlers {
     // TODO：需要改造
     this.canvas.loadFromJSON(jsonFile, () => {
       this.canvas.renderAll();
-      // 这里必须要异步，不然获取的画布对象不是最新额度
-      setTimeout(() => {
-        this.workareaHandlers.hookImportAfter().then(() => {
-          this.canvas.renderAll();
-          callback && callback();
-        });
+
+      this.workareaHandlers.hookImportAfter().then(() => {
+        this.canvas.renderAll();
+        callback && callback();
       });
     });
   }

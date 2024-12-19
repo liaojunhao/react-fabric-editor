@@ -1,8 +1,12 @@
 import { types, Instance, onSnapshot, getSnapshot } from 'mobx-state-tree';
-import { nanoid } from 'nanoid';
 import Handlers from '../canvas/handlers';
 import { isEqual } from 'lodash-es';
 import { validateKey } from '../utils/validate-key';
+import { debounce } from 'lodash-es';
+
+const updataFn = debounce((callback, objs) => {
+  callback(objs);
+}, 1000);
 
 // 目前有的元素类型
 const TYPES_MAP = {
@@ -135,7 +139,9 @@ export const Store = types
           // 深度对比有数据不一样才去做变化
           if (!isEqual(beforeObjects, afterObjects)) {
             beforeObjects = afterObjects;
-            callback(afterObjects);
+            // 保存的时候做下防抖
+            // callback(afterObjects);
+            updataFn(callback, afterObjects);
           }
         });
       }

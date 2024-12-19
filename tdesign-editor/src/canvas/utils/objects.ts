@@ -19,11 +19,9 @@ export const CanvasObjects = {
           { crossOrigin: 'anonymous' },
         );
       });
-      console.log('imageElement', imageOptions);
       Object.keys(imageOptions).forEach((key: keyof fabric.Image) => {
         imageElement.set(key, imageOptions[key]);
       });
-      // imageElement.set();
       return imageElement;
     },
   },

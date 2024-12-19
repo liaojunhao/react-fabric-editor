@@ -28,14 +28,28 @@ class AddHandlers {
     this.handlers.canvas.renderAll();
   }
 
+  /**
+   * 缩放到目标大小
+   * @param item
+   * @returns
+   */
   _toScale(item: fabric.Object) {
     const { width } = this.handlers.workareaHandlers.getWorkspase();
     if (width === undefined) return;
     item.scaleToWidth(width / 2);
   }
 
+  /**
+   * 拖拽的添加
+   * @param item
+   * @param event
+   */
   _toEvent(item: fabric.Object, event: DragEvent) {}
 
+  /**
+   * 设置居中
+   * @param item
+   */
   _toCenter(item: fabric.Object) {
     const defaultWorkspace = this.handlers.workareaHandlers.getWorkspase();
     const center = defaultWorkspace.getCenterPoint();
