@@ -9,24 +9,22 @@ export const CanvasObjects = {
   },
   image: {
     render: async (options) => {
-      // const { src, ...imageOptions } = options;
-      // const imageElement = await FabricImage.fromURL(
-      //   src,
-      //   { crossOrigin: 'anonymous' },
-      //   {
-      //     ...{
-      //       angle: 0,
-      //       hasControls: true,
-      //       hasBorders: true,
-      //       opacity: 1,
-      //       originX: 'left',
-      //       originY: 'top',
-      //       borderColor: '#ff8d23',
-      //     },
-      //     ...imageOptions,
-      //   },
-      // );
-      // return imageElement;
+      const { src, ...imageOptions } = options;
+      const imageElement = await new Promise<fabric.Image>((resolve) => {
+        fabric.Image.fromURL(
+          src,
+          (imgEl) => {
+            resolve(imgEl);
+          },
+          { crossOrigin: 'anonymous' },
+        );
+      });
+      console.log('imageElement', imageOptions);
+      Object.keys(imageOptions).forEach((key: keyof fabric.Image) => {
+        imageElement.set(key, imageOptions[key]);
+      });
+      // imageElement.set();
+      return imageElement;
     },
   },
 };

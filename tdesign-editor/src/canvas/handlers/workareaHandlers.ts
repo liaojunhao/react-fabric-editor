@@ -139,7 +139,6 @@ class WorkareaHandlers {
 
   auto() {
     const scale = this._getScale();
-    console.log('scale', scale * this.zoomRatio);
     this.setZoomAuto(scale * this.zoomRatio);
   }
 
@@ -165,7 +164,6 @@ class WorkareaHandlers {
     this.handlers.canvas.setWidth(width);
     this.handlers.canvas.setHeight(height);
     const center = this.handlers.canvas.getCenter();
-    console.log('iMatrix', fabric.iMatrix);
     this.handlers.canvas.setViewportTransform(fabric.iMatrix);
     this.handlers.canvas.zoomToPoint(new fabric.Point(center.left, center.top), scale);
     if (!this.workarea) return;

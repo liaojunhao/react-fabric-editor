@@ -39,7 +39,6 @@ export const Store = types
         !updata ||
         self.selectedElementsIds
           .map((t) => {
-            //@ts-expect-error
             for (const i of self.handler.canvas.getObjects()) if (i.id === t) return i;
           })
           .filter((e) => !!e)
@@ -57,7 +56,6 @@ export const Store = types
       return t;
     },
     getElementById(id) {
-      //@ts-expect-error
       return self.handler.canvas.getObjects().find((item) => item.id === id);
     },
   }))
@@ -65,9 +63,9 @@ export const Store = types
     updateObjects() {
       if (self.handler) {
         const _objects = self.handler.canvas.getObjects().map((item) => {
-          return item.toObject(self.handler.propertiesToInclude);
+          return item.toJSON(self.handler.propertiesToInclude);
         });
-        self.objects.replace(_objects); // 使用 replace 方法更新数组
+        self.objects.replace(_objects);
       }
     },
     setRandomUpdata(val) {
@@ -137,7 +135,6 @@ export const Store = types
           // 深度对比有数据不一样才去做变化
           if (!isEqual(beforeObjects, afterObjects)) {
             beforeObjects = afterObjects;
-            if (afterObjects.length === 1) return;
             callback(afterObjects);
           }
         });

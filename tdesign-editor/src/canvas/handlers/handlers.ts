@@ -159,6 +159,7 @@ class Handlers {
     }
     this.canvas.discardActiveObject();
     this.canvas.remove(activeObject);
+    this.event.emit(SelectEvent.UPDATA, Math.random());
   }
 
   /**
