@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { FabricImage } from 'fabric';
 import { getName } from '../utils/l10n';
 import { Spinner } from '@blueprintjs/core';
 

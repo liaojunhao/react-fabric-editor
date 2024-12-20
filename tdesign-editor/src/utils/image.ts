@@ -12,3 +12,13 @@ export function getImageSize(t) {
     i.src = t;
   });
 }
+
+export function getCrop(t, e) {
+  const { width: i, height: h } = t;
+  const o = i / h;
+  let g, n;
+  o >= e.width / e.height ? ((g = e.width), (n = e.width / o)) : ((g = e.height * o), (n = e.height));
+  const r = (e.width - g) / 2,
+    c = (e.height - n) / 2;
+  return { cropX: r / e.width, cropY: c / e.height, cropWidth: g / e.width, cropHeight: n / e.height };
+}
