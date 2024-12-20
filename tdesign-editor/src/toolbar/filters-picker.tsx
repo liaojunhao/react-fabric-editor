@@ -284,16 +284,12 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
               <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
                 <div style={{ width: 150, paddingTop: 7 }}>
                   <Slider
-                    value={Math.min(
-                      l.cornerRadius,
-                      Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2)),
-                    )}
+                    value={Math.min(l.cornerRadius, Math.round(Math.min(l.width / 2, l.height / 2)))}
                     onChange={(e) => {
-                      // console.log('cornerRadius ---> ', e);
                       d({ cornerRadius: e });
                     }}
                     min={1}
-                    max={Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2))}
+                    max={Math.round(Math.min(l.width / 2, l.height / 2))}
                     labelStepSize={50}
                     showTrackFill={false}
                     labelRenderer={false}
@@ -302,12 +298,12 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
                 <NumericInput
                   value={l.cornerRadius}
                   onValueChange={(e) => {
-                    d({ cornerRadius: limit(e, 1, Math.min(l.getScaledWidth(), l.getScaledHeight()) / 2) });
+                    d({ cornerRadius: limit(e, 1, Math.min(l.width, l.height) / 2) });
                   }}
                   buttonPosition="none"
                   style={{ width: 45, padding: '0 5px' }}
                   min={1}
-                  max={Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2))}
+                  max={Math.round(Math.min(l.width / 2, l.height / 2))}
                 ></NumericInput>
               </div>
             )
