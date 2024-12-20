@@ -6,7 +6,7 @@ export const PROPERTIES_TO_INCLUDE = [
   'linkData',
 
   /**
-   * 自定义的模糊属性
+   * 自定义的滤镜属性
    */
   'shadowEnabled',
   // 有参数滤镜
@@ -14,7 +14,9 @@ export const PROPERTIES_TO_INCLUDE = [
   'blurRadius',
   'brightnessEnabled',
   'brightness',
+  'grayscaleEnabled',
   // 无参数滤镜
   'sepiaEnabled',
-  'grayscaleEnabled',
+  // 图片圆角
+  'cornerRadius',
 ];

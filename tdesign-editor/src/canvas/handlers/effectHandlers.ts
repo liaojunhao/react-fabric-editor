@@ -5,6 +5,33 @@ class EffectHandlers {
   constructor(private handlers: Handlers) {}
 
   /**
+   * 设置图片圆角
+   */
+  setImageBorderRadius(value: number) {
+    const activeObject = this.handlers.canvas.getActiveObject();
+    if (!activeObject) {
+      return;
+    }
+
+    if (value === 0) {
+      activeObject.clipPath = null;
+    } else {
+      const rect = new fabric.Rect({
+        left: -activeObject.width / 2,
+        top: -activeObject.height / 2,
+        rx: value,
+        ry: value,
+        width: activeObject.width,
+        height: activeObject.height,
+        fill: value.toString(),
+      });
+      // 为什么要深度才会渲染？
+      activeObject.set('dirty', true);
+      activeObject.clipPath = rect;
+    }
+  }
+
+  /**
    * 初始化阴影
    */
   setShadow({ blur, color, offsetX, offsetY }: { blur?: number; color?: string; offsetX?: number; offsetY?: number }) {

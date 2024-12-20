@@ -4,7 +4,6 @@ import { CanvasObjects } from '../utils/objects';
 import CanvasEventEmitter from '../utils/notifier';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
-// import { debounce } from 'lodash-es';
 
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
@@ -13,11 +12,22 @@ import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
 import GuidelineHandlers from './guidelineHandlers';
 import AddHandlers from './addHandlers';
-import { css } from 'styled-components';
 
-// const updataFn = debounce((_this) => {
-//   _this.event.emit(SelectEvent.UPDATA, Math.random());
-// }, 1000);
+// 初始化配置
+const initConf = () => {
+  // 这里对是提高一些滤镜效果处理的乏值，他默认是2048有些大图就忽略处理了
+  // fabric.textureSize = 2048 * 5;
+
+  fabric.Object.prototype.set({
+    transparentCorners: false,
+    borderColor: '#215db0',
+    cornerColor: '#FFF',
+    borderScaleFactor: 2.5,
+    cornerStyle: 'circle',
+    cornerStrokeColor: '#215db0',
+    borderOpacityWhenMoving: 1,
+  });
+};
 
 interface HandlerOption {
   canvasElParent: HTMLDivElement;
@@ -50,6 +60,9 @@ class Handlers {
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
     this.backgroundColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
+
+    initConf();
+
     const canvas = new fabric.Canvas(canvasEl, {
       fireRightClick: true, // 启用右键，button的数字为3
       stopContextMenu: true, // 禁止默认右键菜单
@@ -111,6 +124,11 @@ class Handlers {
       const value = options[property];
 
       switch (property) {
+        // 图片圆角
+        case 'cornerRadius':
+          target.set(property, value);
+          this.effectHandlers.setImageBorderRadius(value);
+          break;
         // 灰度
         case 'grayscaleEnabled':
           target.set(property, value);

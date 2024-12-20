@@ -185,7 +185,47 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
             )
           }
           {
-            // 描边
+            // 图片边框
+            c && (
+              <Switch
+                checked={!!l.strokeWidth}
+                label={getName('toolbar.border')}
+                onChange={(e) => {
+                  d({ strokeWidth: e.target.checked ? 2 : 0, stroke: '#000' });
+                }}
+                alignIndicator={Alignment.RIGHT}
+                style={{ marginTop: 20 }}
+              ></Switch>
+            )
+          }
+          {
+            // 图片边框调整
+            !!l.strokeWidth && c && (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <ColorPicker
+                    value={l.stroke}
+                    size={30}
+                    onChange={(e) => {
+                      d({ stroke: e });
+                    }}
+                    store={store}
+                  ></ColorPicker>
+                  <NumericInput
+                    defaultValue={l.strokeWidth}
+                    onValueChange={(e) => {
+                      d({ strokeWidth: limit(e, 1, Math.min(l.width, l.height) / 2) });
+                    }}
+                    style={{ width: 80 }}
+                    min={1}
+                    max={Math.max(1, Math.min(l.width, l.height) / 2)}
+                  ></NumericInput>
+                </div>
+              </>
+            )
+          }
+          {
+            // 文字描边
             r && (
               <Switch
                 checked={!!l.stroke}
@@ -199,7 +239,7 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
             )
           }
           {
-            // 描边
+            // 文字描边调整
             r && !!l.stroke && (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -224,6 +264,55 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
               </>
             )
           }
+          {
+            // 图片的圆角
+            c && (
+              <Switch
+                checked={!!l.cornerRadius}
+                label={getName('toolbar.cornerRadius')}
+                onChange={(e) => {
+                  d({ cornerRadius: e.target.checked ? Math.min(l.getScaledWidth() / 6, l.getScaledHeight() / 6) : 0 });
+                }}
+                alignIndicator={Alignment.RIGHT}
+                style={{ marginTop: 20 }}
+              ></Switch>
+            )
+          }
+          {
+            // 图片圆角的调整
+            c && !!l.cornerRadius && (
+              <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                <div style={{ width: 150, paddingTop: 7 }}>
+                  <Slider
+                    value={Math.min(
+                      l.cornerRadius,
+                      Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2)),
+                    )}
+                    onChange={(e) => {
+                      // console.log('cornerRadius ---> ', e);
+                      d({ cornerRadius: e });
+                    }}
+                    min={1}
+                    max={Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2))}
+                    labelStepSize={50}
+                    showTrackFill={false}
+                    labelRenderer={false}
+                  ></Slider>
+                </div>
+                <NumericInput
+                  value={l.cornerRadius}
+                  onValueChange={(e) => {
+                    d({ cornerRadius: limit(e, 1, Math.min(l.getScaledWidth(), l.getScaledHeight()) / 2) });
+                  }}
+                  buttonPosition="none"
+                  style={{ width: 45, padding: '0 5px' }}
+                  min={1}
+                  max={Math.round(Math.min(l.getScaledWidth() / 2, l.getScaledHeight() / 2))}
+                ></NumericInput>
+              </div>
+            )
+          }
+          {/* 阴影 */}
           <Switch
             checked={!!l.shadowEnabled}
             label={getName('toolbar.shadow')}
