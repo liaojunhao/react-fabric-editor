@@ -13,6 +13,7 @@ import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
 import GuidelineHandlers from './guidelineHandlers';
 import AddHandlers from './addHandlers';
+import { css } from 'styled-components';
 
 // const updataFn = debounce((_this) => {
 //   _this.event.emit(SelectEvent.UPDATA, Math.random());
@@ -99,6 +100,9 @@ class Handlers {
 
   /**
    * 设置元素属性
+   *  - 文字的：描边、阴影、
+   *  - 图片的：模糊、高度、褐调、灰度
+   *  - 其他的属性设置等
    * @param target
    * @param options
    */
@@ -107,24 +111,33 @@ class Handlers {
       const value = options[property];
 
       switch (property) {
+        // 灰度
+        case 'grayscaleEnabled':
+          target.set(property, value);
+          this.filterHandlers.changeFiltersByParams('grayscale', value);
+          break;
+        // 褐调
+        case 'sepiaEnabled':
+          target.set(property, value);
+          this.filterHandlers.changeFilters('sepia', value);
+          break;
         // 亮度
         case 'brightnessEnabled':
           target.set(property, value);
-          this.filterHandlers.changeFiltersByParams('Brightness', value);
+          this.filterHandlers.changeFiltersByParams('brightness', value);
           break;
         case 'brightness':
           target.set(property, value);
-          this.filterHandlers.changeFiltersByParams('Brightness', true);
+          this.filterHandlers.changeFiltersByParams('brightness', true);
           break;
         // 模糊
         case 'blurEnabled':
           target.set(property, value);
-          this.filterHandlers.changeFiltersByParams('Blur', value);
+          this.filterHandlers.changeFiltersByParams('blur', value);
           break;
-        // 模糊 - 半径调整
         case 'blurRadius':
           target.set(property, value);
-          this.filterHandlers.changeFiltersByParams('Blur', true);
+          this.filterHandlers.changeFiltersByParams('blur', true);
           break;
         // 阴影
         case 'shadowEnabled':
@@ -136,19 +149,15 @@ class Handlers {
             this.effectHandlers.setShadow({});
           }
           break;
-        // 阴影 - 模糊调整
         case 'shadowBlur':
           this.effectHandlers.setShadowBlur(value);
           break;
-        // 阴影 - x调整
         case 'shadowOffsetX':
           this.effectHandlers.setShadowOffsetX(value);
           break;
-        // 阴影 - y调整
         case 'shadowOffsetY':
           this.effectHandlers.setShadowOffsetY(value);
           break;
-        // 调整 - 投影颜色
         case 'shadowColor':
           this.effectHandlers.setShadowColor(value);
           break;

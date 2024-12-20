@@ -41,6 +41,7 @@ export const TextPanel = ({ store }: { store: StoreType }) => {
       fontSize: 55,
       text: 'hello world！',
       width: 555,
+      splitByGrapheme: true,
     };
     store.addElement(newElement, { skipSelect: false, centered: true });
   };

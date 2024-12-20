@@ -16,8 +16,7 @@ const noParamsFilters = {
 // 有参数滤镜
 export const paramsFilters = [
   {
-    type: 'Brightness',
-    status: false,
+    type: 'brightness',
     params: [
       {
         key: 'brightness',
@@ -29,86 +28,7 @@ export const paramsFilters = [
     ],
   },
   {
-    type: 'Contrast',
-    status: false,
-    params: [
-      {
-        key: 'contrast',
-        value: 0,
-        min: -1,
-        max: 1,
-        step: 0.01,
-      },
-    ],
-  },
-  {
-    type: 'Saturation',
-    status: false,
-    params: [
-      {
-        key: 'saturation',
-        value: 0,
-        min: -1,
-        max: 1,
-        step: 0.01,
-      },
-    ],
-  },
-  {
-    type: 'Vibrance',
-    status: false,
-    params: [
-      {
-        key: 'vibrance',
-        value: 0,
-        min: -1,
-        max: 1,
-        step: 0.01,
-      },
-    ],
-  },
-  {
-    type: 'HueRotation',
-    status: false,
-    params: [
-      {
-        key: 'rotation',
-        value: 0,
-        min: -1,
-        max: 1,
-        step: 0.01,
-      },
-    ],
-  },
-  {
-    type: 'Noise',
-    status: false,
-    params: [
-      {
-        key: 'noise',
-        value: 0,
-        min: -1,
-        max: 1000,
-        step: 0.1,
-      },
-    ],
-  },
-  {
-    type: 'Pixelate',
-    status: false,
-    params: [
-      {
-        key: 'blocksize',
-        value: 0.01,
-        min: 0.01,
-        max: 100,
-        step: 0.01,
-      },
-    ],
-  },
-  {
-    type: 'Blur',
-    status: false,
+    type: 'blur',
     params: [
       {
         key: 'blur',
@@ -120,30 +40,12 @@ export const paramsFilters = [
     ],
   },
   {
-    type: 'Grayscale',
-    status: false,
+    type: 'grayscale',
     params: [
       {
         key: 'mode',
         value: 'average',
         list: ['average', 'lightness', 'luminosity'],
-      },
-    ],
-  },
-  {
-    type: 'RemoveColor',
-    status: false,
-    params: [
-      {
-        key: 'color',
-        value: '',
-      },
-      {
-        key: 'distance',
-        value: 0,
-        min: 0,
-        max: 1,
-        step: 0.01,
       },
     ],
   },
@@ -157,7 +59,18 @@ class FilterHandlers {
    * @param type
    * @param value
    */
-  changeFilters(type, value) {}
+  changeFilters(type, value) {
+    const activeObject = this.handlers.canvas.getActiveObject() as fabric.Image;
+    if (!activeObject) return;
+    if (value) {
+      const itemFilter = this._getFilter(activeObject, type);
+      if (!itemFilter) {
+        this._createFilter(activeObject, type);
+      }
+    } else {
+      this._removeFilter(activeObject, type);
+    }
+  }
 
   /**
    * 有参数与组合滤镜修改
@@ -172,13 +85,16 @@ class FilterHandlers {
     const moduleInfo = filtersAll.find((item) => item.type === type);
     if (value) {
       moduleInfo.params.forEach((paramsItem) => {
-        if (type === 'Blur') {
+        if (type === 'blur') {
           const value = activeObject.blurRadius || 0;
           this._changeAttr(type, paramsItem.key, value * paramsItem.step, activeObject);
         }
-        if (type === 'Brightness') {
+        if (type === 'brightness') {
           const value = activeObject.brightness || 0;
           this._changeAttr(type, paramsItem.key, value, activeObject);
+        }
+        if (type === 'grayscale') {
+          this._changeAttr(type, paramsItem.key, paramsItem.value, activeObject);
         }
       });
     } else {
@@ -186,7 +102,14 @@ class FilterHandlers {
     }
   }
 
-  // 创建滤镜
+  /**
+   * Create filter instance
+   * @param {fabric.Image} sourceImg - Source image to apply filter
+   * @param {string} type - Filter type
+   * @param {Object} [options] - Options of filter
+   * @returns {Object} Fabric object of filter
+   * @private
+   */
   _createFilter(sourceImg, type, options = null) {
     let filterObj;
     // capitalize first letter for matching with fabric image filter name
@@ -216,7 +139,12 @@ class FilterHandlers {
     this.handlers.canvas.renderAll();
   }
 
-  // 删除滤镜
+  /**
+   * Remove applied filter instance
+   * @param {fabric.Image} sourceImg - Source image to apply filter
+   * @param {string} type - Filter type
+   * @private
+   */
   _removeFilter(sourceImg, type) {
     const fabricType = this._getFabricFilterType(type);
     sourceImg.filters = sourceImg.filters.filter((value) => value.type !== fabricType);
@@ -224,10 +152,24 @@ class FilterHandlers {
     this.handlers.canvas.renderAll();
   }
 
+  /**
+   * Change filter class name to fabric's, especially capitalizing first letter
+   * @param {string} type - Filter type
+   * @example
+   * 'grayscale' -> 'Grayscale'
+   * @returns {string} Fabric filter class name
+   */
   _getFabricFilterType(type) {
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 
+  /**
+   * Get applied filter instance
+   * @param {fabric.Image} sourceImg - Source image to apply filter
+   * @param {string} type - Filter type
+   * @returns {Object} Fabric object of filter
+   * @private
+   */
   _getFilter(sourceImg, type) {
     let imgFilter = null;
 

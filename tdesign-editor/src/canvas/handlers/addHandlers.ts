@@ -3,6 +3,13 @@ import { fabric } from 'fabric';
 import { nanoid } from 'nanoid';
 class AddHandlers {
   constructor(private handlers: Handlers) {}
+
+  /**
+   * 添加元素
+   *  - 会默认加 id
+   * @param item
+   * @param optons
+   */
   addBaseType(
     item: fabric.Object,
     optons?: {
@@ -54,6 +61,7 @@ class AddHandlers {
     const defaultWorkspace = this.handlers.workareaHandlers.getWorkspase();
     const center = defaultWorkspace.getCenterPoint();
     this.handlers.canvas._centerObject(item, center);
+    console.log('item', item);
   }
 }
 

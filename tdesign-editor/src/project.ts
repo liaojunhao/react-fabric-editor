@@ -12,7 +12,7 @@ class Project {
     mobx.makeAutoObservable(this);
     this.store = store;
     store.on('change', (e) => {
-      // console.log('数据有变化', e);
+      console.log('数据有变化', e);
     });
   }
   async createNewDesign() {}

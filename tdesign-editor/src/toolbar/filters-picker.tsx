@@ -102,6 +102,8 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
   const blurRadius = l.blurRadius || 0;
   const brightnessEnabled = l.brightnessEnabled || false;
   const brightness = l.brightness || 0;
+  const sepiaEnabled = l.sepiaEnabled || false;
+  const grayscaleEnabled = l.grayscaleEnabled || false;
 
   return (
     <Popover
@@ -152,6 +154,34 @@ export const FiltersPicker: React.FC<Props> = observer(({ element, store, elemen
                 min={0}
                 max={200}
               ></EnablerNumberInput>
+            )
+          }
+          {
+            // 褐调
+            o && (
+              <Switch
+                checked={sepiaEnabled}
+                label={getName('toolbar.sepia')}
+                onChange={(e) => {
+                  d({ sepiaEnabled: e.target.checked });
+                }}
+                alignIndicator={Alignment.RIGHT}
+                style={{ marginTop: 20 }}
+              ></Switch>
+            )
+          }
+          {
+            // 灰度
+            o && (
+              <Switch
+                checked={grayscaleEnabled}
+                label={getName('toolbar.grayscale')}
+                onChange={(e) => {
+                  d({ grayscaleEnabled: e.target.checked });
+                }}
+                alignIndicator={Alignment.RIGHT}
+                style={{ marginTop: 20 }}
+              ></Switch>
             )
           }
           {

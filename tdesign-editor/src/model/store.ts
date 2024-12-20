@@ -100,7 +100,10 @@ export const Store = types
   .actions((self) => ({
     // 添加元素
     async addElement(obj, { skipSelect = false, centered = false }) {
-      // 先看有没有这个类型
+      /**
+       * 先看有没有这个类型
+       *  - 会默认加 name
+       */
       const fabricObject = TYPES_MAP[obj.type];
       if (!fabricObject) return void console.error('Can not find model with type ' + obj.type);
       // 在创建这个数据
