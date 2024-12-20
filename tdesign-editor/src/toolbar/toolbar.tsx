@@ -2,10 +2,23 @@ import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreType } from '../model/store';
 import styled from 'styled-components';
+import { Navbar, Alignment } from '@blueprintjs/core';
 
 import { HistoryButtons } from './history-buttons';
 import { TextToolbar } from './text-toolbar';
 import { ImageToolbar } from './image-toolbar';
+import { RemoveButton } from './remove-button';
+import { DuplicateButton } from './duplicate-button';
+import { LockButton } from './lock-button';
+
+const ComponentsTypes = {
+  textbox: TextToolbar,
+  image: ImageToolbar,
+};
+
+export function registerToolbarComponent(e, t) {
+  ComponentsTypes[e] = t;
+}
 
 const NavbarContainer = styled.div`
   white-space: nowrap;
@@ -20,21 +33,12 @@ const NavInner = styled.div`
   height: 100%;
 `;
 
-const ComponentsTypes = {
-  textbox: TextToolbar,
-  image: ImageToolbar,
-};
-
-export function registerToolbarComponent(e, t) {
-  ComponentsTypes[e] = t;
-}
-
 type ToolbarProps = {
   store: StoreType;
   downloadButtonEnabled?: boolean;
   components?: any;
 };
-export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {} }) => {
+export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButtonEnabled, components = {} }) => {
   if (!store) {
     return <div>没有传入或注册 store 对象无法初始化 Toolbar 组件</div>;
   }
@@ -42,9 +46,9 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   const oneType = 1 === new Set(store.selectedElements.map((e) => e.type)).size;
   const isOne = store.selectedElements.length === 1;
   const currentEle = store.selectedElements[0];
-  // n = e.selectedElements.every((e) => e.styleEditable);
+  const isCropMode = isOne && currentEle._cropModeEnabled;
   let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
-  // let i = n && l && ComponentsTypes[a.type];
+
   if (oneType && currentEle?.type === 'textbox') {
     CurrentToolbar = ComponentsTypes[currentEle?.type];
   } else {
@@ -55,11 +59,22 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, components = {
   const _ = useRef(components);
   const s = _.current;
 
+  const RenderRemoveButton = s.Remove || RemoveButton;
+  const RenderDuplicateButton = s.Duplicate || DuplicateButton;
+  const RenderLockButton = s.Lock || LockButton;
+
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
       <NavInner>
-        <HistoryButtons store={store}></HistoryButtons>
+        {!isCropMode && <HistoryButtons store={store}></HistoryButtons>}
         {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
+        {!isCropMode && (
+          <Navbar.Group align={Alignment.RIGHT}>
+            <RenderLockButton store={store}></RenderLockButton>
+            <RenderDuplicateButton store={store}></RenderDuplicateButton>
+            <RenderRemoveButton store={store}></RenderRemoveButton>
+          </Navbar.Group>
+        )}
       </NavInner>
     </NavbarContainer>
   );
