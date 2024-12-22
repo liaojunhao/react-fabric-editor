@@ -2,10 +2,13 @@ import styled from 'styled-components';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useProject } from '../project';
-import { Navbar, Alignment, EditableText, Popover, Button } from '@blueprintjs/core';
+import { Navbar, Alignment, EditableText, Popover, Button, AnchorButton, NavbarDivider } from '@blueprintjs/core';
 import { FileMenu } from './file-menu';
 import { StoreType } from '../model/store';
 import { DownloadButton } from './download-button';
+import { Code } from '@blueprintjs/icons';
+import { Github, Weibo } from '@icon-park/react';
+import { UserMenu } from './user-menu';
 
 const NavbarContainer = styled('div')`
   white-space: nowrap;
@@ -59,9 +62,33 @@ const Topbar: React.FC<TopbarProps> = ({ store }) => {
             <EditableText placeholder="设计名称" onChange={(name) => {}} />
           </div>
           <Status project={project} />
+          <AnchorButton
+            href="#"
+            target="_blank"
+            minimal
+            icon={<Code className="bp5-icon" style={{ fontSize: '20px' }} />}
+          >
+            API文档
+          </AnchorButton>
+          <AnchorButton
+            minimal
+            href="#"
+            target="_blank"
+            icon={<Github theme="outline" size="20" className="bp5-icon" />}
+            style={{ marginRight: 5 }}
+          ></AnchorButton>
+          <AnchorButton
+            minimal
+            href="#"
+            target="_blank"
+            icon={<Weibo theme="outline" className="bp5-icon" size="20" />}
+            style={{ marginRight: 5 }}
+          ></AnchorButton>
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <DownloadButton store={store} />
+          <NavbarDivider />
+          <UserMenu></UserMenu>
         </Navbar.Group>
       </NavInner>
     </NavbarContainer>
