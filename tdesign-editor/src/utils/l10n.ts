@@ -47,8 +47,8 @@ const translation = observable({
     removeMask: '移除蒙版',
 
     transparency: '透明度',
-    lockedDescription: '对象已被锁定，若需更改对象，请先解锁对象。',
-    unlockedDescription: '对象未被锁定，您可以将对象锁定以避免意外更改。',
+    lockedDescription: '锁定对象',
+    unlockedDescription: '解锁对象',
     removeElements: '移除对象',
     duplicateElements: '复制对象',
     download: '下载',
