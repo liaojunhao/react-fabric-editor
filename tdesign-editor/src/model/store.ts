@@ -67,6 +67,9 @@ export const Store = types
     },
   }))
   .actions((self) => ({
+    /**
+     * 内部处理的api
+     */
     updateObjects() {
       if (self.handler) {
         const _objects = self.handler.canvas.getObjects().map((item) => {
@@ -78,17 +81,13 @@ export const Store = types
     setRandomUpdata(val) {
       self.randomUpdata = val;
     },
-    setObjects(objs) {
-      self.objects = objs;
-    },
     setHandler(handler) {
       self.handler = handler;
     },
-    openSidePanel(t) {
-      if (self.openedSidePanel !== t) {
-        self.openedSidePanel = t;
-      }
-    },
+    /**
+     * 对外公开的api
+     */
+    // 选择的元素
     selectElements(ids) {
       const els = ids
         .map((id) => self.getElementById(id))
@@ -96,46 +95,33 @@ export const Store = types
         .map((e) => e.id);
       self.selectedElementsIds = els;
     },
-  }))
-  .actions((self) => ({
-    // 添加元素
-    async addElement(obj, { skipSelect = false, centered = false }) {
-      /**
-       * 先看有没有这个类型
-       *  - 会默认加 name
-       */
-      const fabricObject = TYPES_MAP[obj.type];
-      if (!fabricObject) return void console.error('Can not find model with type ' + obj.type);
-      // 在创建这个数据
-      const element = Object.assign({ name: `new_${obj.type}` }, obj);
-      // 渲染层的选择
-      const ele = await self.handler.addElement(element, { skipSelect, centered });
-      // 数据层的选择
-      ele && !skipSelect && self.selectElements([ele.id]);
-      return ele;
+    // 打开标尺
+    toggleRulers() {},
+    // 打开左侧面板
+    openSidePanel(t) {
+      if (self.openedSidePanel !== t) {
+        self.openedSidePanel = t;
+      }
     },
-    // 设置元素属性
-    setElement(target, option) {
-      self.handler.setElement(target, option);
+    // 设置缩放值
+    setScale(t) {
+      self.scale = t;
     },
-    // 修改工作区颜色
-    setWorkspaseBg(color: string) {
-      self.handler.workareaHandlers.setWorkspaseBg(color);
+    // 设置1比1
+    _setScaleToFit(t) {
+      self.scaleToFit = t;
     },
-    // 修改工作区大小
-    setSize(width: number, height: number) {
-      self.handler.workareaHandlers.setSize(width, height);
+    // 修改尺寸
+    setSize(width: number, height: number, useMagic?: boolean) {
+      if (self.handler) {
+        self.handler.workareaHandlers.setSize(width, height);
+      }
     },
-  }))
-  .actions((self) => ({
-    // 解析psd
-    insertPSD(files: File) {
-      self.handler.psdHandlers.insertPSD(files, () => {
-        console.log('解析psd');
-      });
-    },
-  }))
-  .actions((self) => ({
+    // 成组
+    groupElements() {},
+    // 解组
+    ungroupElements() {},
+    // 监听画布的变化
     on(event: string, callback: (e) => void) {
       if ('change' === event) {
         let beforeObjects = getSnapshot(self.objects);
@@ -152,8 +138,65 @@ export const Store = types
         });
       }
     },
+    // 导出JSON
     toJSON() {},
+    // 加载数据
     loadJSON() {},
+    // 清楚画布
+    clear() {},
+    // 添加字体
+    addFont() {},
+    // 删除字体
+    removeFont() {},
+    // 加载字体
+    loadFont() {},
+  }))
+  .actions((self) => ({
+    // 添加元素
+    async addElement(obj, { skipSelect = false, centered = false }) {
+      if (self.handler) {
+        // 先看有没有这个类型
+        const fabricObject = TYPES_MAP[obj.type];
+        if (!fabricObject) return void console.error('Can not find model with type ' + obj.type);
+        // 在创建这个数据（会默认加 name）
+        const element = Object.assign({ name: `new_${obj.type}` }, obj);
+        // 渲染层的选择
+        const ele = await self.handler.addElement(element, { skipSelect, centered });
+        // 数据层的选择
+        ele && !skipSelect && self.selectElements([ele.id]);
+        return ele;
+      } else {
+        console.error('没有注册 handler');
+      }
+    },
+    // 设置元素属性
+    setElement(target, option) {
+      if (self.handler) {
+        self.handler.setElement(target, option);
+      } else {
+        console.error('没有注册 handler');
+      }
+    },
+    // 修改工作区颜色
+    setWorkspaseBg(color: string) {
+      if (self.handler) {
+        self.handler.workareaHandlers.setWorkspaseBg(color);
+      } else {
+        console.error('没有注册 handler');
+      }
+    },
+  }))
+  .actions((self) => ({
+    // 解析psd
+    insertPSD(files: File) {
+      if (self.handler) {
+        self.handler.psdHandlers.insertPSD(files, () => {
+          console.log('解析psd');
+        });
+      } else {
+        console.error('没有注册 handler');
+      }
+    },
   }));
 
 export type StoreType = Instance<typeof Store>;

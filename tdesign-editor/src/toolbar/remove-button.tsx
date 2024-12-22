@@ -6,9 +6,19 @@ import { StoreType } from '../model/store';
 import { observer } from 'mobx-react-lite';
 
 export const RemoveButton = observer(({ store }: { store: StoreType }) => {
+  const isSelectElement = store.selectedElements.length > 0;
+
   return (
-    <Tooltip content={getName('toolbar.removeElements')} position="bottom">
-      <Button icon={<Trash />} minimal={true} style={{ marginLeft: 'auto' }}></Button>
+    <Tooltip content={getName('toolbar.removeElements')} position="bottom" disabled={!isSelectElement}>
+      <Button
+        icon={<Trash />}
+        minimal={true}
+        onClick={() => {
+          console.log('删除功能');
+        }}
+        disabled={!isSelectElement}
+        style={{ marginLeft: 'auto' }}
+      ></Button>
     </Tooltip>
   );
 });

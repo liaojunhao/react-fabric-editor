@@ -26,10 +26,14 @@ const NavInner = styled('div')`
 const Status = observer(({ project }: { project: any }) => {
   // const Icon = !project.cloudEnabled ? MdcCloudAlert : project.status === 'saved' ? MdcCloudCheck : MdcCloudSync;
   return (
-    <Popover content={<div style={{ padding: '10px', maxWidth: '300px' }}>需要开通会员</div>} interactionKind="hover">
+    <Popover
+      content={<div style={{ padding: '10px', maxWidth: '300px' }}>需要开通会员</div>}
+      interactionKind="hover"
+      position="bottom"
+    >
       <div style={{ padding: '0 5px' }}>
         <Button minimal={true} icon="cloud" style={{ opacity: 0.8 }}>
-          存储
+          云存储
         </Button>
       </div>
     </Popover>

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreType } from '../model/store';
 import styled from 'styled-components';
-import { Navbar, Alignment } from '@blueprintjs/core';
+import { Navbar, Alignment, Divider } from '@blueprintjs/core';
 
 import { HistoryButtons } from './history-buttons';
 import { TextToolbar } from './text-toolbar';
@@ -12,6 +12,8 @@ import { DuplicateButton } from './duplicate-button';
 import { LockButton } from './lock-button';
 import { OpacityPicker } from './opacity-picker';
 import { PositionPicker } from './position-picker';
+import { GroupButton } from './group-button';
+import { DownloadButton } from './download-button';
 
 const ComponentsTypes = {
   textbox: TextToolbar,
@@ -50,7 +52,6 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
   const currentEle = store.selectedElements[0];
   const isCropMode = isOne && currentEle._cropModeEnabled;
   let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
-
   if (oneType && currentEle?.type === 'textbox') {
     CurrentToolbar = ComponentsTypes[currentEle?.type];
   } else {
@@ -61,11 +62,13 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
   const _ = useRef(components);
   const s = _.current;
 
+  const RenderActionControls = s.ActionControls || downloadButtonEnabled ? DownloadButton : null;
   const RenderRemoveButton = s.Remove || RemoveButton;
   const RenderDuplicateButton = s.Duplicate || DuplicateButton;
   const RenderLockButton = s.Lock || LockButton;
   const RenderOpacityPicker = s.Opacity || OpacityPicker;
   const RenderPositionPicker = s.Position || PositionPicker;
+  const RenderGroupButton = s.Group || GroupButton;
 
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
@@ -74,11 +77,18 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
         {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
         {!isCropMode && (
           <Navbar.Group align={Alignment.RIGHT} style={{ gap: 5 }}>
+            <RenderGroupButton store={store}></RenderGroupButton>
             <RenderPositionPicker store={store}></RenderPositionPicker>
             <RenderOpacityPicker store={store}></RenderOpacityPicker>
             <RenderLockButton store={store}></RenderLockButton>
             <RenderDuplicateButton store={store}></RenderDuplicateButton>
             <RenderRemoveButton store={store}></RenderRemoveButton>
+            {RenderActionControls && (
+              <>
+                <Divider style={{ height: '100%', margin: '0 15px' }} />
+                <RenderActionControls store={store}></RenderActionControls>
+              </>
+            )}
           </Navbar.Group>
         )}
       </NavInner>

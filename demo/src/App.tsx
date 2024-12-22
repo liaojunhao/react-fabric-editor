@@ -45,7 +45,7 @@ function App() {
               <SidePanel store={store} />
             </SidePanelWrap>
             <WorkspaceWrap>
-              <Toolbar store={store} />
+              <Toolbar store={store} downloadButtonEnabled={true} />
               <Workspace store={store} />
             </WorkspaceWrap>
           </TdesignEditorContainer>
