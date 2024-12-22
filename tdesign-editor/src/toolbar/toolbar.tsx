@@ -14,10 +14,13 @@ import { OpacityPicker } from './opacity-picker';
 import { PositionPicker } from './position-picker';
 import { GroupButton } from './group-button';
 import { DownloadButton } from './download-button';
+import { CommonToolbar } from './common-toolbar';
 
 const ComponentsTypes = {
   textbox: TextToolbar,
   image: ImageToolbar,
+  // 默认的工具栏
+  common: CommonToolbar,
 };
 
 export function registerToolbarComponent(e, t) {
@@ -52,12 +55,15 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
   const currentEle = store.selectedElements[0];
   const isCropMode = isOne && currentEle._cropModeEnabled;
   let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
+
   if (oneType && currentEle?.type === 'textbox') {
     CurrentToolbar = ComponentsTypes[currentEle?.type];
-  } else {
-    if (store.selectedElements.length > 1) {
-      // 多个不同的元素就现实 ManyToolbar
-    }
+  } else if (store.selectedElements.length > 1) {
+    // 多个元素的时候
+    // CurrentToolbar = ComponentsTypes.many
+  } else if (0 === store.selectedElements.length) {
+    // 没有选中的时候
+    CurrentToolbar = ComponentsTypes.common;
   }
   const _ = useRef(components);
   const s = _.current;

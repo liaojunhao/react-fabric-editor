@@ -7,8 +7,9 @@ import { FileMenu } from './file-menu';
 import { StoreType } from '../model/store';
 import { DownloadButton } from './download-button';
 import { Code } from '@blueprintjs/icons';
-import { Github, Weibo } from '@icon-park/react';
 import { UserMenu } from './user-menu';
+import AiFillGithub from '@meronex/icons/ai/AiFillGithub';
+import AiFillWeiboCircle from '@meronex/icons/ai/AiFillWeiboCircle';
 
 const NavbarContainer = styled('div')`
   white-space: nowrap;
@@ -63,7 +64,7 @@ const Topbar: React.FC<TopbarProps> = ({ store }) => {
           </div>
           <Status project={project} />
           <AnchorButton
-            href="#"
+            href="https://github.com/liaojunhao/react-fabric-editor"
             target="_blank"
             minimal
             icon={<Code className="bp5-icon" style={{ fontSize: '20px' }} />}
@@ -73,16 +74,16 @@ const Topbar: React.FC<TopbarProps> = ({ store }) => {
           </AnchorButton>
           <AnchorButton
             minimal
-            href="#"
+            href="https://github.com/liaojunhao/react-fabric-editor"
             target="_blank"
-            icon={<Github theme="outline" size="20" className="bp5-icon" />}
+            icon={<AiFillGithub className="bp5-icon" style={{ fontSize: 20 }} />}
             style={{ marginRight: 5 }}
           ></AnchorButton>
           <AnchorButton
             minimal
             href="#"
             target="_blank"
-            icon={<Weibo theme="outline" className="bp5-icon" size="20" />}
+            icon={<AiFillWeiboCircle className="bp5-icon" style={{ fontSize: 20 }} />}
             style={{ marginRight: 5 }}
           ></AnchorButton>
         </Navbar.Group>

@@ -108,6 +108,8 @@ const translation = observable({
       insert: '插入',
       promptPlaceholder: '描述您想要生成的内容',
     },
+    addImg: '添加图片',
+    addText: '添加文字',
   },
   workspace: {
     noPages: '尚未创建任何页面',
