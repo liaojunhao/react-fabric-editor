@@ -43,7 +43,7 @@ robotMsg
 _site/
 package-lock.json
 pnpm-lock.yaml
-temp*
+
 robotMsg.json
 .nyc_output
 cypress-coverage

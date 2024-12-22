@@ -3,12 +3,16 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { getName } from '../utils/l10n';
 import { Icon } from '@blueprintjs/core';
-import { CloudUpload } from '@blueprintjs/icons';
+import { CloudUpload, Control, Media, LayoutGrid, Fullscreen } from '@blueprintjs/icons';
 import { StoreType } from '../model/store';
 import { SectionTab } from './tab-button';
 
 import { TextPanel } from './text-panel';
 import { UploadPanel } from './upload-panel';
+import { TemplatesPanel } from './templates-panel';
+import { PhotosPanel } from './photos-panel';
+import { BackgroundPanel } from './background-panel';
+import { SizePanel } from './size-panel';
 
 interface SectionTabProps {
   onClick: any;
@@ -22,6 +26,32 @@ export type Section = {
   }>;
 };
 
+export const TemplatesSection: Section = {
+  name: 'templates',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.templates'), ...props }}>
+        <Icon icon={<Control />}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <TemplatesPanel store={store}></TemplatesPanel>;
+  },
+};
+export const PhotosSection: Section = {
+  name: 'photos',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.photos'), ...props }}>
+        <Icon icon={<Media />}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <PhotosPanel store={store}></PhotosPanel>;
+  },
+};
 export const TextSection: Section = {
   name: 'text',
   Tab: observer((props) => {
@@ -48,8 +78,41 @@ export const UploadSection: Section = {
     return <UploadPanel store={store}></UploadPanel>;
   },
 };
+export const BackgroundSection: Section = {
+  name: 'background',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.background'), ...props }}>
+        <Icon icon={<LayoutGrid />}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <BackgroundPanel store={store}></BackgroundPanel>;
+  },
+};
+export const SizeSection: Section = {
+  name: 'size',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.resize'), ...props }}>
+        <Icon icon={<Fullscreen />}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <SizePanel store={store}></SizePanel>;
+  },
+};
 
-export const DEFAULT_SECTIONS = [TextSection, UploadSection];
+export const DEFAULT_SECTIONS = [
+  TemplatesSection,
+  PhotosSection,
+  BackgroundSection,
+  TextSection,
+  UploadSection,
+  SizeSection,
+];
 
 const SidePanelContainer = styled.div`
   display: flex;
@@ -99,7 +162,7 @@ interface SidePanelProps {
 }
 export const SidePanel = observer(({ sections, store }: SidePanelProps) => {
   useOnFirstRender(() => {
-    store.openSidePanel('upload');
+    store.openSidePanel('text');
   });
   const tabsWrapRef = useRef(null);
 
