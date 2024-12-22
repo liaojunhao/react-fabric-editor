@@ -67,6 +67,7 @@ const Topbar: React.FC<TopbarProps> = ({ store }) => {
             target="_blank"
             minimal
             icon={<Code className="bp5-icon" style={{ fontSize: '20px' }} />}
+            style={{ marginRight: 5 }}
           >
             API文档
           </AnchorButton>

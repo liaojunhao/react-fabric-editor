@@ -11,7 +11,7 @@ export const DownloadButton = observer(({ store }: { store: StoreType }) => {
     <Popover
       position={Position.BOTTOM}
       content={
-        <Menu>
+        <Menu style={{ padding: 8 }}>
           <MenuItem
             icon={<Media />}
             text={getName('toolbar.saveAsImage')}

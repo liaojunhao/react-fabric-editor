@@ -3,6 +3,7 @@ import { Popover, Tooltip, Button, Position, Slider, NumericInput } from '@bluep
 import { observer } from 'mobx-react-lite';
 import { StoreType } from '../model/store';
 import { getName } from '../utils/l10n';
+import { WaterLevel } from '@icon-park/react';
 
 export const OpacityPicker = observer(({ store }: { store: StoreType }) => {
   const isElement = store.selectedShapes.length > 0;
@@ -41,7 +42,11 @@ export const OpacityPicker = observer(({ store }: { store: StoreType }) => {
       }
     >
       <Tooltip content={getName('toolbar.transparency')} position={Position.BOTTOM} disabled={!isElement}>
-        <Button minimal={true} icon="color-fill" disabled={!isElement}></Button>
+        <Button
+          minimal={true}
+          icon={<WaterLevel theme="filled" size={18} className="bp5-icon" strokeWidth={6} />}
+          disabled={!isElement}
+        ></Button>
       </Tooltip>
     </Popover>
   );
