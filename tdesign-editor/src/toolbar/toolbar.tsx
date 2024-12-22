@@ -11,6 +11,7 @@ import { RemoveButton } from './remove-button';
 import { DuplicateButton } from './duplicate-button';
 import { LockButton } from './lock-button';
 import { OpacityPicker } from './opacity-picker';
+import { PositionPicker } from './position-picker';
 
 const ComponentsTypes = {
   textbox: TextToolbar,
@@ -64,6 +65,7 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
   const RenderDuplicateButton = s.Duplicate || DuplicateButton;
   const RenderLockButton = s.Lock || LockButton;
   const RenderOpacityPicker = s.Opacity || OpacityPicker;
+  const RenderPositionPicker = s.Position || PositionPicker;
 
   return (
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
@@ -72,6 +74,7 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
         {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
         {!isCropMode && (
           <Navbar.Group align={Alignment.RIGHT} style={{ gap: 5 }}>
+            <RenderPositionPicker store={store}></RenderPositionPicker>
             <RenderOpacityPicker store={store}></RenderOpacityPicker>
             <RenderLockButton store={store}></RenderLockButton>
             <RenderDuplicateButton store={store}></RenderDuplicateButton>

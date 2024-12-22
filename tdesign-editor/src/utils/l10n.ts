@@ -81,7 +81,7 @@ const translation = observable({
     move: '移动',
     zoom: '缩放',
     animate: '动画',
-    spaceEvenly: '均匀间隔',
+    spaceEvenly: '间隔均匀',
     horizontalDistribution: '水平分布',
     verticalDistribution: '垂直分布',
     strokeWidth: '描边宽度',
