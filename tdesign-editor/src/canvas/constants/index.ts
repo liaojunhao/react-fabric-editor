@@ -4,6 +4,11 @@ export const PROPERTIES_TO_INCLUDE = [
   'selectable',
   'hasControls',
   'linkData',
+  'lockMovementX',
+  'lockMovementY',
+  'lockRotation',
+  'lockScalingX',
+  'lockScalingY',
 
   /**
    * 自定义的滤镜属性
