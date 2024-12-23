@@ -1,10 +1,10 @@
 import { fabric } from 'fabric';
 import { PROPERTIES_TO_INCLUDE } from '../constants';
 import { CanvasObjects } from '../utils/objects';
-import CanvasEventEmitter from '../utils/notifier';
 import { nanoid } from 'nanoid';
 import { SelectEvent } from '../utils/types';
 
+import CanvasEventEmitter from '../utils/notifier';
 import EventHandlers from './eventHandlers';
 import WorkareaHandlers from './workareaHandlers';
 import PsdHandlers from './psdHandlers';
@@ -12,6 +12,7 @@ import FilterHandlers from './filterHandlers';
 import EffectHandlers from './effectHandlers';
 import GuidelineHandlers from './guidelineHandlers';
 import AddHandlers from './addHandlers';
+import LockHandlers from './lockHandlers';
 
 // 初始化配置
 const initConf = () => {
@@ -56,6 +57,7 @@ class Handlers {
   public effectHandlers: EffectHandlers;
   public guidelineHandlers: GuidelineHandlers;
   public addHandlers: AddHandlers;
+  public lockHandlers: LockHandlers;
 
   constructor(private option: HandlerOption) {
     const { backgroundColor, canvasEl, canvasElParent, workareaHeight, workareaWidth } = this.option;
@@ -90,6 +92,7 @@ class Handlers {
     this.effectHandlers = new EffectHandlers(this);
     this.guidelineHandlers = new GuidelineHandlers(this);
     this.addHandlers = new AddHandlers(this);
+    this.lockHandlers = new LockHandlers(this);
   }
 
   /**

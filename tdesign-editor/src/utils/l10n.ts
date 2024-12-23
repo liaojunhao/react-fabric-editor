@@ -147,7 +147,7 @@ const translation = observable({
     uploadImage: '上传图片',
     uploadTip: '想要上传你自己的图片？',
     background: '背景',
-    resize: '缩放',
+    resize: '尺寸',
     layers: '图层',
     layerTypes: {
       image: '图像',

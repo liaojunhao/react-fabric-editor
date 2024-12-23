@@ -53,8 +53,8 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
   const oneType = 1 === new Set(store.selectedElements.map((e) => e.type)).size;
   const isOne = store.selectedElements.length === 1;
   const currentEle = store.selectedElements[0];
-  const isCropMode = isOne && currentEle._cropModeEnabled;
-  let CurrentToolbar = isOne && ComponentsTypes[currentEle?.type];
+  const isLock = store.selectedElements.every((e) => !e.lockMovementX); // 可以理解为是否可编辑，一开始肯定是true的
+  let CurrentToolbar = isLock && isOne && ComponentsTypes[currentEle?.type];
 
   if (oneType && currentEle?.type === 'textbox') {
     CurrentToolbar = ComponentsTypes[currentEle?.type];
@@ -65,6 +65,7 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
     // 没有选中的时候
     CurrentToolbar = ComponentsTypes.common;
   }
+  const isCropMode = isOne && currentEle._cropModeEnabled;
   const _ = useRef(components);
   const s = _.current;
 
@@ -80,12 +81,12 @@ export const Toolbar: React.FC<ToolbarProps> = observer(({ store, downloadButton
     <NavbarContainer className="bp5-navbar tdesign-toolbar">
       <NavInner>
         {!isCropMode && <HistoryButtons store={store}></HistoryButtons>}
-        {CurrentToolbar && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
+        {CurrentToolbar && isLock && <CurrentToolbar store={store} components={s}></CurrentToolbar>}
         {!isCropMode && (
           <Navbar.Group align={Alignment.RIGHT} style={{ gap: 5 }}>
             <RenderGroupButton store={store}></RenderGroupButton>
             <RenderPositionPicker store={store}></RenderPositionPicker>
-            <RenderOpacityPicker store={store}></RenderOpacityPicker>
+            {isLock && <RenderOpacityPicker store={store}></RenderOpacityPicker>}
             <RenderLockButton store={store}></RenderLockButton>
             <RenderDuplicateButton store={store}></RenderDuplicateButton>
             <RenderRemoveButton store={store}></RenderRemoveButton>

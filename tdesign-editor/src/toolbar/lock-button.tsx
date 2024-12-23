@@ -8,7 +8,9 @@ import { observer } from 'mobx-react-lite';
 export const LockButton = observer(({ store }: { store: StoreType }) => {
   const isElement = store.selectedShapes.length > 0;
   const element = store.selectedShapes[0];
-  const locked = null == element ? void 0 : element.locked;
+  // console.log('element ---> ', element, element?.lockMovementX);
+  const locked = null == element ? void 0 : element?.lockMovementX;
+  // console.log('locked --->', locked);
   const IconLocked = locked ? <Lock /> : <Unlock />;
   const text = locked ? getName('toolbar.lockedDescription') : getName('toolbar.unlockedDescription');
 
@@ -19,7 +21,11 @@ export const LockButton = observer(({ store }: { store: StoreType }) => {
         minimal={true}
         disabled={!isElement}
         onClick={() => {
-          console.log('处理锁定');
+          if (locked) {
+            store.handler.lockHandlers.unLock();
+          } else {
+            store.handler.lockHandlers.lock();
+          }
         }}
       ></Button>
     </Tooltip>
