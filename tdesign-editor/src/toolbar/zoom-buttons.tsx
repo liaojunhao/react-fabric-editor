@@ -43,8 +43,7 @@ export const ZoomGroup = observer(({ store }: Props) => {
         minimal={true}
         disabled={!isMin}
         onClick={() => {
-          //   store.setScale(store.scale / 1.2);
-          store.handler.workareaHandlers.auto();
+          store.setScale(store.scale / 1.2);
         }}
       ></Button>
       <Popover
@@ -53,6 +52,7 @@ export const ZoomGroup = observer(({ store }: Props) => {
             {SCALE_VARIATIONS.map((item) => {
               return (
                 <MenuItem
+                  style={{ textAlign: 'center' }}
                   key={item}
                   text={Math.round(100 * item) + '%'}
                   onClick={() => {
@@ -62,9 +62,17 @@ export const ZoomGroup = observer(({ store }: Props) => {
               );
             })}
             <MenuItem
-              text={getName('scale.reset')}
+              style={{ textAlign: 'center' }}
+              text={getName('scale.realSize')}
               onClick={() => {
                 store.setScale(store.scaleToFit);
+              }}
+            ></MenuItem>
+            <MenuItem
+              style={{ textAlign: 'center' }}
+              text={getName('scale.reset')}
+              onClick={() => {
+                store.handler.workareaHandlers.auto();
               }}
             ></MenuItem>
           </Menu>

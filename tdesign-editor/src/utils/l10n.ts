@@ -120,7 +120,8 @@ const translation = observable({
     moveDown: '向下移动',
   },
   scale: {
-    reset: '重置',
+    reset: '适应屏幕',
+    realSize: '实际尺寸',
   },
   error: {
     removeBackground: '发生了意外错误，未能成功移除背景',

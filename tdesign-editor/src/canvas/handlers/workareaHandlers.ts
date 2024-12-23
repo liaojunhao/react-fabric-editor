@@ -4,7 +4,8 @@ import { throttle } from 'lodash-es';
 import { SelectEvent } from '../utils/types';
 class WorkareaHandlers {
   public workarea: fabric.Rect;
-  public zoomRatio: number = 0.85; // 当前视窗最佳视角缩放比例
+  // 当前视窗最佳视角缩放比例（一般不会去修改）
+  public zoomRatio: number = 0.85;
   public option: { width: number; height: number };
 
   private workareaEl: HTMLDivElement;

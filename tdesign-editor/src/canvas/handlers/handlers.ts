@@ -62,7 +62,6 @@ class Handlers {
     this.backgroundColor = backgroundColor || 'rgba(232, 232, 232, 0.9)';
 
     initConf();
-
     const canvas = new fabric.Canvas(canvasEl, {
       fireRightClick: true, // 启用右键，button的数字为3
       stopContextMenu: true, // 禁止默认右键菜单
@@ -195,13 +194,14 @@ class Handlers {
    * 删除元素
    */
   remove() {
-    const activeObject = this.canvas.getActiveObject();
-    if (!activeObject) {
-      return false;
+    const { canvas } = this;
+    const activeObject = canvas.getActiveObjects();
+    if (activeObject) {
+      activeObject.map((item) => canvas.remove(item));
+      canvas.requestRenderAll();
+      canvas.discardActiveObject();
+      this.event.emit(SelectEvent.UPDATA, Math.random()); // 通知数据删除了
     }
-    this.canvas.discardActiveObject();
-    this.canvas.remove(activeObject);
-    this.event.emit(SelectEvent.UPDATA, Math.random());
   }
 
   /**
