@@ -19,7 +19,7 @@ class LockHandlers {
   lock() {
     const activeObject = this.handlers.canvas.getActiveObject();
     if (activeObject) {
-      // 修改默认属性
+      // 修改锁定默认属性（TODO：如果是文字元素，如何禁止他可编辑）
       Object.values(ItypeKey).forEach((key: ItypeKey) => {
         activeObject[key] = true;
       });

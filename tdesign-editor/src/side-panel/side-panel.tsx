@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { observer } from 'mobx-react-lite';
 import { getName } from '../utils/l10n';
 import { Icon } from '@blueprintjs/core';
-import { CloudUpload, Control, Media, LayoutGrid, Fullscreen } from '@blueprintjs/icons';
+import { CloudUpload, Control, Media, LayoutGrid, Fullscreen, Layers } from '@blueprintjs/icons';
 import { StoreType } from '../model/store';
 import { SectionTab } from './tab-button';
 
@@ -13,6 +13,7 @@ import { TemplatesPanel } from './templates-panel';
 import { PhotosPanel } from './photos-panel';
 import { BackgroundPanel } from './background-panel';
 import { SizePanel } from './size-panel';
+import { LayersPanel } from './layers-panel';
 
 interface SectionTabProps {
   onClick: any;
@@ -105,6 +106,20 @@ export const SizeSection: Section = {
   },
 };
 
+export const LayersSection: Section = {
+  name: 'layers',
+  Tab: observer((props) => {
+    return (
+      <SectionTab {...{ name: getName('sidePanel.layers'), ...props }}>
+        <Icon icon={<Layers />}></Icon>
+      </SectionTab>
+    );
+  }),
+  Panel: ({ store }) => {
+    return <LayersPanel store={store}></LayersPanel>;
+  },
+};
+
 export const DEFAULT_SECTIONS = [
   TemplatesSection,
   PhotosSection,
@@ -112,6 +127,7 @@ export const DEFAULT_SECTIONS = [
   TextSection,
   UploadSection,
   SizeSection,
+  LayersSection,
 ];
 
 const SidePanelContainer = styled.div`
@@ -146,6 +162,57 @@ const PanelContainer = styled.div`
     width: 0px;
   }
 `;
+
+const HideButtonContainer = styled.div`
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  height: 96px;
+  width: 15px;
+  fill: white;
+  cursor: pointer;
+  z-index: 10;
+
+  .bp5-dark & {
+    right: -13px;
+  }
+
+  & .stroke {
+    stroke: rgba(0, 0, 0, 0.3);
+    fill: none;
+  }
+
+  & .fill {
+    fill: white;
+  }
+
+  .bp5-dark & .fill {
+    fill: #2f343c;
+  }
+
+  & .pointer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scaleY(2);
+    font-size: 0.5rem;
+    color: rgba(171, 179, 191, 0.6);
+  }
+
+  .bp5-dark & .pointer {
+    color: rgba(171, 179, 191, 0.6);
+  }
+
+  &:hover .pointer {
+    color: black;
+  }
+
+  .bp5-dark &:hover .pointer {
+    color: white;
+  }
+`;
+
+const HideButton = () => {};
 
 const useOnFirstRender = (callback) => {
   const isFirst = useRef(true);

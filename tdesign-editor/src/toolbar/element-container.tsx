@@ -66,7 +66,14 @@ export const ElementContainer = ({ items, itemRender }: { items: any; itemRender
   }, []);
 
   return (
-    <Container style={{ width: divWidth + 'px' }} ref={divRef} className="bp5-navbar-group bp5-align-left">
+    <Container
+      style={{ width: divWidth + 'px' }}
+      ref={divRef}
+      className="bp5-navbar-group bp5-align-left"
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+    >
       <OverflowList
         items={items}
         style={{ width: '100%', gap: 5 }}
@@ -74,15 +81,24 @@ export const ElementContainer = ({ items, itemRender }: { items: any; itemRender
         collapseFrom={Boundary.END}
         overflowRenderer={(e) => (
           <Popover
-            content={<div style={{ padding: '10px', display: 'flex' }}>{e.map(itemRender)}</div>}
+            content={
+              <div
+                style={{ padding: '10px', display: 'flex' }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                {e.map(itemRender)}
+              </div>
+            }
             position={Position.BOTTOM}
           >
             <Button
               icon="more"
               minimal={true}
               style={{ marginLeft: '10px' }}
-              onMouseDownCapture={(e) => {
-                e.preventDefault();
+              onMouseDownCapture={(event) => {
+                event.preventDefault();
               }}
             ></Button>
           </Popover>
