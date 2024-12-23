@@ -5,4 +5,5 @@ export enum SelectEvent {
   CANCEL = 'selectCancel',
   CHANGE = 'objectsChange',
   UPDATA = 'randomUpdata',
+  ZOOM = 'zoom',
 }

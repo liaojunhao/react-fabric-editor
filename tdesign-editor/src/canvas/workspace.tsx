@@ -51,6 +51,9 @@ export const Workspace = observer(({ backgroundColor, store }: WorkspaceProps) =
     _handler.event.on(SelectEvent.UPDATA, (e) => {
       store.setRandomUpdata(e);
     });
+    _handler.event.on(SelectEvent.ZOOM, (e) => {
+      store.setScale(e);
+    });
 
     //@ts-expect-error 测试使用
     window._c = _handler;

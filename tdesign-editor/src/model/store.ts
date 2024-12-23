@@ -105,6 +105,7 @@ export const Store = types
     },
     // 设置缩放值
     setScale(t) {
+      self.handler.workareaHandlers.setZoomAuto(t);
       self.scale = t;
     },
     // 设置1比1

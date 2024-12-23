@@ -4,6 +4,8 @@ import { SidePanel } from 'tdesign-editor/lib/side-panel';
 import { Workspace } from 'tdesign-editor/lib/canvas/workspace';
 import { createStore } from 'tdesign-editor/lib/model/store';
 import { Toolbar } from 'tdesign-editor/lib/toolbar/toolbar';
+import { ZoomButtons } from 'tdesign-editor/lib/toolbar/zoom-buttons';
+
 import Topbar from 'tdesign-editor/lib/topbar/topbar';
 import { createProject, ProjectContext } from 'tdesign-editor/lib/project';
 
@@ -47,6 +49,7 @@ function App() {
             <WorkspaceWrap>
               <Toolbar store={store} downloadButtonEnabled={true} />
               <Workspace store={store} />
+              <ZoomButtons store={store}></ZoomButtons>
             </WorkspaceWrap>
           </TdesignEditorContainer>
         </div>
