@@ -205,6 +205,41 @@ class Handlers {
   }
 
   /**
+   * 克隆元素
+   */
+  duplicate() {
+    const activeObject = this.canvas.getActiveObject();
+    if (!activeObject) {
+      return false;
+    }
+    activeObject.clone((clonedObj) => {
+      this.canvas.discardActiveObject();
+      clonedObj.set({
+        left: clonedObj.left + 10,
+        top: clonedObj.top + 10,
+        evented: true,
+      });
+      if (clonedObj.type === 'activeSelection') {
+        clonedObj.canvas = this.canvas;
+        clonedObj.forEachObject((obj) => {
+          obj.set('name', `${obj.name}_clone`);
+          obj.set('id', nanoid());
+          this.canvas.add(obj);
+        });
+        clonedObj.setCoords();
+      } else {
+        clonedObj.set('name', `${clonedObj.name}_clone`);
+        clonedObj.set('id', nanoid());
+        this.canvas.add(clonedObj);
+      }
+      this.canvas.setActiveObject(clonedObj);
+      this.canvas.requestRenderAll();
+      // 通知UI数据更新
+      this.event.emit(SelectEvent.UPDATA, Math.random());
+    }, this.propertiesToInclude);
+  }
+
+  /**
    * 加载JSON
    */
   async importJSON(jsonFile: string | object, callback?: () => void) {

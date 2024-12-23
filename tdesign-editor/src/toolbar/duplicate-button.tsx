@@ -17,6 +17,7 @@ export const DuplicateButton = observer(({ store }: { store: StoreType }) => {
         disabled={l}
         onClick={() => {
           console.log('复制功能');
+          store.duplicates();
         }}
       ></Button>
     </Tooltip>

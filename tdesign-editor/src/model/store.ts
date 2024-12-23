@@ -128,6 +128,12 @@ export const Store = types
         self.handler.remove();
       }
     },
+    // 克隆元素
+    duplicates() {
+      if (self.handler) {
+        self.handler.duplicate();
+      }
+    },
     // 监听画布的变化
     on(event: string, callback: (e) => void) {
       if ('change' === event) {
