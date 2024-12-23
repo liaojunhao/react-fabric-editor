@@ -122,6 +122,12 @@ export const Store = types
     groupElements() {},
     // 解组
     ungroupElements() {},
+    // 删除元素
+    deleteElements() {
+      if (self.handler) {
+        self.handler.remove();
+      }
+    },
     // 监听画布的变化
     on(event: string, callback: (e) => void) {
       if ('change' === event) {

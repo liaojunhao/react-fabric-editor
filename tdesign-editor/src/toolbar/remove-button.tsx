@@ -15,6 +15,7 @@ export const RemoveButton = observer(({ store }: { store: StoreType }) => {
         minimal={true}
         onClick={() => {
           console.log('删除功能');
+          store.deleteElements();
         }}
         disabled={!isSelectElement}
         style={{ marginLeft: 'auto' }}
